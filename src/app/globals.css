@@ -42,7 +42,7 @@
 
   --color-eduai-coral: #e8986e;
   --color-eduai-sage: #9caf88;
-  --color-eduai-cream: #faf7f2;
+  --color-eduai-cream: #fefcf5;
   --color-eduai-tan: #d4a574;
   --color-eduai-rose: #e57373;
   --color-eduai-gold: #d4a574;
@@ -61,7 +61,7 @@
 }
 
 :root {
-  --background: #faf7f2;
+  --background: #fefcf5;
   --foreground: #5d4037;
   --card: #ffffff;
   --card-foreground: #5d4037;
@@ -69,15 +69,15 @@
   --popover-foreground: #5d4037;
   --primary: #e8986e;
   --primary-foreground: #ffffff;
-  --secondary: #f5ede4;
+  --secondary: #f8f4ee;
   --secondary-foreground: #5d4037;
-  --muted: #f5ede4;
+  --muted: #f8f4ee;
   --muted-foreground: #9e8e7e;
   --accent: #9caf88;
   --accent-foreground: #ffffff;
   --destructive: #e57373;
-  --border: #e0d7c6;
-  --input: #e0d7c6;
+  --border: #e8e0d4;
+  --input: #e8e0d4;
   --ring: #e8986e;
   --chart-1: #e8986e;
   --chart-2: #d4a574;
@@ -85,13 +85,13 @@
   --chart-4: #e8875a;
   --chart-5: #81c784;
   --radius: 1rem;
-  --sidebar: #f5ede4;
+  --sidebar: #f8f4ee;
   --sidebar-foreground: #5d4037;
   --sidebar-primary: #e8986e;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ede3d6;
+  --sidebar-accent: #f0eade;
   --sidebar-accent-foreground: #5d4037;
-  --sidebar-border: #e0d7c6;
+  --sidebar-border: #e8e0d4;
   --sidebar-ring: #e8986e;
 }
 
