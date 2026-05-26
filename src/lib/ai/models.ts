@@ -130,7 +130,6 @@ export async function generateWithRetry<T>(
 
 type StreamOptions = {
   temperature?: number;
-  useSearchGrounding?: boolean;
 };
 
 export async function streamWithFallback(
@@ -163,13 +162,6 @@ export async function streamWithFallback(
           })),
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
-          ...(options?.useSearchGrounding
-            ? {
-                providerOptions: {
-                  google: { useSearchGrounding: true },
-                },
-              }
-            : {}),
         });
 
         aiKeyManager.markSuccess(apiKey);
@@ -179,6 +171,7 @@ export async function streamWithFallback(
         return response;
       } catch (error: any) {
         lastError = error;
+        console.error(`Model ${modelId} failed:`, error?.message || error);
         if (error?.status === 429) {
           aiKeyManager.markRateLimited(apiKey, 60);
           modelRouter.markModelRateLimited(modelId, 30);
@@ -190,7 +183,11 @@ export async function streamWithFallback(
   }
 
   return new Response(
-    JSON.stringify({ error: "All models exhausted", retryAfter: 30 }),
+    JSON.stringify({
+      error: "All models exhausted",
+      lastError: lastError?.message || "Unknown",
+      retryAfter: 30,
+    }),
     { status: 503, headers: { "Content-Type": "application/json" } }
   );
 }

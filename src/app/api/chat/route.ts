@@ -31,9 +31,7 @@ export async function POST(request: Request) {
         content: m.content,
       }));
 
-    return await streamWithFallback(task, buildMessages, systemPrompt, {
-      useSearchGrounding: !hasFiles,
-    });
+    return await streamWithFallback(task, buildMessages, systemPrompt);
   } catch (error: any) {
     console.error("Chat error:", error);
     return new Response(JSON.stringify({ error: "Chat failed" }), {
