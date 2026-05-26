@@ -11,13 +11,13 @@ function getGoogleProvider() {
 }
 
 const MODEL_MAP: Record<AITaskType, string> = {
-  chat: "models/gemini-2.0-flash-exp",
+  chat: "models/gemma-4-31b-it",
   lesson_generation: "models/gemma-4-31b-it",
   quiz_generation: "models/gemma-4-26b-a4b-it",
-  quick_qa: "models/gemini-2.0-flash-exp",
+  quick_qa: "models/gemma-4-26b-a4b-it",
   embedding: "models/text-embedding-004",
-  deep_research: "models/gemini-2.0-flash-exp",
-  search_grounding: "models/gemini-2.0-flash-exp",
+  deep_research: "models/gemini-2.5-flash-lite",
+  search_grounding: "models/gemini-2.5-flash-lite",
 };
 
 export function getModelForTask(task: AITaskType) {

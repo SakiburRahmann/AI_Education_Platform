@@ -16,7 +16,6 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import {
   LayoutDashboard,
   MessageSquare,
-  FileText,
   BookOpen,
   HelpCircle,
   Trophy,
@@ -28,7 +27,6 @@ import {
 const sidebarLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/chat", label: "AI Chat", icon: MessageSquare },
-  { href: "/dashboard/files", label: "My Files", icon: FileText },
   { href: "/dashboard/lessons", label: "Lessons", icon: BookOpen },
   { href: "/dashboard/quizzes", label: "Quizzes", icon: HelpCircle },
   { href: "/dashboard/leaderboard", label: "Leaderboard", icon: Trophy },

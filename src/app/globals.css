@@ -288,7 +288,7 @@ html.dark,
    SUNSHINE ARCADE THEME — bright, playful, for K-12
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="sunshine"] {
-  --font-sans-family: var(--font-nunito-sans);
+  --font-sans-family: var(--font-geist-sans);
   --font-mono-family: var(--font-geist-mono);
   --font-heading-family: var(--font-nunito);
   --font-display-family: var(--font-nunito);
@@ -416,7 +416,7 @@ html.dark,
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="darkquest"],
 [data-theme="darkquest"].dark {
-  --font-sans-family: var(--font-rajdhani);
+  --font-sans-family: var(--font-geist-sans);
   --font-mono-family: var(--font-share-tech-mono);
   --font-heading-family: var(--font-oxanium);
   --font-display-family: var(--font-oxanium);
@@ -517,7 +517,7 @@ html.dark,
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="cosmic"],
 [data-theme="cosmic"].dark {
-  --font-sans-family: var(--font-exo-2);
+  --font-sans-family: var(--font-geist-sans);
   --font-mono-family: var(--font-space-mono);
   --font-heading-family: var(--font-orbitron);
   --font-display-family: var(--font-orbitron);
@@ -604,7 +604,7 @@ html.dark,
    CANDY PASTEL THEME — soft, dreamy, for early learners 4-8
    ═══════════════════════════════════════════════════════════════ */
 [data-theme="candypastel"] {
-  --font-sans-family: var(--font-quicksand);
+  --font-sans-family: var(--font-geist-sans);
   --font-mono-family: var(--font-geist-mono);
   --font-heading-family: var(--font-fredoka);
   --font-display-family: var(--font-fredoka);
@@ -803,9 +803,7 @@ html.dark,
   border-radius: var(--radius-md);
   background-color: var(--primary);
   color: var(--primary-foreground);
-  font-size: 15px;
   font-weight: 600;
-  padding: 12px 24px;
   border: none;
   transition: all var(--duration-normal);
   cursor: pointer;
@@ -824,12 +822,8 @@ html.dark,
   border-radius: var(--radius-md);
   background-color: var(--color-primary);
   color: white;
-  font-family: var(--font-body-family);
-  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
-  padding: 14px 32px;
-  min-height: 52px;
   box-shadow: var(--shadow-button);
   border-bottom: 4px solid var(--color-primary-dark);
   transition: all var(--duration-fast);
@@ -850,12 +844,9 @@ html.dark,
   color: var(--color-primary);
   box-shadow: var(--shadow-button);
   border-radius: var(--radius-md);
-  font-family: var(--font-body-family);
-  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 14px 32px;
 }
   [data-theme="darkquest"] .btn-primary:hover {
     background: rgba(0, 212, 255, 0.1);
@@ -882,12 +873,9 @@ html.dark,
   color: var(--color-primary);
   box-shadow: var(--shadow-glow-teal);
   border-radius: var(--radius-md);
-  font-family: var(--font-body-family);
-  font-size: 15px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  padding: 14px 36px;
 }
   [data-theme="cosmic"] .btn-primary:hover {
     background: rgba(0, 255, 198, 0.08);
@@ -899,10 +887,7 @@ html.dark,
   background: var(--color-primary);
   color: white;
   border-radius: var(--radius-pill);
-  font-family: var(--font-display-family);
-  font-size: 18px;
   font-weight: 600;
-  padding: 14px 36px;
   box-shadow: var(--shadow-button);
 }
   [data-theme="candypastel"] .btn-primary:hover {
