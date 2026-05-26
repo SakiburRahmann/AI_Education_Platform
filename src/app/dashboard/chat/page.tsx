@@ -39,11 +39,21 @@ const FILE_ICONS: Record<string, string> = {
 };
 
 async function uploadFile(file: File): Promise<FileInfo> {
+  if (file.size > 4 * 1024 * 1024) {
+    throw new Error("File too large (max 4MB)");
+  }
   const formData = new FormData();
   formData.set("file", file);
-  const res = await fetch("/api/files/process", { method: "POST", body: formData });
+  const res = await fetch("/api/files/process", {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text ? text.slice(0, 200) : `Upload failed (${res.status})`);
+  }
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Failed to process file");
 
   return {
     id: crypto.randomUUID(),

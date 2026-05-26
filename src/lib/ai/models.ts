@@ -130,6 +130,7 @@ export async function generateWithRetry<T>(
 
 type StreamOptions = {
   temperature?: number;
+  useSearchGrounding?: boolean;
 };
 
 function sendJson(controller: ReadableStreamDefaultController, t: string, c?: string) {
@@ -172,6 +173,9 @@ export async function streamWithFallback(
           })),
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
+          ...(options?.useSearchGrounding && !modelId.startsWith("models/gemma")
+            ? { providerOptions: { google: { useSearchGrounding: true } } }
+            : {}),
         });
 
         const reader = result.fullStream.getReader();
