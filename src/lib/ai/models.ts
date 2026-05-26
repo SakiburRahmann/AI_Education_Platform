@@ -12,29 +12,29 @@ class ModelRouter {
 
   private chains: Record<AITaskType, string[]> = {
     chat: [
-      "models/gemini-3-flash-live",
-      "models/gemini-2.5-flash-audio",
+      "models/gemini-3-flash-preview",
+      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
     ],
     lesson_generation: [
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
-      "models/gemini-3.1-flash-lite",
+      "gemini-3.1-flash-lite",
     ],
     quiz_generation: [
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
-      "models/gemini-3.1-flash-lite",
+      "gemini-3.1-flash-lite",
     ],
     file_processing: [
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
-      "models/gemini-3.1-flash-lite",
+      "gemini-3.1-flash-lite",
     ],
     quick_qa: [
-      "models/gemini-3-flash-live",
-      "models/gemini-2.5-flash-audio",
+      "models/gemini-3-flash-preview",
+      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
     ],
@@ -42,11 +42,11 @@ class ModelRouter {
     deep_research: [
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
-      "models/gemini-3.1-flash-lite",
+      "gemini-3.1-flash-lite",
     ],
     search_grounding: [
-      "models/gemini-3-flash-live",
-      "models/gemini-2.5-flash-audio",
+      "models/gemini-3-flash-preview",
+      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
     ],
   };
