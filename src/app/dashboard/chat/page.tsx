@@ -82,6 +82,8 @@ export default function ChatPage() {
   const [streaming, setStreaming] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<FileInfo[]>([]);
+  const pendingFilesRef = useRef(pendingFiles);
+  useEffect(() => { pendingFilesRef.current = pendingFiles; }, [pendingFiles]);
   const [streamContent, setStreamContent] = useState("");
   const [streamReasoning, setStreamReasoning] = useState("");
   const [sideOpen, setSideOpen] = useState(true);
@@ -137,10 +139,11 @@ export default function ChatPage() {
 
   const handleSend = useCallback(async () => {
     const text = input.trim();
-    if ((!text && pendingFiles.length === 0) || !activeId || streaming) return;
+    const currentPending = pendingFilesRef.current;
+    if ((!text && currentPending.length === 0) || !activeId || streaming) return;
 
     setInput("");
-    const filesToSend = pendingFiles;
+    const filesToSend = currentPending;
     setPendingFiles([]);
     const conv = conversations.find((c) => c.id === activeId);
 
@@ -242,7 +245,7 @@ export default function ChatPage() {
     } finally {
       setStreaming(false);
     }
-  }, [input, pendingFiles, activeId, conversations, streaming, addMessage]);
+  }, [input, activeId, conversations, streaming, addMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
