@@ -70,6 +70,9 @@ export function useChatStorage() {
   const activeConversation = conversations.find((c) => c.id === activeId) || null;
 
   const createConversation = useCallback(() => {
+    if (activeConversation && activeConversation.messages.length === 0) {
+      return activeConversation.id;
+    }
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
     const newConv: Conversation = {
@@ -83,7 +86,7 @@ export function useChatStorage() {
     setConversations((prev) => [newConv, ...prev]);
     setActiveId(id);
     return id;
-  }, []);
+  }, [activeConversation]);
 
   const deleteConversation = useCallback((id: string) => {
     setConversations((prev) => prev.filter((c) => c.id !== id));

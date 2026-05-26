@@ -1,12 +1,4 @@
-import { streamText } from "ai";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { aiKeyManager } from "@/lib/ai/key-manager";
-
-function getProvider() {
-  const apiKey = aiKeyManager.getNextKey();
-  if (!apiKey) throw new Error("No Google AI API key available");
-  return createGoogleGenerativeAI({ apiKey });
-}
+import { streamWithFallback } from "@/lib/ai/models";
 
 export async function POST(request: Request) {
   try {
@@ -19,10 +11,10 @@ export async function POST(request: Request) {
       });
     }
 
-    const google = getProvider();
-    const model = google("models/gemma-4-31b-it");
+    const hasFiles = !!context;
+    const task = hasFiles ? "file_processing" : "chat";
 
-    const system = [
+    const systemPrompt = [
       "You are Nexo, EduAI's AI learning companion. You help students understand their study materials.",
       "You are knowledgeable, patient, and explain concepts clearly with examples.",
       "When given study material context, answer questions based on that material.",
@@ -32,24 +24,14 @@ export async function POST(request: Request) {
       context ? `\n\nThe user has uploaded the following study material for context:\n\n${context}` : "",
     ].filter(Boolean).join("\n");
 
-    const result = streamText({
-      model,
-      messages: messages.map((m: any) => ({
+    const buildMessages = () =>
+      messages.map((m: any) => ({
         role: m.role,
         content: m.content,
-      })),
-      system,
-      temperature: 0.7,
-    });
+      }));
 
-    return result.toTextStreamResponse();
+    return await streamWithFallback(task, buildMessages, systemPrompt);
   } catch (error: any) {
-    if (error.message?.includes("API key")) {
-      return new Response(JSON.stringify({ error: "API key unavailable" }), {
-        status: 503,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
     console.error("Chat error:", error);
     return new Response(JSON.stringify({ error: "Chat failed" }), {
       status: 500,

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useChatStorage, type Message, type FileInfo } from "@/hooks/use-chat-storage";
+import { toast } from "sonner";
 import {
   Send,
   Paperclip,
@@ -34,6 +35,24 @@ const FILE_ICONS: Record<string, string> = {
   pptx: "text-eduai-accent",
   txt: "text-muted-foreground",
 };
+
+async function uploadFile(file: File): Promise<FileInfo> {
+  const formData = new FormData();
+  formData.set("file", file);
+  const res = await fetch("/api/files/process", { method: "POST", body: formData });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to process file");
+
+  return {
+    id: crypto.randomUUID(),
+    name: data.name,
+    type: data.type,
+    size: data.size,
+    text: data.text || "",
+    pages: data.pages || 0,
+    uploadedAt: new Date().toISOString(),
+  };
+}
 
 export default function ChatPage() {
   const {
@@ -69,35 +88,39 @@ export default function ChatPage() {
     }
   }, [activeId, conversations, createConversation, setActiveId]);
 
-  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !activeId) return;
-
+  const processAndAttachFile = useCallback(async (file: File) => {
+    if (!activeId) {
+      const id = createConversation();
+      if (!id) return;
+    }
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.set("file", file);
-      const res = await fetch("/api/files/process", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
-      const fileInfo: FileInfo = {
-        id: crypto.randomUUID(),
-        name: data.name,
-        type: data.type,
-        size: data.size,
-        text: data.text,
-        pages: data.pages,
-        uploadedAt: new Date().toISOString(),
-      };
-      addFile(activeId, fileInfo);
+      const fileInfo = await uploadFile(file);
+      addFile(activeId!, fileInfo);
+      toast.success(`Attached ${fileInfo.name}`);
     } catch (err: any) {
       console.error("Upload error:", err);
+      toast.error(err.message || "Failed to upload file");
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-  }, [activeId, addFile]);
+  }, [activeId, createConversation, addFile]);
+
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await processAndAttachFile(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [processAndAttachFile]);
+
+  const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.files;
+    if (!items || items.length === 0) return;
+
+    e.preventDefault();
+    const file = items[0];
+    await processAndAttachFile(file);
+  }, [processAndAttachFile]);
 
   const handleSend = useCallback(async () => {
     const text = input.trim();
@@ -163,6 +186,7 @@ export default function ChatPage() {
       }
     } catch (err: any) {
       console.error("Stream error:", err);
+      toast.error("Chat failed — retrying with a different model");
       const errorMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -251,8 +275,9 @@ export default function ChatPage() {
               <Bot className="mb-4 h-12 w-12 text-primary/40" />
               <h2 className="font-heading text-xl font-bold mb-2">Chat with Nexo</h2>
               <p className="max-w-md text-sm text-muted-foreground">
-                Upload your study materials (PDF, DOCX, PPTX, TXT) and ask questions, generate
-                lessons, or create quizzes. Everything is stored locally in your browser.
+                Upload your study materials (PDF, DOCX, PPTX, TXT, images, and more) and ask questions,
+                generate lessons, or create quizzes. You can also paste files directly.
+                Everything is stored locally in your browser.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {["Explain quantum computing", "Create a lesson on photosynthesis", "Quiz me on World War II"].map(
@@ -375,7 +400,8 @@ export default function ChatPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask Nexo anything..."
+                onPaste={handlePaste}
+                placeholder="Ask Nexo anything... (paste files directly)"
                 rows={1}
                 className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 style={{ maxHeight: "200px" }}
@@ -410,14 +436,13 @@ export default function ChatPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,.docx,.pptx,.txt"
                 className="hidden"
                 onChange={handleFileSelect}
               />
             </div>
           </div>
           <p className="mt-2 text-center text-[10px] text-muted-foreground">
-            Powered by Gemma 4 31B. Conversations stored locally.
+            Powered by Gemini 3 Flash Live (chat) &amp; Gemma 4 31B (file processing). Conversations stored locally.
           </p>
         </div>
       </div>

@@ -1,11 +1,19 @@
 import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
 
+const TEXT_TYPES = new Set(["pdf", "docx", "pptx", "txt", "csv", "json", "xml", "md", "html", "rtf"]);
+
+export function isTextExtractable(type: string): boolean {
+  return TEXT_TYPES.has(type.toLowerCase());
+}
+
 export async function extractTextFromFile(
   buffer: Buffer,
   type: string
-): Promise<string> {
-  switch (type) {
+): Promise<string | null> {
+  const ext = type.toLowerCase();
+
+  switch (ext) {
     case "pdf": {
       const parser = new PDFParse({ data: buffer });
       const result = await parser.getText();
@@ -23,9 +31,15 @@ export async function extractTextFromFile(
       return text || "";
     }
     case "txt":
+    case "csv":
+    case "json":
+    case "xml":
+    case "md":
+    case "html":
+    case "rtf":
       return buffer.toString("utf-8");
     default:
-      throw new Error(`Unsupported file type: ${type}`);
+      return null;
   }
 }
 

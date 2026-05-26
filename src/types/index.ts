@@ -136,4 +136,5 @@ export type AITaskType =
   | "embedding"
   | "quick_qa"
   | "deep_research"
-  | "search_grounding";
+  | "search_grounding"
+  | "file_processing";
