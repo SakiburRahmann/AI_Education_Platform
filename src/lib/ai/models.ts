@@ -10,7 +10,7 @@ type ModelStatus = {
 class ModelRouter {
   private modelStatuses = new Map<string, ModelStatus>();
 
-  private chains: Record<AITaskType, string[]> = {
+  private chains: Record<AITaskType | "vision", string[]> = {
     chat: [
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
@@ -47,9 +47,14 @@ class ModelRouter {
       "models/gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
+    vision: [
+      "gemini-3.1-flash-lite",
+      "models/gemma-4-31b-it",
+      "models/gemma-4-26b-a4b-it",
+    ],
   };
 
-  getModelChain(task: AITaskType): string[] {
+  getModelChain(task: AITaskType | "vision"): string[] {
     return this.chains[task] || this.chains.chat;
   }
 
@@ -69,7 +74,7 @@ class ModelRouter {
     this.modelStatuses.delete(modelId);
   }
 
-  getNextAvailableModel(task: AITaskType): string | null {
+  getNextAvailableModel(task: AITaskType | "vision"): string | null {
     const chain = this.getModelChain(task);
     for (const modelId of chain) {
       if (this.isModelAvailable(modelId)) {
@@ -82,7 +87,7 @@ class ModelRouter {
 
 export const modelRouter = new ModelRouter();
 
-export function getModelForTask(task: AITaskType) {
+export function getModelForTask(task: AITaskType | "vision") {
   const modelId = modelRouter.getNextAvailableModel(task);
   if (!modelId) throw new Error(`No available model for task: ${task}`);
   const apiKey = aiKeyManager.getNextKey();
@@ -91,7 +96,7 @@ export function getModelForTask(task: AITaskType) {
 }
 
 export async function generateWithRetry<T>(
-  task: AITaskType,
+  task: AITaskType | "vision",
   generator: (model: ReturnType<typeof getModelForTask>) => Promise<T>
 ): Promise<T> {
   const chain = modelRouter.getModelChain(task);
@@ -131,6 +136,7 @@ export async function generateWithRetry<T>(
 type StreamOptions = {
   temperature?: number;
   useSearchGrounding?: boolean;
+  hasImages?: boolean;
 };
 
 function sendJson(controller: ReadableStreamDefaultController, t: string, c?: string) {
@@ -144,12 +150,13 @@ function isTextPart(part: any): part is { text: string } {
 }
 
 export async function streamWithFallback(
-  task: AITaskType,
-  buildMessages: () => { role: string; content: string }[],
+  task: AITaskType | "vision",
+  buildMessages: () => { role: string; content: string | { type: "text" | "image"; text?: string; image?: string }[] }[],
   systemPrompt: string,
   options?: StreamOptions
 ): Promise<Response> {
-  const chain = modelRouter.getModelChain(task);
+  const effectiveTask = options?.hasImages ? "vision" : task;
+  const chain = modelRouter.getModelChain(effectiveTask);
   let lastError: Error | null = null;
 
   for (const modelId of chain) {
@@ -167,10 +174,7 @@ export async function streamWithFallback(
 
         const result = streamText({
           model,
-          messages: buildMessages().map((m) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
+          messages: buildMessages() as any,
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
           ...(options?.useSearchGrounding && !modelId.startsWith("models/gemma")

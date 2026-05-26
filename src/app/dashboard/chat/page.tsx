@@ -62,6 +62,7 @@ async function uploadFile(file: File): Promise<FileInfo> {
     size: data.size,
     text: data.text || "",
     pages: data.pages || 0,
+    dataUrl: data.dataUrl,
     uploadedAt: new Date().toISOString(),
   };
 }
@@ -156,7 +157,8 @@ export default function ChatPage() {
     setStreamReasoning("");
 
     try {
-      const context = files.map((f) => `--- ${f.name} ---\n${f.text}`).join("\n\n");
+      const hasImages = files.some((f) => f.dataUrl);
+      const context = hasImages ? undefined : files.map((f) => `--- ${f.name} ---\n${f.text}`).join("\n\n");
       const messagesForApi = [
         ...(conv?.messages || []).map((m) => ({ role: m.role, content: m.content })),
         { role: "user" as const, content: text },
@@ -165,7 +167,11 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: messagesForApi, context: context || undefined }),
+        body: JSON.stringify({
+          messages: messagesForApi,
+          context: context || undefined,
+          files: hasImages ? files.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
+        }),
       });
 
       if (!res.ok) {

@@ -8,6 +8,7 @@ export type FileInfo = {
   text: string;
   pages: number;
   uploadedAt: string;
+  dataUrl?: string;
 };
 
 export type Message = {

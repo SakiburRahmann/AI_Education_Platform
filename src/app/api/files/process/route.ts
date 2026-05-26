@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { extractTextFromFile, isTextExtractable } from "@/lib/files/extract";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const IMAGE_TYPES = new Set(["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico", "avif"]);
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,11 +22,18 @@ export async function POST(request: NextRequest) {
 
     let text: string | null = null;
     let pages = 0;
+    let dataUrl: string | undefined;
+
+    const buffer = Buffer.from(await file.arrayBuffer());
 
     if (isTextExtractable(ext)) {
-      const buffer = Buffer.from(await file.arrayBuffer());
       text = await extractTextFromFile(buffer, ext);
       pages = text ? Math.ceil(text.length / 3000) : 0;
+    }
+
+    if (IMAGE_TYPES.has(ext)) {
+      const mimeType = file.type || `image/${ext === "jpg" ? "jpeg" : ext}`;
+      dataUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
     }
 
     return NextResponse.json({
@@ -34,6 +42,7 @@ export async function POST(request: NextRequest) {
       size: file.size,
       text,
       pages,
+      dataUrl,
       unprocessable: text === null,
     });
   } catch (error: any) {
