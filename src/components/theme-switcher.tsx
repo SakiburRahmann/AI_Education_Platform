@@ -96,7 +96,7 @@ export function ThemeSwitcher() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-xl border bg-popover p-1.5 shadow-lg">
+          <div className="absolute right-0 sm:left-auto top-full z-50 mt-1 w-44 max-h-80 overflow-y-auto rounded-xl border bg-popover p-1.5 shadow-lg">
             {themes.map((t) => {
               const Icon = t.icon;
               return (

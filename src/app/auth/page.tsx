@@ -29,7 +29,7 @@ export default function AuthPage() {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden">
+    <div className="relative flex min-h-screen items-center justify-center p-4">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.06]" />
       <Card
         className="w-full max-w-sm relative border-0 shadow-lg"

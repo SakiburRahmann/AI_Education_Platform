@@ -1352,4 +1352,25 @@ html.dark,
 
   h1 { font-size: clamp(24px, 6vw, 32px); }
   h2 { font-size: clamp(18px, 5vw, 24px); }
+
+  /* Prevent horizontal overflow on very small screens */
+  img,
+  table,
+  pre,
+  code {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 768px) {
+  .answer-grid {
+    gap: 8px;
+  }
+
+  .app-nav {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }

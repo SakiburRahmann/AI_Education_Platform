@@ -109,7 +109,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${plusJakartaSans.variable} ${dmSans.variable} ${nunito.variable} ${nunitoSans.variable} ${oxanium.variable} ${rajdhani.variable} ${shareTechMono.variable} ${orbitron.variable} ${exo2.variable} ${spaceMono.variable} ${fredoka.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
