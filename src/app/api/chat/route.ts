@@ -20,8 +20,8 @@ export async function POST(request: Request) {
       "When given study material context, answer questions based on that material.",
       "If asked to generate lessons, create structured content with clear headings and key points.",
       "If asked to generate quizzes, create questions with multiple choice or true/false format.",
-      "If asked to search online for current information, use the search grounding tool to get real-time results.",
       "Be concise but thorough. Use markdown formatting for clarity.",
+      "If you need current information, rely on your training data — do not claim you can browse the web.",
       context ? `\n\nThe user has uploaded the following study material for context:\n\n${context}` : "",
     ].filter(Boolean).join("\n");
 

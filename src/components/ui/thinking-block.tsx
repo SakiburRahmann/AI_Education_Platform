@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 type Props = {
   content: string;
@@ -39,8 +40,8 @@ export function ThinkingBlock({ content, isStreaming }: Props) {
         </span>
       </button>
       {open && (
-        <div className="border-t px-3 py-2 text-xs leading-relaxed text-muted-foreground/80 whitespace-pre-wrap">
-          {content}
+        <div className="border-t px-3 py-2 text-xs leading-relaxed text-muted-foreground/80">
+          <MarkdownRenderer content={content} />
         </div>
       )}
     </div>

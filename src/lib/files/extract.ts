@@ -1,5 +1,5 @@
-import { PDFParse } from "pdf-parse";
-import mammoth from "mammoth";
+import type { PDFParse } from "pdf-parse";
+import type mammoth from "mammoth";
 
 const TEXT_TYPES = new Set(["pdf", "docx", "pptx", "txt", "csv", "json", "xml", "md", "html", "rtf"]);
 
@@ -15,20 +15,20 @@ export async function extractTextFromFile(
 
   switch (ext) {
     case "pdf": {
+      const { PDFParse } = await import("pdf-parse");
       const parser = new PDFParse({ data: buffer });
       const result = await parser.getText();
       return result.text || "";
     }
     case "docx": {
-      const result = await mammoth.extractRawText({ buffer });
+      const mammothModule = await import("mammoth");
+      const result = await mammothModule.default.extractRawText({ buffer });
       return result.value;
     }
     case "pptx": {
-      const officeparser = require("officeparser");
-      const text = await officeparser.parseOfficeAsync(
-        `data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,${buffer.toString("base64")}`
-      );
-      return text || "";
+      const { parseOffice } = await import("officeparser");
+      const ast = await parseOffice(buffer);
+      return ast.toText() || "";
     }
     case "txt":
     case "csv":
