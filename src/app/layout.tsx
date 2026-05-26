@@ -112,8 +112,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col overflow-x-hidden">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
           disableTransitionOnChange
         >
           {children}
