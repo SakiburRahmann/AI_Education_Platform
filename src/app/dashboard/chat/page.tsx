@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useChatStorage, type Message, type FileInfo } from "@/hooks/use-chat-storage";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { toast } from "sonner";
 import {
   Send,
@@ -322,8 +323,8 @@ export default function ChatPage() {
                         {formatTime(msg.createdAt)}
                       </span>
                     </div>
-                    <div className="mt-1 whitespace-pre-wrap text-sm leading-relaxed">
-                      {msg.content}
+                    <div className="mt-1 text-sm leading-relaxed">
+                      <MarkdownRenderer content={msg.content} />
                     </div>
                   </div>
                 </div>
@@ -339,8 +340,8 @@ export default function ChatPage() {
                     <div className="flex items-baseline gap-2">
                       <span className="text-xs font-medium">Nexo</span>
                     </div>
-                    <div className="mt-1 whitespace-pre-wrap text-sm leading-relaxed">
-                      {streamContent}
+                    <div className="mt-1 text-sm leading-relaxed">
+                      <MarkdownRenderer content={streamContent} />
                       <span className="inline-block h-4 w-0.5 bg-primary ml-0.5 animate-pulse" />
                     </div>
                   </div>
