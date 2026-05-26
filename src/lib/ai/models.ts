@@ -48,9 +48,9 @@ class ModelRouter {
       "gemini-3.1-flash-lite",
     ],
     vision: [
-      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
+      "gemini-3.1-flash-lite",
     ],
   };
 
