@@ -16,7 +16,6 @@ import {
   MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -38,40 +37,32 @@ export default function DashboardPage() {
       value: "0",
       icon: Flame,
       note: "Start learning today!",
-      color: "text-eduai-amber",
-      bg: "bg-amber-50",
     },
     {
       label: "Lessons Completed",
       value: "0",
       icon: BookOpen,
       note: null,
-      color: "text-eduai-coral",
-      bg: "bg-orange-50",
     },
     {
       label: "Quizzes Passed",
       value: "0",
       icon: HelpCircle,
       note: null,
-      color: "text-eduai-sage",
-      bg: "bg-green-50",
     },
     {
       label: "Global Rank",
       value: "—",
       icon: Trophy,
       note: "Complete a lesson to rank",
-      color: "text-eduai-tan",
-      bg: "bg-amber-50",
     },
   ];
 
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-4">
-        <Avatar className="h-14 w-14 ring-2 ring-primary/20">
-          <AvatarFallback className="bg-gradient-cozy text-white text-lg">
+        <Avatar className="h-14 w-14 ring-2 ring-border">
+          <AvatarFallback className="bg-gradient-primary text-primary-foreground text-lg">
             {user.email?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -83,8 +74,7 @@ export default function DashboardPage() {
               : ""}
           </h1>
           <p className="text-sm text-muted-foreground">
-            <span className="text-eduai-xp font-semibold">Level 1 Learner</span>{" "}
-            · 0 XP
+            <span className="font-semibold">Level 1 Learner</span> · 0 XP
           </p>
         </div>
       </div>
@@ -93,7 +83,7 @@ export default function DashboardPage() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} className="card-brand">
+            <Card key={stat.label} className="card-hover">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {stat.label}
@@ -101,8 +91,8 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-3">
-                  <div className={`rounded-lg p-2 ${stat.bg}`}>
-                    <Icon className={`h-5 w-5 ${stat.color}`} />
+                  <div className="rounded-lg bg-muted p-2">
+                    <Icon className="h-5 w-5 text-foreground" />
                   </div>
                   <div>
                     <div className="text-2xl font-bold">{stat.value}</div>
@@ -119,7 +109,7 @@ export default function DashboardPage() {
         })}
       </div>
 
-      <Card className="card-cozy">
+      <Card className="card-hover">
         <CardHeader>
           <CardTitle className="font-heading">Quick Start</CardTitle>
         </CardHeader>
@@ -131,14 +121,14 @@ export default function DashboardPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/dashboard/files"
-              className="btn-cozy inline-flex items-center gap-2 px-5 py-2.5 text-sm"
+              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm"
             >
               <Upload className="h-4 w-4" />
               Upload Files
             </Link>
             <Link
               href="/dashboard/chat"
-              className="btn-cozy-outline inline-flex items-center gap-2 px-5 py-2.5 text-sm"
+              className="btn-outline inline-flex items-center gap-2 px-5 py-2.5 text-sm"
             >
               <MessageSquare className="h-4 w-4" />
               Start Chatting

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { NexoLogo } from "@/components/ui/nexo-logo";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -58,9 +59,11 @@ export default function DashboardLayout({
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col py-4">
-      <Link href="/dashboard" className="px-4 mb-6">
-        <NexoLogo showText textSize="sm" />
-      </Link>
+      <div className="flex items-center justify-between px-4 mb-6">
+        <Link href="/dashboard">
+          <NexoLogo showText textSize="sm" />
+        </Link>
+      </div>
       <nav className="flex-1 space-y-1 px-3">
         {sidebarLinks.map((link) => {
           const Icon = link.icon;
@@ -71,8 +74,8 @@ export default function DashboardLayout({
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
                 pathname === link.href
-                  ? "bg-eduai-coral/15 text-eduai-coral font-bold"
-                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -82,14 +85,17 @@ export default function DashboardLayout({
         })}
       </nav>
       <Separator className="my-4" />
-      <div className="px-3">
+      <div className="px-3 space-y-2">
+        <div className="flex justify-center">
+          <ThemeSwitcher />
+        </div>
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
           onClick={handleSignOut}
         >
           <Avatar className="h-6 w-6">
-            <AvatarFallback className="bg-gradient-cozy text-white text-xs">
+            <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs">
               {user?.email?.charAt(0).toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
@@ -101,7 +107,7 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-64 border-r border-border/60 bg-sidebar md:block">
+      <aside className="hidden w-64 border-r bg-sidebar md:block">
         <SidebarContent />
       </aside>
 

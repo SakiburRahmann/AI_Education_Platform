@@ -3,6 +3,7 @@ import type { ComponentProps } from "react";
 type NexoLogoProps = ComponentProps<"svg"> & {
   showText?: boolean;
   textSize?: "sm" | "md" | "lg";
+  variant?: "neutral" | "cozy";
 };
 
 const textSizes = {
@@ -14,6 +15,7 @@ const textSizes = {
 export function NexoLogo({
   showText = false,
   textSize = "md",
+  variant,
   className,
   ...props
 }: NexoLogoProps) {
@@ -26,37 +28,25 @@ export function NexoLogo({
         aria-label="EduAI logo"
         {...props}
       >
-        <circle cx="20" cy="20" r="18" fill="#e8986e" opacity="0.1" />
+        <circle cx="20" cy="20" r="18" className="fill-current" opacity="0.08" />
         <path
           d="M20 2L28 12L38 20L28 28L20 38L12 28L2 20L12 12Z"
-          fill="url(#logoGradient)"
+          className="fill-current"
         />
         <circle cx="20" cy="20" r="5" fill="white" opacity={0.9} />
-        <circle cx="20" cy="20" r="3" fill="url(#logoGradient)" />
+        <circle cx="20" cy="20" r="3" className="fill-current" />
         <path
           d="M12 12L28 28M28 12L12 28"
           stroke="white"
           strokeWidth="0.75"
           opacity={0.2}
         />
-        <defs>
-          <linearGradient
-            id="logoGradient"
-            x1="2"
-            y1="2"
-            x2="38"
-            y2="38"
-          >
-            <stop offset="0%" stopColor="#e8986e" />
-            <stop offset="100%" stopColor="#d4a574" />
-          </linearGradient>
-        </defs>
       </svg>
       {showText && (
         <span
           className={`font-heading font-bold tracking-tight ${textSizes[textSize]}`}
         >
-          Edu<span className="text-[#e8986e]">AI</span>
+          Edu<span className="text-current opacity-80">AI</span>
         </span>
       )}
     </div>

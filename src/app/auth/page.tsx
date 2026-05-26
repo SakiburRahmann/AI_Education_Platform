@@ -30,9 +30,11 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#e8986e_0%,transparent_60%)] opacity-15" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,#9caf88_0%,transparent_50%)] opacity-10" />
-      <Card className="w-full max-w-sm relative border-0" style={{ borderRadius: '2rem', boxShadow: '0 8px 32px rgba(232,152,110,0.12)' }}>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.06]" />
+      <Card
+        className="w-full max-w-sm relative border-0 shadow-lg"
+        style={{ borderRadius: "1.5rem" }}
+      >
         <CardHeader className="text-center pt-8">
           <div className="mb-4 flex justify-center">
             <NexoLogo className="h-12 w-12" />
@@ -46,11 +48,11 @@ export default function AuthPage() {
         </CardHeader>
         <CardContent className="space-y-4 pb-8">
           <button
-            className="btn-cozy w-full gap-2 text-base"
+            className="btn-primary w-full gap-2 text-base"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
-            <svg className="h-5 w-5" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 inline" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
@@ -72,11 +74,11 @@ export default function AuthPage() {
           </button>
           <p className="text-xs text-center text-muted-foreground">
             By continuing, you agree to our{" "}
-            <Link href="/terms" className="underline underline-offset-2 hover:text-primary">
+            <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">
               Terms
             </Link>{" "}
             and{" "}
-            <Link href="/privacy" className="underline underline-offset-2 hover:text-primary">
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
               Privacy Policy
             </Link>
           </p>
