@@ -7,6 +7,37 @@ export function isTextExtractable(type: string): boolean {
   return TEXT_TYPES.has(type.toLowerCase());
 }
 
+async function extractPptxText(buffer: Buffer): Promise<string> {
+  const { unzipSync } = await import("fflate");
+  const { DOMParser } = await import("@xmldom/xmldom");
+
+  const files = unzipSync(new Uint8Array(buffer));
+
+  const texts: string[] = [];
+  for (const [path, data] of Object.entries(files)) {
+    if (!path.startsWith("ppt/slides/slide") || !path.endsWith(".xml")) continue;
+    const xml = new TextDecoder().decode(data);
+    const doc = new DOMParser().parseFromString(xml, "text/xml");
+    const tElements = doc.getElementsByTagNameNS("*", "t") || doc.getElementsByTagName("a:t");
+    if (tElements.length === 0) {
+      const allElements = doc.getElementsByTagName("*");
+      for (let i = 0; i < allElements.length; i++) {
+        const el = allElements[i];
+        if (el.localName === "t" || el.tagName?.endsWith(":t")) {
+          const text = el.textContent?.trim();
+          if (text) texts.push(text);
+        }
+      }
+    } else {
+      for (let i = 0; i < tElements.length; i++) {
+        const text = tElements[i].textContent?.trim();
+        if (text) texts.push(text);
+      }
+    }
+  }
+  return texts.join("\n");
+}
+
 export async function extractTextFromFile(
   buffer: Buffer,
   type: string
@@ -25,11 +56,8 @@ export async function extractTextFromFile(
       const result = await mammothModule.default.extractRawText({ buffer });
       return result.value;
     }
-    case "pptx": {
-      const { parseOffice } = await import("officeparser");
-      const ast = await parseOffice(buffer);
-      return ast.toText() || "";
-    }
+    case "pptx":
+      return await extractPptxText(buffer);
     case "txt":
     case "csv":
     case "json":
