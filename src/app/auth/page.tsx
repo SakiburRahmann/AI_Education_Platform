@@ -30,9 +30,9 @@ export default function AuthPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#6c3ce1_0%,transparent_50%)] opacity-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,#0099ff_0%,transparent_50%)] opacity-10" />
-      <Card className="w-full max-w-sm relative shadow-xl border-0 ring-1 ring-border">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#e8986e_0%,transparent_60%)] opacity-15" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,#9caf88_0%,transparent_50%)] opacity-10" />
+      <Card className="w-full max-w-sm relative border-0" style={{ borderRadius: '2rem', boxShadow: '0 8px 32px rgba(232,152,110,0.12)' }}>
         <CardHeader className="text-center pt-8">
           <div className="mb-4 flex justify-center">
             <NexoLogo className="h-12 w-12" />
@@ -45,8 +45,8 @@ export default function AuthPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pb-8">
-          <Button
-            className="w-full gap-2 h-11"
+          <button
+            className="btn-cozy w-full gap-2 text-base"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
@@ -69,7 +69,7 @@ export default function AuthPage() {
               />
             </svg>
             {loading ? "Redirecting..." : "Continue with Google"}
-          </Button>
+          </button>
           <p className="text-xs text-center text-muted-foreground">
             By continuing, you agree to our{" "}
             <Link href="/terms" className="underline underline-offset-2 hover:text-primary">

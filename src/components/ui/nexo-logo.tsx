@@ -26,7 +26,7 @@ export function NexoLogo({
         aria-label="EduAI logo"
         {...props}
       >
-        <circle cx="20" cy="20" r="18" fill="#6c3ce1" opacity="0.08" />
+        <circle cx="20" cy="20" r="18" fill="#e8986e" opacity="0.1" />
         <path
           d="M20 2L28 12L38 20L28 28L20 38L12 28L2 20L12 12Z"
           fill="url(#logoGradient)"
@@ -37,7 +37,7 @@ export function NexoLogo({
           d="M12 12L28 28M28 12L12 28"
           stroke="white"
           strokeWidth="0.75"
-          opacity={0.3}
+          opacity={0.2}
         />
         <defs>
           <linearGradient
@@ -47,8 +47,8 @@ export function NexoLogo({
             x2="38"
             y2="38"
           >
-            <stop offset="0%" stopColor="#6c3ce1" />
-            <stop offset="100%" stopColor="#8b65f0" />
+            <stop offset="0%" stopColor="#e8986e" />
+            <stop offset="100%" stopColor="#d4a574" />
           </linearGradient>
         </defs>
       </svg>
@@ -56,7 +56,7 @@ export function NexoLogo({
         <span
           className={`font-heading font-bold tracking-tight ${textSizes[textSize]}`}
         >
-          Edu<span className="text-[#6c3ce1]">AI</span>
+          Edu<span className="text-[#e8986e]">AI</span>
         </span>
       )}
     </div>

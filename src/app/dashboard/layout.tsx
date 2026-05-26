@@ -71,8 +71,8 @@ export default function DashboardLayout({
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
                 pathname === link.href
-                  ? "bg-gradient-brand text-white shadow-sm"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-eduai-coral/15 text-eduai-coral font-bold"
+                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -89,7 +89,7 @@ export default function DashboardLayout({
           onClick={handleSignOut}
         >
           <Avatar className="h-6 w-6">
-            <AvatarFallback className="bg-gradient-brand text-white text-xs">
+            <AvatarFallback className="bg-gradient-cozy text-white text-xs">
               {user?.email?.charAt(0).toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
@@ -101,7 +101,7 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-64 border-r bg-sidebar md:block">
+      <aside className="hidden w-64 border-r border-border/60 bg-sidebar md:block">
         <SidebarContent />
       </aside>
 
