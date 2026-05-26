@@ -132,6 +132,16 @@ type StreamOptions = {
   temperature?: number;
 };
 
+function sendJson(controller: ReadableStreamDefaultController, t: string, c?: string) {
+  const encoder = new TextEncoder();
+  const msg = c !== undefined ? JSON.stringify({ t, c }) + "\n" : JSON.stringify({ t }) + "\n";
+  controller.enqueue(encoder.encode(msg));
+}
+
+function isTextPart(part: any): part is { text: string } {
+  return typeof part.text === "string";
+}
+
 export async function streamWithFallback(
   task: AITaskType,
   buildMessages: () => { role: string; content: string }[],
@@ -164,7 +174,7 @@ export async function streamWithFallback(
           temperature: options?.temperature ?? 0.7,
         });
 
-        const reader = result.textStream.getReader();
+        const reader = result.fullStream.getReader();
         const first = await reader.read();
 
         if (first.done) {
@@ -172,20 +182,45 @@ export async function streamWithFallback(
           continue;
         }
 
+        if (first.value.type === "error") {
+          throw new Error(
+            first.value.error instanceof Error
+              ? first.value.error.message
+              : String(first.value.error)
+          );
+        }
+
         aiKeyManager.markSuccess(apiKey);
         modelRouter.clearModelCooldown(modelId);
 
-        const encoder = new TextEncoder();
         const stream = new ReadableStream({
           async start(controller) {
-            controller.enqueue(encoder.encode(first.value));
+            if (isTextPart(first.value)) {
+              sendJson(controller, first.value.type, first.value.text);
+            }
             try {
               while (true) {
                 const { done, value } = await reader.read();
-                if (done) break;
-                controller.enqueue(encoder.encode(value));
+                if (done) {
+                  sendJson(controller, "done");
+                  break;
+                }
+                if (value.type === "error") {
+                  sendJson(
+                    controller,
+                    "error",
+                    value.error instanceof Error
+                      ? value.error.message
+                      : String(value.error)
+                  );
+                  break;
+                }
+                if (isTextPart(value)) {
+                  sendJson(controller, value.type, value.text);
+                }
               }
-            } catch {
+            } catch (e: any) {
+              sendJson(controller, "error", e?.message || String(e));
             } finally {
               controller.close();
             }

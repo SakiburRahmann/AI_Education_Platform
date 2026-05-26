@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useChatStorage, type Message, type FileInfo } from "@/hooks/use-chat-storage";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
+import { ThinkingBlock } from "@/components/ui/thinking-block";
 import { toast } from "sonner";
 import {
   Send,
@@ -72,6 +73,7 @@ export default function ChatPage() {
   const [streaming, setStreaming] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [streamContent, setStreamContent] = useState("");
+  const [streamReasoning, setStreamReasoning] = useState("");
   const [sideOpen, setSideOpen] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -141,6 +143,7 @@ export default function ChatPage() {
 
     setStreaming(true);
     setStreamContent("");
+    setStreamReasoning("");
 
     try {
       const context = files.map((f) => `--- ${f.name} ---\n${f.text}`).join("\n\n");
@@ -165,14 +168,36 @@ export default function ChatPage() {
 
       const decoder = new TextDecoder();
       let fullContent = "";
+      let fullReasoning = "";
+      let buffer = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value, { stream: true });
-        fullContent += chunk;
-        setStreamContent(fullContent);
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const msg = JSON.parse(line);
+            if (msg.t?.endsWith("-delta")) {
+              if (msg.t === "text-delta") {
+                fullContent += msg.c;
+                setStreamContent(fullContent);
+              } else if (msg.t === "reasoning-delta") {
+                fullReasoning += msg.c;
+                setStreamReasoning(fullReasoning);
+              }
+            } else if (msg.t === "error") {
+              throw new Error(msg.c);
+            }
+          } catch {
+            if (line.startsWith("{")) throw new Error("Parse error");
+          }
+        }
       }
 
       if (fullContent) {
@@ -180,10 +205,12 @@ export default function ChatPage() {
           id: crypto.randomUUID(),
           role: "assistant",
           content: fullContent,
+          reasoning: fullReasoning || undefined,
           createdAt: new Date().toISOString(),
         };
         addMessage(activeId, assistantMsg);
         setStreamContent("");
+        setStreamReasoning("");
       }
     } catch (err: any) {
       console.error("Stream error:", err);
@@ -324,14 +351,17 @@ export default function ChatPage() {
                       </span>
                     </div>
                     <div className="mt-1 text-sm leading-relaxed">
+                      {msg.role === "assistant" && msg.reasoning && (
+                        <ThinkingBlock content={msg.reasoning} />
+                      )}
                       <MarkdownRenderer content={msg.content} />
                     </div>
                   </div>
                 </div>
               ))}
 
-              {/* Streaming message */}
-              {streaming && streamContent && (
+              {/* Streaming assistant message */}
+              {streaming && (
                 <div className="flex gap-3">
                   <div className="shrink-0 rounded-full p-2 bg-primary/10 text-primary">
                     <Bot className="h-4 w-4" />
@@ -341,23 +371,22 @@ export default function ChatPage() {
                       <span className="text-xs font-medium">Nexo</span>
                     </div>
                     <div className="mt-1 text-sm leading-relaxed">
-                      <MarkdownRenderer content={streamContent} />
-                      <span className="inline-block h-4 w-0.5 bg-primary ml-0.5 animate-pulse" />
+                      {streamReasoning && (
+                        <ThinkingBlock content={streamReasoning} isStreaming />
+                      )}
+                      {streamContent ? (
+                        <>
+                          <MarkdownRenderer content={streamContent} />
+                          <span className="inline-block h-4 w-0.5 bg-primary ml-0.5 animate-pulse" />
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-1 py-2">
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "0ms" }} />
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "150ms" }} />
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "300ms" }} />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Streaming dots when no content yet */}
-              {streaming && !streamContent && (
-                <div className="flex gap-3">
-                  <div className="shrink-0 rounded-full p-2 bg-primary/10 text-primary">
-                    <Bot className="h-4 w-4" />
-                  </div>
-                  <div className="flex items-center gap-1 py-2">
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "0ms" }} />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "150ms" }} />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/40" style={{ animationDelay: "300ms" }} />
                   </div>
                 </div>
               )}
