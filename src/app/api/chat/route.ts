@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       "If asked to generate lessons, create structured content with clear headings and key points.",
       "If asked to generate quizzes, create questions with multiple choice or true/false format.",
       "Be concise but thorough. Use markdown formatting for clarity.",
-      "If you need current information, rely on your training data — do not claim you can browse the web.",
+      "You have access to a web search tool. When you need current or up-to-date information, search the web using the tool provided to you.",
       hasTextFiles ? `\n\nThe user has uploaded the following study material for context:\n\n${context}` : "",
     ].filter(Boolean).join("\n");
 
@@ -44,7 +44,6 @@ export async function POST(request: Request) {
       });
 
     return await streamWithFallback(task, buildMessages, systemPrompt, {
-      useSearchGrounding: !hasImages && !hasTextFiles,
       hasImages,
     });
   } catch (error: any) {

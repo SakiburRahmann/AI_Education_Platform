@@ -1,5 +1,7 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { streamText, stepCountIs } from "ai";
+import type { Tool } from "ai";
+import { z } from "zod";
 import { aiKeyManager } from "./key-manager";
 import type { AITaskType } from "@/types";
 
@@ -135,7 +137,6 @@ export async function generateWithRetry<T>(
 
 type StreamOptions = {
   temperature?: number;
-  useSearchGrounding?: boolean;
   hasImages?: boolean;
 };
 
@@ -148,6 +149,37 @@ function sendJson(controller: ReadableStreamDefaultController, t: string, c?: st
 function isTextPart(part: any): part is { text: string } {
   return typeof part.text === "string";
 }
+
+const webSearch: Tool<any, any> = {
+  description:
+    "Search the web for current information. Use this when you need up-to-date facts, news, or data beyond your training knowledge.",
+  inputSchema: z.object({
+    query: z
+      .string()
+      .describe("The search query to look up on the web"),
+  }),
+  execute: async ({ query }: { query: string }) => {
+    try {
+      const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+      const res = await fetch(url, {
+        headers: { "User-Agent": "EduAI/1.0" },
+      });
+      const data = await res.json();
+      if (data.AbstractText) {
+        return `${data.AbstractText}\n\nSource: ${data.AbstractSource || "DuckDuckGo"}`;
+      }
+      if (data.RelatedTopics?.length) {
+        return data.RelatedTopics.slice(0, 5)
+          .map((r: any) => r.Text || r.Result || "")
+          .filter(Boolean)
+          .join("\n\n");
+      }
+      return "No relevant results found.";
+    } catch {
+      return "Web search is currently unavailable. Please try again later.";
+    }
+  },
+};
 
 export async function streamWithFallback(
   task: AITaskType | "vision",
@@ -177,9 +209,8 @@ export async function streamWithFallback(
           messages: buildMessages() as any,
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
-          ...(options?.useSearchGrounding && !modelId.startsWith("models/gemma")
-            ? { providerOptions: { google: { useSearchGrounding: true } } }
-            : {}),
+          tools: { webSearch },
+          stopWhen: stepCountIs(3),
         });
 
         const reader = result.fullStream.getReader();
