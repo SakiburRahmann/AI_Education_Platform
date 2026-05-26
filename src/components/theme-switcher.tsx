@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Monitor, Sun, Moon } from "lucide-react";
+import { Monitor, Sun, Moon, Cloud, Sword, Telescope, Candy } from "lucide-react";
 
 const themes = [
   {
     id: "neutral",
-    name: "Neutral",
-    desc: "Clean black & white",
+    name: "Modern Normal",
+    desc: "Professional & clean",
     icon: Monitor,
   },
   {
@@ -15,6 +15,30 @@ const themes = [
     name: "Cozy",
     desc: "Warm cream & coral",
     icon: Sun,
+  },
+  {
+    id: "sunshine",
+    name: "Sunshine",
+    desc: "Bright & playful",
+    icon: Cloud,
+  },
+  {
+    id: "darkquest",
+    name: "Dark Quest",
+    desc: "Dark RPG style",
+    icon: Sword,
+  },
+  {
+    id: "cosmic",
+    name: "Cosmic",
+    desc: "Deep space sci-fi",
+    icon: Telescope,
+  },
+  {
+    id: "candypastel",
+    name: "Candy Pastel",
+    desc: "Soft & dreamy",
+    icon: Candy,
   },
 ];
 
