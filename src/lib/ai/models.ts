@@ -14,44 +14,44 @@ class ModelRouter {
 
   private chains: Record<AITaskType | "vision", string[]> = {
     chat: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     lesson_generation: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     quiz_generation: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     file_processing: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     quick_qa: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     embedding: ["models/text-embedding-004"],
     deep_research: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     search_grounding: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
     vision: [
-      "models/gemma-4-31b-it",
-      "models/gemma-4-26b-a4b-it",
+      "gemma-4-31b-it",
+      "gemma-4-26b-a4b-it",
       "gemini-3.1-flash-lite",
     ],
   };
