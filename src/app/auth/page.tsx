@@ -3,7 +3,15 @@
 import { useCallback, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { NexoLogo } from "@/components/ui/nexo-logo";
+import Link from "next/link";
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);
@@ -21,16 +29,24 @@ export default function AuthPage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome to EduAI</CardTitle>
-          <CardDescription>Sign in to start learning with AI</CardDescription>
+    <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#6c3ce1_0%,transparent_50%)] opacity-10" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,#0099ff_0%,transparent_50%)] opacity-10" />
+      <Card className="w-full max-w-sm relative shadow-xl border-0 ring-1 ring-border">
+        <CardHeader className="text-center pt-8">
+          <div className="mb-4 flex justify-center">
+            <NexoLogo className="h-12 w-12" />
+          </div>
+          <CardTitle className="font-heading text-2xl">
+            Welcome to EduAI
+          </CardTitle>
+          <CardDescription>
+            Sign in to start learning with AI
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4 pb-8">
           <Button
-            variant="outline"
-            className="w-full gap-2"
+            className="w-full gap-2 h-11"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
@@ -54,6 +70,16 @@ export default function AuthPage() {
             </svg>
             {loading ? "Redirecting..." : "Continue with Google"}
           </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <Link href="/terms" className="underline underline-offset-2 hover:text-primary">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-primary">
+              Privacy Policy
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>

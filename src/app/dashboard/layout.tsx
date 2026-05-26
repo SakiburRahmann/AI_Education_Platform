@@ -11,17 +11,29 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
+import { NexoLogo } from "@/components/ui/nexo-logo";
+import {
+  LayoutDashboard,
+  MessageSquare,
+  FileText,
+  BookOpen,
+  HelpCircle,
+  Trophy,
+  Users,
+  UserCircle,
+  Settings,
+} from "lucide-react";
 
 const sidebarLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/dashboard/chat", label: "AI Chat", icon: "💬" },
-  { href: "/dashboard/files", label: "My Files", icon: "📁" },
-  { href: "/dashboard/lessons", label: "Lessons", icon: "📖" },
-  { href: "/dashboard/quizzes", label: "Quizzes", icon: "✍️" },
-  { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆" },
-  { href: "/dashboard/community", label: "Community", icon: "🌐" },
-  { href: "/dashboard/profile", label: "Profile", icon: "👤" },
-  { href: "/dashboard/settings", label: "Settings", icon: "⚙️" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/chat", label: "AI Chat", icon: MessageSquare },
+  { href: "/dashboard/files", label: "My Files", icon: FileText },
+  { href: "/dashboard/lessons", label: "Lessons", icon: BookOpen },
+  { href: "/dashboard/quizzes", label: "Quizzes", icon: HelpCircle },
+  { href: "/dashboard/leaderboard", label: "Leaderboard", icon: Trophy },
+  { href: "/dashboard/community", label: "Community", icon: Users },
+  { href: "/dashboard/profile", label: "Profile", icon: UserCircle },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export default function DashboardLayout({
@@ -47,36 +59,37 @@ export default function DashboardLayout({
   const SidebarContent = () => (
     <div className="flex h-full flex-col py-4">
       <Link href="/dashboard" className="px-4 mb-6">
-        <span className="text-xl font-bold">
-          Edu<span className="text-primary">AI</span>
-        </span>
+        <NexoLogo showText textSize="sm" />
       </Link>
       <nav className="flex-1 space-y-1 px-3">
-        {sidebarLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-              pathname === link.href
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-muted"
-            )}
-          >
-            <span>{link.icon}</span>
-            {link.label}
-          </Link>
-        ))}
+        {sidebarLinks.map((link) => {
+          const Icon = link.icon;
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                pathname === link.href
+                  ? "bg-gradient-brand text-white shadow-sm"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
       <Separator className="my-4" />
       <div className="px-3">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3"
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
           onClick={handleSignOut}
         >
           <Avatar className="h-6 w-6">
-            <AvatarFallback>
+            <AvatarFallback className="bg-gradient-brand text-white text-xs">
               {user?.email?.charAt(0).toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
@@ -88,14 +101,12 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-64 border-r bg-background md:block">
+      <aside className="hidden w-64 border-r bg-sidebar md:block">
         <SidebarContent />
       </aside>
 
       <Sheet>
-        <SheetTrigger
-          className="fixed left-4 top-4 z-50 md:hidden"
-        >
+        <SheetTrigger className="fixed left-4 top-4 z-50 md:hidden">
           <Button variant="ghost" size="icon">
             <svg
               className="h-5 w-5"
