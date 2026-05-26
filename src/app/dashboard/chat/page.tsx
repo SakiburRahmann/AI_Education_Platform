@@ -76,13 +76,12 @@ export default function ChatPage() {
     deleteConversation,
     setActiveId,
     addMessage,
-    addFile,
-    removeFile,
   } = useChatStorage();
 
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<FileInfo[]>([]);
   const [streamContent, setStreamContent] = useState("");
   const [streamReasoning, setStreamReasoning] = useState("");
   const [sideOpen, setSideOpen] = useState(true);
@@ -110,7 +109,7 @@ export default function ChatPage() {
     setUploading(true);
     try {
       const fileInfo = await uploadFile(file);
-      addFile(activeId!, fileInfo);
+      setPendingFiles((prev) => [...prev, fileInfo]);
       toast.success(`Attached ${fileInfo.name}`);
     } catch (err: any) {
       console.error("Upload error:", err);
@@ -118,7 +117,7 @@ export default function ChatPage() {
     } finally {
       setUploading(false);
     }
-  }, [activeId, createConversation, addFile]);
+  }, [activeId, createConversation]);
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -138,16 +137,18 @@ export default function ChatPage() {
 
   const handleSend = useCallback(async () => {
     const text = input.trim();
-    if (!text || !activeId || streaming) return;
+    if ((!text && pendingFiles.length === 0) || !activeId || streaming) return;
 
     setInput("");
+    const filesToSend = pendingFiles;
+    setPendingFiles([]);
     const conv = conversations.find((c) => c.id === activeId);
-    const files = conv?.files || [];
 
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: "user",
       content: text,
+      files: filesToSend.length > 0 ? filesToSend : undefined,
       createdAt: new Date().toISOString(),
     };
     addMessage(activeId, userMsg);
@@ -157,8 +158,8 @@ export default function ChatPage() {
     setStreamReasoning("");
 
     try {
-      const hasImages = files.some((f) => f.dataUrl);
-      const context = hasImages ? undefined : files.map((f) => `--- ${f.name} ---\n${f.text}`).join("\n\n");
+      const hasImages = filesToSend.some((f) => f.dataUrl);
+      const context = hasImages ? undefined : filesToSend.map((f) => `--- ${f.name} ---\n${f.text}`).join("\n\n");
       const messagesForApi = [
         ...(conv?.messages || []).map((m) => ({ role: m.role, content: m.content })),
         { role: "user" as const, content: text },
@@ -170,7 +171,7 @@ export default function ChatPage() {
         body: JSON.stringify({
           messages: messagesForApi,
           context: context || undefined,
-          files: hasImages ? files.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
+          files: hasImages ? filesToSend.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
         }),
       });
 
@@ -241,7 +242,7 @@ export default function ChatPage() {
     } finally {
       setStreaming(false);
     }
-  }, [input, activeId, conversations, streaming, addMessage]);
+  }, [input, pendingFiles, activeId, conversations, streaming, addMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -367,6 +368,22 @@ export default function ChatPage() {
                       </span>
                     </div>
                     <div className="mt-1 text-sm leading-relaxed">
+                      {msg.role === "user" && msg.files && msg.files.length > 0 && (
+                        <div className="mb-2 flex flex-wrap gap-2">
+                          {msg.files.map((f) => (
+                            <div
+                              key={f.id}
+                              className={`flex items-center gap-2 rounded-lg border px-2.5 py-1 text-xs ${
+                                FILE_ICONS[f.type] || "text-muted-foreground"
+                              }`}
+                            >
+                              <FileText className="h-3.5 w-3.5 shrink-0" />
+                              <span className="max-w-40 truncate">{f.name}</span>
+                              <span className="opacity-60 shrink-0">({formatSize(f.size)})</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {msg.role === "assistant" && msg.reasoning && (
                         <ThinkingBlock content={msg.reasoning} />
                       )}
@@ -412,10 +429,10 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Attached files */}
-        {activeConversation && activeConversation.files.length > 0 && (
+        {/* Pending files */}
+        {pendingFiles.length > 0 && (
           <div className="flex flex-wrap gap-2 border-t px-4 py-2">
-            {activeConversation.files.map((f) => {
+            {pendingFiles.map((f) => {
               const fileColor = FILE_ICONS[f.type] || "text-muted-foreground";
               return (
                 <div
@@ -426,7 +443,7 @@ export default function ChatPage() {
                   <span className="max-w-32 truncate">{f.name}</span>
                   <span className="opacity-60">({formatSize(f.size)})</span>
                   <button
-                    onClick={() => removeFile(activeId!, f.id)}
+                    onClick={() => setPendingFiles((prev) => prev.filter((pf) => pf.id !== f.id))}
                     className="rounded p-0.5 hover:bg-muted transition-colors"
                   >
                     <X className="h-3 w-3" />
@@ -472,7 +489,7 @@ export default function ChatPage() {
                 </button>
                 <button
                   onClick={handleSend}
-                  disabled={!input.trim() || streaming}
+                  disabled={(!input.trim() && pendingFiles.length === 0) || streaming}
                   className="rounded-lg bg-primary p-1.5 text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
                   title="Send message"
                 >
