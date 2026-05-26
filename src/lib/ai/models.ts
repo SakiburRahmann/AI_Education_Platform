@@ -164,11 +164,37 @@ export async function streamWithFallback(
           temperature: options?.temperature ?? 0.7,
         });
 
+        const reader = result.textStream.getReader();
+        const first = await reader.read();
+
+        if (first.done) {
+          reader.releaseLock();
+          continue;
+        }
+
         aiKeyManager.markSuccess(apiKey);
         modelRouter.clearModelCooldown(modelId);
 
-        const response = result.toTextStreamResponse();
-        return response;
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          async start(controller) {
+            controller.enqueue(encoder.encode(first.value));
+            try {
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                controller.enqueue(encoder.encode(value));
+              }
+            } catch {
+            } finally {
+              controller.close();
+            }
+          },
+        });
+
+        return new Response(stream, {
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+        });
       } catch (error: any) {
         lastError = error;
         console.error(`Model ${modelId} failed:`, error?.message || error);
