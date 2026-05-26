@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useTheme } from "next-themes";
 import { Monitor, Sun, Moon, Cloud, Sword, Telescope, Candy } from "lucide-react";
 
 const themes = [
@@ -44,33 +45,38 @@ const themes = [
 
 export function ThemeSwitcher() {
   const [colorTheme, setColorTheme] = useState<string>("neutral");
-  const [darkMode, setDarkMode] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
     const saved = localStorage.getItem("eduai-theme") || "neutral";
-    const isDark = document.documentElement.classList.contains("dark");
     setColorTheme(saved);
-    setDarkMode(isDark);
     document.documentElement.setAttribute("data-theme", saved);
   }, []);
 
-  const switchTheme = (id: string) => {
+  const switchTheme = useCallback((id: string) => {
     setColorTheme(id);
     setOpen(false);
     document.documentElement.setAttribute("data-theme", id);
     localStorage.setItem("eduai-theme", id);
-  };
+  }, []);
 
-  const toggleDark = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+  const toggleDark = useCallback(() => {
+    setTheme(isDark ? "light" : "dark");
+  }, [isDark, setTheme]);
+
+  const handleOpen = useCallback(() => {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setDropUp(spaceBelow < 280);
     }
-  };
+    setOpen((prev) => !prev);
+  }, [open]);
 
   const current = themes.find((t) => t.id === colorTheme) || themes[0];
   const CurrentIcon = current.icon;
@@ -80,13 +86,14 @@ export function ThemeSwitcher() {
       <button
         onClick={toggleDark}
         className="rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-        title={darkMode ? "Switch to light" : "Switch to dark"}
+        title={isDark ? "Switch to light" : "Switch to dark"}
       >
-        {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
       </button>
 
       <button
-        onClick={() => setOpen(!open)}
+        ref={triggerRef}
+        onClick={handleOpen}
         className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
       >
         <CurrentIcon className="h-4 w-4" />
@@ -96,7 +103,11 @@ export function ThemeSwitcher() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 sm:left-auto top-full z-50 mt-1 w-44 max-h-80 overflow-y-auto rounded-xl border bg-popover p-1.5 shadow-lg">
+          <div
+            className={`absolute right-0 z-50 w-44 max-h-60 overflow-y-auto rounded-xl border bg-popover p-1.5 shadow-lg ${
+              dropUp ? "bottom-full mb-1" : "top-full mt-1"
+            }`}
+          >
             {themes.map((t) => {
               const Icon = t.icon;
               return (
