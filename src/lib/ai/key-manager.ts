@@ -1,0 +1,85 @@
+type KeyStatus = {
+  key: string;
+  cooldownUntil: number;
+  failureCount: number;
+};
+
+class AIKeyManager {
+  private keys: KeyStatus[] = [];
+  private currentIndex = 0;
+
+  constructor() {
+    this.loadKeys();
+  }
+
+  private loadKeys() {
+    const keys: string[] = [];
+    let i = 1;
+    while (true) {
+      const key = process.env[`GOOGLE_API_KEY_${i}`];
+      if (!key) break;
+      keys.push(key);
+      i++;
+    }
+
+    if (keys.length === 0) {
+      console.warn("No Google AI API keys configured. Set GOOGLE_API_KEY_1.");
+    }
+
+    this.keys = keys.map((key) => ({
+      key,
+      cooldownUntil: 0,
+      failureCount: 0,
+    }));
+  }
+
+  getNextKey(): string | null {
+    if (this.keys.length === 0) return null;
+
+    const now = Date.now();
+
+    for (let attempt = 0; attempt < this.keys.length; attempt++) {
+      this.currentIndex = (this.currentIndex + 1) % this.keys.length;
+      const status = this.keys[this.currentIndex];
+
+      if (now >= status.cooldownUntil) {
+        return status.key;
+      }
+    }
+
+    const earliestCooldown = Math.min(
+      ...this.keys.map((k) => k.cooldownUntil)
+    );
+    const waitMs = earliestCooldown - now;
+    console.warn(`All API keys on cooldown. Next available in ${waitMs}ms`);
+    return this.keys.reduce((earliest, k) =>
+      k.cooldownUntil < earliest.cooldownUntil ? k : earliest
+    ).key;
+  }
+
+  markRateLimited(key: string, cooldownSeconds = 60) {
+    const status = this.keys.find((k) => k.key === key);
+    if (status) {
+      status.cooldownUntil = Date.now() + cooldownSeconds * 1000;
+      status.failureCount++;
+    }
+  }
+
+  markSuccess(key: string) {
+    const status = this.keys.find((k) => k.key === key);
+    if (status) {
+      status.failureCount = 0;
+    }
+  }
+
+  getAvailableKeyCount(): number {
+    const now = Date.now();
+    return this.keys.filter((k) => now >= k.cooldownUntil).length;
+  }
+
+  getTotalKeyCount(): number {
+    return this.keys.length;
+  }
+}
+
+export const aiKeyManager = new AIKeyManager();
