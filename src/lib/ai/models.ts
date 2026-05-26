@@ -12,10 +12,9 @@ class ModelRouter {
 
   private chains: Record<AITaskType, string[]> = {
     chat: [
-      "models/gemini-3-flash-preview",
-      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
+      "gemini-3.1-flash-lite",
     ],
     lesson_generation: [
       "models/gemma-4-31b-it",
@@ -33,10 +32,9 @@ class ModelRouter {
       "gemini-3.1-flash-lite",
     ],
     quick_qa: [
-      "models/gemini-3-flash-preview",
-      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
       "models/gemma-4-26b-a4b-it",
+      "gemini-3.1-flash-lite",
     ],
     embedding: ["models/text-embedding-004"],
     deep_research: [
@@ -45,9 +43,9 @@ class ModelRouter {
       "gemini-3.1-flash-lite",
     ],
     search_grounding: [
-      "models/gemini-3-flash-preview",
-      "gemini-3.1-flash-lite",
       "models/gemma-4-31b-it",
+      "models/gemma-4-26b-a4b-it",
+      "gemini-3.1-flash-lite",
     ],
   };
 
@@ -130,11 +128,16 @@ export async function generateWithRetry<T>(
   throw lastError || new Error(`All models exhausted for task: ${task}`);
 }
 
+type StreamOptions = {
+  temperature?: number;
+  useSearchGrounding?: boolean;
+};
+
 export async function streamWithFallback(
   task: AITaskType,
   buildMessages: () => { role: string; content: string }[],
   systemPrompt: string,
-  options?: { temperature?: number }
+  options?: StreamOptions
 ): Promise<Response> {
   const chain = modelRouter.getModelChain(task);
   let lastError: Error | null = null;
@@ -160,6 +163,13 @@ export async function streamWithFallback(
           })),
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
+          ...(options?.useSearchGrounding
+            ? {
+                providerOptions: {
+                  google: { useSearchGrounding: true },
+                },
+              }
+            : {}),
         });
 
         aiKeyManager.markSuccess(apiKey);

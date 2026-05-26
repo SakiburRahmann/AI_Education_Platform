@@ -20,6 +20,7 @@ export async function POST(request: Request) {
       "When given study material context, answer questions based on that material.",
       "If asked to generate lessons, create structured content with clear headings and key points.",
       "If asked to generate quizzes, create questions with multiple choice or true/false format.",
+      "If asked to search online for current information, use the search grounding tool to get real-time results.",
       "Be concise but thorough. Use markdown formatting for clarity.",
       context ? `\n\nThe user has uploaded the following study material for context:\n\n${context}` : "",
     ].filter(Boolean).join("\n");
@@ -30,7 +31,9 @@ export async function POST(request: Request) {
         content: m.content,
       }));
 
-    return await streamWithFallback(task, buildMessages, systemPrompt);
+    return await streamWithFallback(task, buildMessages, systemPrompt, {
+      useSearchGrounding: !hasFiles,
+    });
   } catch (error: any) {
     console.error("Chat error:", error);
     return new Response(JSON.stringify({ error: "Chat failed" }), {
