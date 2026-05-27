@@ -105,12 +105,12 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-64 border-r bg-sidebar md:block">
+      <aside className="hidden w-56 border-r bg-sidebar md:block lg:w-64">
         <SidebarContent />
       </aside>
 
       <Sheet>
-        <SheetTrigger className="fixed left-4 top-4 z-50 md:hidden">
+        <SheetTrigger className="fixed left-2 top-3 z-50 md:hidden">
           <Button variant="ghost" size="icon">
             <svg
               className="h-5 w-5"
