@@ -2,8 +2,13 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useChatStorage, type Message, type FileInfo } from "@/hooks/use-chat-storage";
+import { InteractiveContent } from "@/components/interactive/renderer";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { ThinkingBlock } from "@/components/ui/thinking-block";
+import { useLessonsStorage } from "@/hooks/use-lessons-storage";
+import { useQuizzesStorage } from "@/hooks/use-quizzes-storage";
+import { useGamification } from "@/hooks/use-gamification";
+import { XPFloat } from "@/components/gamification/xp-float";
 import { toast } from "sonner";
 import {
   Send,
@@ -16,6 +21,8 @@ import {
   FileText,
   Bot,
   User,
+  BookOpen,
+  HelpCircle,
 } from "lucide-react";
 
 function formatTime(date: string) {
@@ -77,6 +84,9 @@ export default function ChatPage() {
     setActiveId,
     addMessage,
   } = useChatStorage();
+  const { addLesson } = useLessonsStorage();
+  const { addQuiz } = useQuizzesStorage();
+  const { awardXP, awardAchievement, lastXpEarned } = useGamification();
 
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -86,6 +96,7 @@ export default function ChatPage() {
   useEffect(() => { pendingFilesRef.current = pendingFiles; }, [pendingFiles]);
   const [streamContent, setStreamContent] = useState("");
   const [streamReasoning, setStreamReasoning] = useState("");
+  const [teachingStyle, setTeachingStyle] = useState("socratic");
   const [sideOpen, setSideOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -185,6 +196,7 @@ export default function ChatPage() {
           messages: messagesForApi,
           context: context || undefined,
           files: hasImages ? filesToSend.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
+          teachingStyle,
         }),
       });
 
@@ -241,6 +253,7 @@ export default function ChatPage() {
         addMessage(activeId, assistantMsg);
         setStreamContent("");
         setStreamReasoning("");
+        awardXP(15, "Chat interaction");
       }
     } catch (err: any) {
       console.error("Stream error:", err);
@@ -255,7 +268,7 @@ export default function ChatPage() {
     } finally {
       setStreaming(false);
     }
-  }, [input, activeId, conversations, streaming, addMessage]);
+  }, [input, activeId, conversations, streaming, teachingStyle, addMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -453,7 +466,35 @@ export default function ChatPage() {
                       {msg.role === "assistant" && msg.reasoning && (
                         <ThinkingBlock content={msg.reasoning} />
                       )}
-                      <MarkdownRenderer content={msg.content} />
+                      <InteractiveContent content={msg.content} />
+                      {msg.role === "assistant" && !streaming && (
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            onClick={() => {
+                              const title = msg.content.replace(/<<<[\s\S]*?>>>/g, "").slice(0, 60).trim() || "Untitled";
+                              addLesson(title, "From Chat", msg.content);
+                              awardAchievement("first_save");
+                              toast.success("Saved as lesson");
+                            }}
+                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-eduai-primary hover:border-eduai-primary/30 transition-colors"
+                          >
+                            <BookOpen className="h-3 w-3" />
+                            Save as Lesson
+                          </button>
+                          <button
+                            onClick={() => {
+                              const title = msg.content.replace(/<<<[\s\S]*?>>>/g, "").slice(0, 60).trim() || "Untitled";
+                              addQuiz(title, "From Chat", msg.content);
+                              awardAchievement("first_save");
+                              toast.success("Saved as quiz");
+                            }}
+                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-eduai-accent hover:border-eduai-accent/30 transition-colors"
+                          >
+                            <HelpCircle className="h-3 w-3" />
+                            Save as Quiz
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -520,6 +561,30 @@ export default function ChatPage() {
           </div>
         )}
 
+        {/* Teaching style selector */}
+        <div className="flex items-center gap-1.5 border-t px-3 py-1.5">
+          <span className="text-[10px] font-medium text-muted-foreground shrink-0">Style:</span>
+          {[
+            { id: "socratic", label: "Socratic" },
+            { id: "direct", label: "Direct" },
+            { id: "eli5", label: "ELI5" },
+            { id: "analogy", label: "Analogy" },
+            { id: "case_study", label: "Case Study" },
+          ].map((s) => (
+            <button
+              key={s.id}
+              onClick={() => setTeachingStyle(s.id)}
+              className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors ${
+                teachingStyle === s.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
         {/* Input area */}
         <div className="border-t p-2 sm:p-3">
           <div className="mx-auto flex max-w-3xl items-end gap-2">
@@ -575,6 +640,7 @@ export default function ChatPage() {
           </p>
         </div>
       </div>
+      {lastXpEarned && <XPFloat amount={lastXpEarned.amount} reason={lastXpEarned.reason} />}
     </div>
   );
 }

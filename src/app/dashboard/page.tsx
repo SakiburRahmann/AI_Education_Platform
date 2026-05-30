@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { MessageSquare, BookOpen, HelpCircle, TrendingUp, Zap, Flame } from "lucide-react";
+import { useGamification, ACHIEVEMENT_DEFS } from "@/hooks/use-gamification";
+import { LevelBadge } from "@/components/gamification/level-badge";
+import { AchievementCard } from "@/components/gamification/achievement-card";
+import {
+  MessageSquare, BookOpen, HelpCircle, TrendingUp, Zap, Flame,
+} from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
 type LocalConv = {
@@ -13,13 +18,26 @@ type LocalConv = {
   messages: { role: string }[];
 };
 
+function loadStats(): { conversations: number; lessons: number; quizzes: number } {
+  try {
+    const convs = JSON.parse(localStorage.getItem("eduai-conversations") || "[]");
+    const lessons = JSON.parse(localStorage.getItem("eduai-lessons") || "[]");
+    const quizzes = JSON.parse(localStorage.getItem("eduai-quizzes") || "[]");
+    return {
+      conversations: convs.length,
+      lessons: lessons.length,
+      quizzes: quizzes.length,
+    };
+  } catch {
+    return { conversations: 0, lessons: 0, quizzes: 0 };
+  }
+}
+
 function loadRecentConversations(): LocalConv[] {
   try {
     const raw = localStorage.getItem("eduai-conversations");
     const all: LocalConv[] = raw ? JSON.parse(raw) : [];
-    return all
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 5);
+    return all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
   } catch {
     return [];
   }
@@ -27,19 +45,22 @@ function loadRecentConversations(): LocalConv[] {
 
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
+  const { xp, level, streakCount, longestStreak, achievements, progress, xpToNextLevel } = useGamification();
+  const [stats, setStats] = useState({ conversations: 0, lessons: 0, quizzes: 0 });
   const [recent, setRecent] = useState<LocalConv[]>([]);
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    setStats(loadStats());
     setRecent(loadRecentConversations());
   }, []);
 
   const statCards = [
-    { label: "Conversations", value: recent.length.toString(), icon: MessageSquare, color: "text-eduai-primary" },
-    { label: "XP Earned", value: "0", icon: Zap, color: "text-eduai-xp" },
-    { label: "Day Streak", value: "0", icon: Flame, color: "text-eduai-streak" },
-    { label: "Level", value: "1", icon: TrendingUp, color: "text-eduai-accent" },
+    { label: "Conversations", value: stats.conversations.toString(), icon: MessageSquare, color: "text-eduai-primary" },
+    { label: "XP Earned", value: xp.toString(), icon: Zap, color: "text-eduai-xp" },
+    { label: "Day Streak", value: streakCount.toString(), icon: Flame, color: "text-eduai-streak" },
+    { label: "Level", value: level.toString(), icon: TrendingUp, color: "text-eduai-accent" },
   ];
 
   const quickActions = [
@@ -87,6 +108,31 @@ export default function DashboardPage() {
             </Link>
           );
         })}
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <LevelBadge level={level} xp={xp} nextXp={xpToNextLevel} progress={progress.progress} />
+        <div className="rounded-xl border bg-card p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Flame className="h-4 w-4 text-eduai-streak" />
+            <span className="text-xs font-medium text-muted-foreground">Streak</span>
+          </div>
+          <p className="text-2xl font-bold text-eduai-streak">{streakCount} days</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">
+            Longest: {longestStreak} days
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="font-heading text-lg font-semibold mb-3">
+          Achievements ({achievements.length}/{Object.keys(ACHIEVEMENT_DEFS).length})
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+          {Object.keys(ACHIEVEMENT_DEFS).map((id) => (
+            <AchievementCard key={id} id={id} earned={achievements.includes(id)} />
+          ))}
+        </div>
       </div>
 
       <div>
