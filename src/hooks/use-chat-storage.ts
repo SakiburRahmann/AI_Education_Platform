@@ -41,11 +41,6 @@ function loadConversations(): Conversation[] {
   }
 }
 
-function stripDataUrl(f: FileInfo) {
-  const { dataUrl, ...rest } = f;
-  return rest;
-}
-
 function saveConversations(conversations: Conversation[]) {
   if (typeof window === "undefined") return;
   try {
@@ -53,9 +48,9 @@ function saveConversations(conversations: Conversation[]) {
       ...c,
       messages: c.messages.map((m) => ({
         ...m,
-        files: m.files?.map(stripDataUrl),
+        files: m.files?.map(({ dataUrl, text, ...rest }) => rest),
       })),
-      files: c.files.map(stripDataUrl),
+      files: c.files.map(({ dataUrl, text, ...rest }) => rest),
     }));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
   } catch (e) {
