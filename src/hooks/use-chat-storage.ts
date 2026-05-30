@@ -41,10 +41,23 @@ function loadConversations(): Conversation[] {
   }
 }
 
+function stripDataUrl(f: FileInfo) {
+  const { dataUrl, ...rest } = f;
+  return rest;
+}
+
 function saveConversations(conversations: Conversation[]) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations));
+    const sanitized = conversations.map((c) => ({
+      ...c,
+      messages: c.messages.map((m) => ({
+        ...m,
+        files: m.files?.map(stripDataUrl),
+      })),
+      files: c.files.map(stripDataUrl),
+    }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
   } catch (e) {
     console.warn("Failed to save conversations:", e);
   }
