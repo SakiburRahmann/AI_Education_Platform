@@ -1,5 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 
+function uid(): string {
+  try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
+}
+
 export type LocalQuiz = {
   id: string;
   title: string;
@@ -43,7 +47,7 @@ export function useQuizzesStorage() {
 
   const addQuiz = useCallback((title: string, subject: string, content: string) => {
     const quiz: LocalQuiz = {
-      id: crypto.randomUUID(),
+      id: uid(),
       title,
       subject,
       content,

@@ -1,5 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 
+function uid(): string {
+  try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
+}
+
 export type CommunityPost = {
   id: string;
   title: string;
@@ -74,7 +78,7 @@ export function useCommunityStorage() {
 
   const addPost = useCallback((title: string, content: string, author: string) => {
     const post: CommunityPost = {
-      id: crypto.randomUUID(),
+      id: uid(),
       title, content, author,
       upvotes: 0, downvotes: 0, commentCount: 0,
       createdAt: new Date().toISOString(),
@@ -90,7 +94,7 @@ export function useCommunityStorage() {
 
   const addComment = useCallback((postId: string, content: string, author: string) => {
     const comment: Comment = {
-      id: crypto.randomUUID(), postId, content, author,
+      id: uid(), postId, content, author,
       createdAt: new Date().toISOString(),
     };
     setComments((prev) => [...prev, comment]);

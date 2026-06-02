@@ -32,6 +32,10 @@ function formatTime(date: string) {
   });
 }
 
+function uid(): string {
+  try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
+}
+
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
@@ -63,7 +67,7 @@ async function uploadFile(file: File): Promise<FileInfo> {
   const data = await res.json();
 
   return {
-    id: crypto.randomUUID(),
+    id: uid(),
     name: data.name,
     type: data.type,
     size: data.size,
@@ -169,7 +173,7 @@ export default function ChatPage() {
     const conv = conversations.find((c) => c.id === activeId);
 
     const userMsg: Message = {
-      id: crypto.randomUUID(),
+      id: uid(),
       role: "user",
       content: text,
       files: filesToSend.length > 0 ? filesToSend : undefined,
@@ -244,7 +248,7 @@ export default function ChatPage() {
 
       if (fullContent) {
         const assistantMsg: Message = {
-          id: crypto.randomUUID(),
+          id: uid(),
           role: "assistant",
           content: fullContent,
           reasoning: fullReasoning || undefined,
@@ -259,7 +263,7 @@ export default function ChatPage() {
       console.error("Stream error:", err);
       toast.error("Chat failed — retrying with a different model");
       const errorMsg: Message = {
-        id: crypto.randomUUID(),
+        id: uid(),
         role: "assistant",
         content: "Sorry, something went wrong. Please try again.",
         createdAt: new Date().toISOString(),

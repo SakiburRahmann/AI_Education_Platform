@@ -52,9 +52,22 @@ function saveConversations(conversations: Conversation[]) {
       })),
       files: c.files.map(({ dataUrl, text, ...rest }) => rest),
     }));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
+    const json = JSON.stringify(sanitized);
+    const estimatedSize = new Blob([json]).size;
+    if (estimatedSize > 4_000_000) {
+      console.warn("Conversation storage approaching limit:", estimatedSize, "bytes");
+    }
+    localStorage.setItem(STORAGE_KEY, json);
   } catch (e) {
-    console.warn("Failed to save conversations:", e);
+    console.error("Failed to save conversations:", e);
+  }
+}
+
+function generateId(): string {
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   }
 }
 
@@ -84,7 +97,7 @@ export function useChatStorage() {
     if (activeConversation && activeConversation.messages.length === 0) {
       return activeConversation.id;
     }
-    const id = crypto.randomUUID();
+    const id = generateId();
     const now = new Date().toISOString();
     const newConv: Conversation = {
       id,
