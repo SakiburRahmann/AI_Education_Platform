@@ -1,12 +1,31 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 type Props = {
   content: string;
   isStreaming?: boolean;
 };
+
+function cleanThinking(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => {
+      const trimmed = line.trim();
+      if (/^#{1,6}\s/.test(trimmed)) return trimmed.replace(/^#{1,6}\s*/, "");
+      if (/^[-*_]{3,}$/.test(trimmed)) return "";
+      if (/^>\s?/.test(trimmed)) return trimmed.replace(/^>\s?/, "");
+      return trimmed;
+    })
+    .filter(Boolean)
+    .join("\n")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/___(.+?)___/g, "$1")
+    .replace(/__(.+?)__/g, "$1")
+    .replace(/`(.+?)`/g, "$1")
+    .replace(/\n{3,}/g, "\n\n");
+}
 
 export function ThinkingBlock({ content, isStreaming }: Props) {
   const [open, setOpen] = useState(true);
@@ -24,7 +43,8 @@ export function ThinkingBlock({ content, isStreaming }: Props) {
 
   if (!content) return null;
 
-  const wordCount = content.split(/\s+/).filter(Boolean).length;
+  const cleaned = cleanThinking(content);
+  const wordCount = cleaned.split(/\s+/).filter(Boolean).length;
 
   return (
     <div className="mb-3 rounded-lg border bg-muted/30 text-sm">
@@ -40,8 +60,10 @@ export function ThinkingBlock({ content, isStreaming }: Props) {
         </span>
       </button>
       {open && (
-        <div className="border-t px-3 py-2 text-xs leading-relaxed text-muted-foreground/80">
-          <MarkdownRenderer content={content} />
+        <div className="border-t px-3 py-2 text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+          {cleaned.split("\n\n").map((para, i) => (
+            <p key={i} className="mb-2 last:mb-0">{para}</p>
+          ))}
         </div>
       )}
     </div>

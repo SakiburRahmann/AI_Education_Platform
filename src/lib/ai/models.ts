@@ -209,8 +209,10 @@ export async function streamWithFallback(
           messages: buildMessages() as any,
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
+          maxOutputTokens: 8192,
+          maxRetries: 2,
           tools: { webSearch },
-          stopWhen: stepCountIs(3),
+          stopWhen: stepCountIs(5),
         });
 
         const reader = result.fullStream.getReader();
