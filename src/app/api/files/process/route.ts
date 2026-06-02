@@ -27,8 +27,14 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     if (isTextExtractable(ext)) {
-      text = await extractTextFromFile(buffer, ext);
-      pages = text ? Math.ceil(text.length / 3000) : 0;
+      try {
+        text = await extractTextFromFile(buffer, ext);
+        pages = text ? Math.ceil(text.length / 3000) : 0;
+      } catch (e) {
+        console.warn(`Text extraction failed for ${name}:`, e);
+        text = null;
+        pages = 0;
+      }
     }
 
     if (IMAGE_TYPES.has(ext)) {
