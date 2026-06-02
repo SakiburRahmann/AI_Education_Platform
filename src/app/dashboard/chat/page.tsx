@@ -384,7 +384,7 @@ export default function ChatPage() {
       {/* Main chat area */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Toggle sidebar */}
-        <div className="flex items-center gap-2 border-b px-4 py-2">
+        <div className="flex items-center gap-2 border-b px-4 py-2 ml-10 md:ml-0">
           <button
             onClick={() => setSideOpen(!sideOpen)}
             className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted transition-colors"
