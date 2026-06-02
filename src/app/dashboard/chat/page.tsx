@@ -610,18 +610,26 @@ export default function ChatPage() {
                 }}
               />
               <div className="flex items-center gap-1">
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                  className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
-                  title="Attach file"
-                >
-                  {uploading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Paperclip className="h-4 w-4" />
-                  )}
-                </button>
+                <div className="relative">
+                  <button
+                    disabled={uploading}
+                    className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
+                    title="Attach file"
+                  >
+                    {uploading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Paperclip className="h-4 w-4" />
+                    )}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onChange={handleFileSelect}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
                 <button
                   onClick={handleSend}
                   disabled={(!input.trim() && pendingFiles.length === 0) || streaming}
@@ -631,12 +639,6 @@ export default function ChatPage() {
                   <Send className="h-4 w-4" />
                 </button>
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                className="hidden"
-                onChange={handleFileSelect}
-              />
             </div>
           </div>
           <p className="mt-2 text-center text-[10px] text-muted-foreground">
