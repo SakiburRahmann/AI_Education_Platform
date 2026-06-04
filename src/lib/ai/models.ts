@@ -209,26 +209,22 @@ export async function streamWithFallback(
           messages: buildMessages() as any,
           system: systemPrompt,
           temperature: options?.temperature ?? 0.7,
-          maxOutputTokens: 8192,
           maxRetries: 2,
           tools: { webSearch },
-          stopWhen: stepCountIs(5),
+          stopWhen: stepCountIs(10),
         });
 
         const reader = result.fullStream.getReader();
-        const first = await reader.read();
 
+        // Peek at first event to trigger API call and detect errors early
+        const first = await reader.read();
         if (first.done) {
           reader.releaseLock();
           continue;
         }
-
         if (first.value.type === "error") {
-          throw new Error(
-            first.value.error instanceof Error
-              ? first.value.error.message
-              : String(first.value.error)
-          );
+          const errMsg = first.value.error instanceof Error ? first.value.error.message : String(first.value.error);
+          throw Object.assign(new Error(errMsg), { status: 429 });
         }
 
         aiKeyManager.markSuccess(apiKey);
@@ -236,10 +232,13 @@ export async function streamWithFallback(
 
         const stream = new ReadableStream({
           async start(controller) {
-            if (isTextPart(first.value)) {
-              sendJson(controller, first.value.type, first.value.text);
-            }
             try {
+              // Forward the peeked first event if it carries text
+              if (isTextPart(first.value)) {
+                sendJson(controller, first.value.type, first.value.text);
+              }
+
+              // Forward remaining events via the same reader
               while (true) {
                 const { done, value } = await reader.read();
                 if (done) {
@@ -247,13 +246,8 @@ export async function streamWithFallback(
                   break;
                 }
                 if (value.type === "error") {
-                  sendJson(
-                    controller,
-                    "error",
-                    value.error instanceof Error
-                      ? value.error.message
-                      : String(value.error)
-                  );
+                  const errTxt = value.error instanceof Error ? value.error.message : String(value.error);
+                  sendJson(controller, "error", errTxt);
                   break;
                 }
                 if (isTextPart(value)) {
@@ -263,7 +257,7 @@ export async function streamWithFallback(
             } catch (e: any) {
               sendJson(controller, "error", e?.message || String(e));
             } finally {
-              controller.close();
+              try { controller.close(); } catch { /* already closed */ }
             }
           },
         });

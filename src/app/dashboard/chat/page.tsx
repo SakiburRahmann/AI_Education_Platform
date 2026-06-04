@@ -239,11 +239,19 @@ export default function ChatPage() {
               }
             } else if (msg.t === "error") {
               throw new Error(msg.c);
+            } else if (msg.t === "done") {
+              // stream ended
             }
           } catch {
-            if (line.startsWith("{")) throw new Error("Parse error");
+            // ignore lines that aren't valid JSON
           }
         }
+      }
+
+      // If we got reasoning but no text, save reasoning as content
+      if (!fullContent && fullReasoning) {
+        fullContent = fullReasoning;
+        fullReasoning = "";
       }
 
       if (fullContent) {
