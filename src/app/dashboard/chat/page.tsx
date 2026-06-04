@@ -100,7 +100,6 @@ export default function ChatPage() {
   useEffect(() => { pendingFilesRef.current = pendingFiles; }, [pendingFiles]);
   const [streamContent, setStreamContent] = useState("");
   const [streamReasoning, setStreamReasoning] = useState("");
-  const [teachingStyle, setTeachingStyle] = useState("socratic");
   const [sideOpen, setSideOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -200,7 +199,6 @@ export default function ChatPage() {
           messages: messagesForApi,
           context: context || undefined,
           files: hasImages ? filesToSend.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
-          teachingStyle,
         }),
       });
 
@@ -272,7 +270,7 @@ export default function ChatPage() {
     } finally {
       setStreaming(false);
     }
-  }, [input, activeId, conversations, streaming, teachingStyle, addMessage]);
+  }, [input, activeId, conversations, streaming, addMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -564,30 +562,6 @@ export default function ChatPage() {
             })}
           </div>
         )}
-
-        {/* Teaching style selector */}
-        <div className="flex items-center gap-1.5 border-t px-3 py-1.5">
-          <span className="text-[10px] font-medium text-muted-foreground shrink-0">Style:</span>
-          {[
-            { id: "socratic", label: "Socratic" },
-            { id: "direct", label: "Direct" },
-            { id: "eli5", label: "ELI5" },
-            { id: "analogy", label: "Analogy" },
-            { id: "case_study", label: "Case Study" },
-          ].map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setTeachingStyle(s.id)}
-              className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors ${
-                teachingStyle === s.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
 
         {/* Input area */}
         <div className="border-t p-2 sm:p-3">
