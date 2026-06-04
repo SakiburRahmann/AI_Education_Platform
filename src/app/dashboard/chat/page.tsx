@@ -92,6 +92,7 @@ export default function ChatPage() {
   const { addQuiz } = useQuizzesStorage();
   const { awardXP, awardAchievement, lastXpEarned } = useGamification();
 
+  const [sessionMode, setSessionMode] = useState("learn");
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -195,11 +196,12 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: messagesForApi,
-          context: context || undefined,
-          files: hasImages ? filesToSend.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
-        }),
+          body: JSON.stringify({
+            messages: messagesForApi,
+            context: context || undefined,
+            files: hasImages ? filesToSend.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
+            sessionMode,
+          }),
       });
 
       if (!res.ok) {
@@ -270,7 +272,7 @@ export default function ChatPage() {
     } finally {
       setStreaming(false);
     }
-  }, [input, activeId, conversations, streaming, addMessage]);
+  }, [input, activeId, conversations, streaming, sessionMode, addMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -390,7 +392,12 @@ export default function ChatPage() {
             <MessageSquare className="h-4 w-4" />
           </button>
           {activeConversation && (
-            <span className="text-sm font-medium truncate">{activeConversation.title}</span>
+            <>
+              <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground shrink-0">
+                {sessionMode === "learn" ? "🎓 Learn" : sessionMode === "ask" ? "💬 Ask" : "✏️ Practice"}
+              </span>
+              <span className="text-sm font-medium truncate">{activeConversation.title}</span>
+            </>
           )}
         </div>
 
@@ -400,26 +407,53 @@ export default function ChatPage() {
             <div className="flex h-full flex-col items-center justify-center px-4 text-center">
               <Bot className="mb-4 h-12 w-12 text-primary/40" />
               <h2 className="font-heading text-xl font-bold mb-2">Chat with Nexo</h2>
-              <p className="max-w-md text-sm text-muted-foreground">
-                Upload your study materials (PDF, DOCX, PPTX, TXT, images, and more) and ask questions,
-                generate lessons, or create quizzes. You can also paste files directly.
-                Everything is stored locally in your browser.
+              <p className="max-w-md text-sm text-muted-foreground mb-6">
+                What are you looking for? Choose a session mode to get started.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {["Explain quantum computing", "Create a lesson on photosynthesis", "Quiz me on World War II"].map(
-                  (q) => (
-                    <button
-                      key={q}
-                      onClick={() => {
-                        setInput(q);
-                        inputRef.current?.focus();
-                      }}
-                      className="rounded-full border px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted transition-colors"
-                    >
-                      {q}
-                    </button>
-                  )
-                )}
+
+              <div className="flex flex-col gap-3 w-full max-w-sm">
+                {[
+                  { id: "learn", icon: "🎓", label: "Learn", desc: "Teach me a topic deeply — use examples, analogies, and check my understanding." },
+                  { id: "ask", icon: "💬", label: "Ask", desc: "Just give me quick answers and facts without turning it into a lesson." },
+                  { id: "practice", icon: "✏️", label: "Practice", desc: "Quiz me, give me exercises, or help me prepare for a test." },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => { setSessionMode(m.id); setInput(m.id === "learn" ? "" : ""); }}
+                    className={`flex items-start gap-3 rounded-xl border-2 p-3 text-left transition-all ${
+                      sessionMode === m.id
+                        ? "border-eduai-primary bg-eduai-primary/5"
+                        : "border-border hover:border-eduai-primary/30"
+                    }`}
+                  >
+                    <span className="text-xl mt-0.5">{m.icon}</span>
+                    <div>
+                      <div className="font-medium text-sm">{m.label}</div>
+                      <div className="text-xs text-muted-foreground">{m.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {[
+                  { mode: "learn", text: "Explain quantum computing" },
+                  { mode: "learn", text: "Teach me about photosynthesis" },
+                  { mode: "practice", text: "Quiz me on World War II" },
+                  { mode: "ask", text: "What is the capital of France?" },
+                ].map((q) => (
+                  <button
+                    key={q.text}
+                    onClick={() => {
+                      setSessionMode(q.mode);
+                      setInput(q.text);
+                      inputRef.current?.focus();
+                    }}
+                    className="rounded-full border px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted transition-colors"
+                  >
+                    {q.text}
+                  </button>
+                ))}
               </div>
             </div>
           ) : (
