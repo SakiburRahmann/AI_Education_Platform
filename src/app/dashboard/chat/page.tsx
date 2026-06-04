@@ -92,7 +92,6 @@ export default function ChatPage() {
   const { addQuiz } = useQuizzesStorage();
   const { awardXP, awardAchievement, lastXpEarned } = useGamification();
 
-  const [sessionMode, setSessionMode] = useState("learn");
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -200,7 +199,6 @@ export default function ChatPage() {
             messages: messagesForApi,
             context: context || undefined,
             files: hasImages ? filesToSend.filter((f) => f.dataUrl).map((f) => ({ name: f.name, dataUrl: f.dataUrl, type: f.type })) : undefined,
-            sessionMode,
           }),
       });
 
@@ -280,7 +278,7 @@ export default function ChatPage() {
     } finally {
       setStreaming(false);
     }
-  }, [input, activeId, conversations, streaming, sessionMode, addMessage]);
+  }, [input, activeId, conversations, streaming, addMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -400,12 +398,7 @@ export default function ChatPage() {
             <MessageSquare className="h-4 w-4" />
           </button>
           {activeConversation && (
-            <>
-              <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground shrink-0">
-                {sessionMode === "learn" ? "🎓 Learn" : sessionMode === "ask" ? "💬 Ask" : "✏️ Practice"}
-              </span>
-              <span className="text-sm font-medium truncate">{activeConversation.title}</span>
-            </>
+            <span className="text-sm font-medium truncate">{activeConversation.title}</span>
           )}
         </div>
 
@@ -414,52 +407,28 @@ export default function ChatPage() {
           {activeConversation && activeConversation.messages.length === 0 && !streaming ? (
             <div className="flex h-full flex-col items-center justify-center px-4 text-center">
               <Bot className="mb-4 h-12 w-12 text-primary/40" />
-              <h2 className="font-heading text-xl font-bold mb-2">Chat with Nexo</h2>
+              <h2 className="font-heading text-xl font-bold mb-2">Chat</h2>
               <p className="max-w-md text-sm text-muted-foreground mb-6">
-                What are you looking for? Choose a session mode to get started.
+                Ask anything — I'm a plain AI, no prompts, no rules.
               </p>
 
-              <div className="flex flex-col gap-3 w-full max-w-sm">
+              <div className="flex flex-wrap gap-2 max-w-sm justify-center">
                 {[
-                  { id: "learn", icon: "🎓", label: "Learn", desc: "Teach me a topic deeply — use examples, analogies, and check my understanding." },
-                  { id: "ask", icon: "💬", label: "Ask", desc: "Just give me quick answers and facts without turning it into a lesson." },
-                  { id: "practice", icon: "✏️", label: "Practice", desc: "Quiz me, give me exercises, or help me prepare for a test." },
-                ].map((m) => (
+                  "Explain quantum computing",
+                  "Teach me Python",
+                  "What is the capital of France?",
+                  "Write a poem about AI",
+                  "Help me with JavaScript",
+                ].map((text) => (
                   <button
-                    key={m.id}
-                    onClick={() => { setSessionMode(m.id); setInput(m.id === "learn" ? "" : ""); }}
-                    className={`flex items-start gap-3 rounded-xl border-2 p-3 text-left transition-all ${
-                      sessionMode === m.id
-                        ? "border-eduai-primary bg-eduai-primary/5"
-                        : "border-border hover:border-eduai-primary/30"
-                    }`}
-                  >
-                    <span className="text-xl mt-0.5">{m.icon}</span>
-                    <div>
-                      <div className="font-medium text-sm">{m.label}</div>
-                      <div className="text-xs text-muted-foreground">{m.desc}</div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                {[
-                  { mode: "learn", text: "Explain quantum computing" },
-                  { mode: "learn", text: "Teach me about photosynthesis" },
-                  { mode: "practice", text: "Quiz me on World War II" },
-                  { mode: "ask", text: "What is the capital of France?" },
-                ].map((q) => (
-                  <button
-                    key={q.text}
+                    key={text}
                     onClick={() => {
-                      setSessionMode(q.mode);
-                      setInput(q.text);
+                      setInput(text);
                       inputRef.current?.focus();
                     }}
                     className="rounded-full border px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted transition-colors"
                   >
-                    {q.text}
+                    {text}
                   </button>
                 ))}
               </div>
@@ -484,7 +453,7 @@ export default function ChatPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       <span className="text-xs font-medium">
-                        {msg.role === "assistant" ? "Nexo" : "You"}
+                        {msg.role === "assistant" ? "Assistant" : "You"}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatTime(msg.createdAt)}
@@ -552,7 +521,7 @@ export default function ChatPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs font-medium">Nexo</span>
+                      <span className="text-xs font-medium">Assistant</span>
                     </div>
                     <div className="mt-1 text-sm leading-relaxed">
                       {streamReasoning && (
@@ -615,7 +584,7 @@ export default function ChatPage() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 onPaste={handlePaste}
-                placeholder="Ask Nexo anything... (paste files directly)"
+                placeholder="Ask anything... (paste files directly)"
                 rows={1}
                 className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 style={{ maxHeight: "200px" }}
