@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const hasTextFiles = !!context;
 
     // No system prompt — AI behaves as Google trained it
-    const systemPrompt = hasTextFiles ? `The user uploaded study material:\n\n${context}` : "";
+    const systemPrompt: string | undefined = hasTextFiles ? `The user uploaded study material:\n\n${context}` : undefined;
 
     const buildMessages = () =>
       messages.map((m: any) => {

@@ -184,7 +184,7 @@ const webSearch: Tool<any, any> = {
 export async function streamWithFallback(
   task: AITaskType | "vision",
   buildMessages: () => { role: string; content: string | { type: "text" | "image"; text?: string; image?: string }[] }[],
-  systemPrompt: string,
+  systemPrompt: string | undefined,
   options?: StreamOptions
 ): Promise<Response> {
   const effectiveTask = options?.hasImages ? "vision" : task;
@@ -207,7 +207,7 @@ export async function streamWithFallback(
         const result = streamText({
           model,
           messages: buildMessages() as any,
-          system: systemPrompt,
+          ...(systemPrompt !== undefined ? { system: systemPrompt } : {}),
           temperature: options?.temperature ?? 0.7,
           maxRetries: 2,
           tools: { webSearch },
