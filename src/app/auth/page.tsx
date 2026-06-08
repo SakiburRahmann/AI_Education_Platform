@@ -40,7 +40,7 @@ export default function AuthPage() {
             <LubbLogo className="h-12 w-12" />
           </div>
           <CardTitle className="font-heading text-2xl">
-            Welcome to Ulu Al Albab
+            Welcome to Ulul Albab
           </CardTitle>
           <CardDescription>
             Sign in to start learning with AI

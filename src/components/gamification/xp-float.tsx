@@ -14,10 +14,10 @@ export function XPFloat({ amount, reason }: { amount: number; reason: string }) 
 
   return (
     <div className="pointer-events-none fixed top-1/4 left-1/2 z-50 -translate-x-1/2 animate-floatUp text-center">
-      <p className="text-lg font-bold text-ulu-al-albab-xp drop-shadow-lg">
+      <p className="text-lg font-bold text-ulul-albab-xp drop-shadow-lg">
         +{amount} XP
       </p>
-      <p className="text-xs text-ulu-al-albab-xp/70">{reason}</p>
+      <p className="text-xs text-ulul-albab-xp/70">{reason}</p>
     </div>
   );
 }

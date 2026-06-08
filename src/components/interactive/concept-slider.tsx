@@ -7,7 +7,7 @@ type Props = ConceptSliderData & {
   onComplete?: (value: number, correct: boolean | null) => void;
 };
 
-const SLIDER_ID = "ulu-al-albab-concept-slider";
+const SLIDER_ID = "ulul-albab-concept-slider";
 
 export function ConceptSlider({ label, min, max, step = 1, initial, unit, description, correctValue, onComplete }: Props) {
   const [value, setValue] = useState(initial);
@@ -30,7 +30,7 @@ export function ConceptSlider({ label, min, max, step = 1, initial, unit, descri
     <div className="my-3 rounded-xl border bg-card p-4">
       <div className="flex items-center justify-between mb-1">
         <p className="text-sm font-medium">{label}</p>
-        <p className="text-lg font-bold text-ulu-al-albab-primary">
+        <p className="text-lg font-bold text-ulul-albab-primary">
           {value}{unit || ""}
         </p>
       </div>
@@ -45,7 +45,7 @@ export function ConceptSlider({ label, min, max, step = 1, initial, unit, descri
         value={value}
         onChange={(e) => { setValue(Number(e.target.value)); setChecked(false); }}
         id={SLIDER_ID}
-        className="w-full accent-ulu-al-albab-primary"
+        className="w-full accent-ulul-albab-primary"
       />
       <style>{`
         #${SLIDER_ID}::-webkit-slider-thumb {

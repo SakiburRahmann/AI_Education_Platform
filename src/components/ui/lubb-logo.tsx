@@ -25,7 +25,7 @@ export function LubbLogo({
         viewBox="0 0 40 40"
         fill="none"
         className="h-8 w-8 shrink-0"
-        aria-label="Ulu Al Albab logo"
+        aria-label="Ulul Albab logo"
         {...props}
       >
         <circle cx="20" cy="20" r="18" className="fill-current" opacity="0.08" />

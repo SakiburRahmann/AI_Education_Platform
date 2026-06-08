@@ -162,7 +162,7 @@ const webSearch: Tool<any, any> = {
     try {
       const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
       const res = await fetch(url, {
-        headers: { "User-Agent": "UluAlAlbab/1.0" },
+        headers: { "User-Agent": "UlulAlbab/1.0" },
       });
       const data = await res.json();
       if (data.AbstractText) {

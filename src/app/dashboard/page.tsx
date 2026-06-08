@@ -20,9 +20,9 @@ type LocalConv = {
 
 function loadStats(): { conversations: number; lessons: number; quizzes: number } {
   try {
-    const convs = JSON.parse(localStorage.getItem("ulu-al-albab-conversations") || "[]");
-    const lessons = JSON.parse(localStorage.getItem("ulu-al-albab-lessons") || "[]");
-    const quizzes = JSON.parse(localStorage.getItem("ulu-al-albab-quizzes") || "[]");
+    const convs = JSON.parse(localStorage.getItem("ulul-albab-conversations") || "[]");
+    const lessons = JSON.parse(localStorage.getItem("ulul-albab-lessons") || "[]");
+    const quizzes = JSON.parse(localStorage.getItem("ulul-albab-quizzes") || "[]");
     return {
       conversations: convs.length,
       lessons: lessons.length,
@@ -35,7 +35,7 @@ function loadStats(): { conversations: number; lessons: number; quizzes: number 
 
 function loadRecentConversations(): LocalConv[] {
   try {
-    const raw = localStorage.getItem("ulu-al-albab-conversations");
+    const raw = localStorage.getItem("ulul-albab-conversations");
     const all: LocalConv[] = raw ? JSON.parse(raw) : [];
     return all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
   } catch {
@@ -57,10 +57,10 @@ export default function DashboardPage() {
   }, []);
 
   const statCards = [
-    { label: "Conversations", value: stats.conversations.toString(), icon: MessageSquare, color: "text-ulu-al-albab-primary" },
-    { label: "XP Earned", value: xp.toString(), icon: Zap, color: "text-ulu-al-albab-xp" },
-    { label: "Day Streak", value: streakCount.toString(), icon: Flame, color: "text-ulu-al-albab-streak" },
-    { label: "Level", value: level.toString(), icon: TrendingUp, color: "text-ulu-al-albab-accent" },
+    { label: "Conversations", value: stats.conversations.toString(), icon: MessageSquare, color: "text-ulul-albab-primary" },
+    { label: "XP Earned", value: xp.toString(), icon: Zap, color: "text-ulul-albab-xp" },
+    { label: "Day Streak", value: streakCount.toString(), icon: Flame, color: "text-ulul-albab-streak" },
+    { label: "Level", value: level.toString(), icon: TrendingUp, color: "text-ulul-albab-accent" },
   ];
 
   const quickActions = [
@@ -101,7 +101,7 @@ export default function DashboardPage() {
           return (
             <Link key={a.href} href={a.href}>
               <div className="rounded-xl border bg-card p-4 hover:bg-accent transition-colors cursor-pointer">
-                <Icon className="h-5 w-5 text-ulu-al-albab-primary mb-2" />
+                <Icon className="h-5 w-5 text-ulul-albab-primary mb-2" />
                 <p className="font-medium text-sm">{a.label}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{a.desc}</p>
               </div>
@@ -114,10 +114,10 @@ export default function DashboardPage() {
         <LevelBadge level={level} xp={xp} nextXp={xpToNextLevel} progress={progress.progress} />
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Flame className="h-4 w-4 text-ulu-al-albab-streak" />
+            <Flame className="h-4 w-4 text-ulul-albab-streak" />
             <span className="text-xs font-medium text-muted-foreground">Streak</span>
           </div>
-          <p className="text-2xl font-bold text-ulu-al-albab-streak">{streakCount} days</p>
+          <p className="text-2xl font-bold text-ulul-albab-streak">{streakCount} days</p>
           <p className="text-[10px] text-muted-foreground mt-0.5">
             Longest: {longestStreak} days
           </p>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
             <MessageSquare className="mx-auto h-8 w-8 text-muted-foreground/40 mb-2" />
             <p className="text-sm text-muted-foreground">
               No conversations yet.{" "}
-              <Link href="/dashboard/chat" className="text-ulu-al-albab-primary hover:underline">
+              <Link href="/dashboard/chat" className="text-ulul-albab-primary hover:underline">
                 Start chatting with Lubb
               </Link>
             </p>

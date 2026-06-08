@@ -12,7 +12,7 @@ export type LocalQuiz = {
   createdAt: string;
 };
 
-const STORAGE_KEY = "ulu-al-albab-quizzes";
+const STORAGE_KEY = "ulul-albab-quizzes";
 
 function load(): LocalQuiz[] {
   if (typeof window === "undefined") return [];

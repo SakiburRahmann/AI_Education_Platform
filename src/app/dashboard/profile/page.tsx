@@ -37,18 +37,18 @@ export default function ProfilePage() {
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Flame className="h-4 w-4 text-ulu-al-albab-streak" />
+            <Flame className="h-4 w-4 text-ulul-albab-streak" />
             <span className="text-xs font-medium text-muted-foreground">Streak</span>
           </div>
-          <p className="text-2xl font-bold text-ulu-al-albab-streak">{streakCount} days</p>
+          <p className="text-2xl font-bold text-ulul-albab-streak">{streakCount} days</p>
           <p className="text-[10px] text-muted-foreground">Longest: {longestStreak} days</p>
         </div>
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Zap className="h-4 w-4 text-ulu-al-albab-xp" />
+            <Zap className="h-4 w-4 text-ulul-albab-xp" />
             <span className="text-xs font-medium text-muted-foreground">Total XP</span>
           </div>
-          <p className="text-2xl font-bold text-ulu-al-albab-xp">{xp.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-ulul-albab-xp">{xp.toLocaleString()}</p>
           <p className="text-[10px] text-muted-foreground">{transactions.length} interactions</p>
         </div>
       </div>
@@ -76,10 +76,10 @@ export default function ProfilePage() {
             {[...transactions].reverse().slice(0, 20).map((t, i) => (
               <div key={i} className="flex items-center justify-between rounded-lg border bg-card px-3 py-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Zap className="h-3.5 w-3.5 shrink-0 text-ulu-al-albab-xp" />
+                  <Zap className="h-3.5 w-3.5 shrink-0 text-ulul-albab-xp" />
                   <span className="text-xs truncate">{t.reason}</span>
                 </div>
-                <span className="shrink-0 text-xs font-medium text-ulu-al-albab-xp">+{t.amount}</span>
+                <span className="shrink-0 text-xs font-medium text-ulul-albab-xp">+{t.amount}</span>
               </div>
             ))}
           </div>

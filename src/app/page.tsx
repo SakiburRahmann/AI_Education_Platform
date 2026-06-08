@@ -33,12 +33,12 @@ export default function LandingPage() {
               <LubbLogo className="h-16 w-16 md:h-20 md:w-20" />
             </div>
             <h1 className="font-heading text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl text-foreground">
-              Ulu Al Albab
+              Ulul Albab
               <br />
               <span className="text-gradient-primary">Learn with Understanding</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-              Ulu Al Albab is an AI-powered learning platform. Upload your books, lecture slides,
+              Ulul Albab is an AI-powered learning platform. Upload your books, lecture slides,
               and notes. Chat with <strong>Lubb AI</strong>, generate interactive lessons and
               quizzes, earn XP, and climb the leaderboard.
             </p>
@@ -112,7 +112,7 @@ export default function LandingPage() {
                 <LubbLogo className="h-14 w-14" />
               </div>
               <h2 className="font-heading text-3xl font-bold mb-4">
-                Ready to learn with Ulu Al Albab?
+                Ready to learn with Ulul Albab?
               </h2>
               <p className="text-muted-foreground mb-8 text-lg">
                 Join thousands of learners using Lubb AI to accelerate their education.
@@ -128,7 +128,7 @@ export default function LandingPage() {
 
         <footer className="border-t py-8 bg-muted">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Ulu Al Albab. Built with Next.js & Supabase.
+            &copy; {new Date().getFullYear()} Ulul Albab. Built with Next.js & Supabase.
           </div>
         </footer>
       </main>

@@ -8,10 +8,10 @@ export default function LeaderboardPage() {
   const { xp, level, streakCount, longestStreak, achievements, progress, xpToNextLevel } = useGamification();
 
   const stats = [
-    { label: "Total XP", value: xp.toLocaleString(), icon: Zap, color: "text-ulu-al-albab-xp" },
-    { label: "Level", value: level.toString(), icon: TrendingUp, color: "text-ulu-al-albab-accent" },
-    { label: "Streak", value: `${streakCount} days`, icon: Flame, color: "text-ulu-al-albab-streak" },
-    { label: "Achievements", value: achievements.length.toString(), icon: Medal, color: "text-ulu-al-albab-primary" },
+    { label: "Total XP", value: xp.toLocaleString(), icon: Zap, color: "text-ulul-albab-xp" },
+    { label: "Level", value: level.toString(), icon: TrendingUp, color: "text-ulul-albab-accent" },
+    { label: "Streak", value: `${streakCount} days`, icon: Flame, color: "text-ulul-albab-streak" },
+    { label: "Achievements", value: achievements.length.toString(), icon: Medal, color: "text-ulul-albab-primary" },
   ];
 
   return (
@@ -42,19 +42,19 @@ export default function LeaderboardPage() {
 
       <div className="rounded-xl border bg-card">
         <div className="flex items-center gap-2 border-b px-4 py-3">
-          <Crown className="h-4 w-4 text-ulu-al-albab-accent" />
+          <Crown className="h-4 w-4 text-ulul-albab-accent" />
           <h2 className="font-heading text-sm font-semibold">Rankings</h2>
         </div>
         <div className="p-4">
           <div className="flex items-center gap-4 rounded-lg border bg-muted/30 p-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ulu-al-albab-accent/10 text-ulu-al-albab-accent">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ulul-albab-accent/10 text-ulul-albab-accent">
               <Trophy className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">You</p>
               <p className="text-xs text-muted-foreground">Level {level} · {xp} XP</p>
             </div>
-            <span className="shrink-0 text-xs font-bold text-ulu-al-albab-accent">#1</span>
+            <span className="shrink-0 text-xs font-bold text-ulul-albab-accent">#1</span>
           </div>
           <p className="mt-4 text-center text-[10px] text-muted-foreground">
             Multi-user leaderboard coming soon with Supabase sync
@@ -64,12 +64,12 @@ export default function LeaderboardPage() {
 
       <div className="rounded-xl border bg-card p-4">
         <div className="flex items-center gap-2 mb-3">
-          <Flame className="h-4 w-4 text-ulu-al-albab-streak" />
+          <Flame className="h-4 w-4 text-ulul-albab-streak" />
           <h2 className="font-heading text-sm font-semibold">Streak History</h2>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-2xl font-bold text-ulu-al-albab-streak">{streakCount} days</p>
+            <p className="text-2xl font-bold text-ulul-albab-streak">{streakCount} days</p>
             <p className="text-xs text-muted-foreground">Current streak</p>
           </div>
           <div className="text-right">

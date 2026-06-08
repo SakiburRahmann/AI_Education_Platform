@@ -43,7 +43,7 @@ export default function QuizzesPage() {
             <div key={quiz.id} className="group relative rounded-xl border bg-card hover:shadow-md transition-shadow">
               <Link href={`/dashboard/quizzes/${quiz.id}`} className="block p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <HelpCircle className="h-4 w-4 text-ulu-al-albab-accent shrink-0" />
+                  <HelpCircle className="h-4 w-4 text-ulul-albab-accent shrink-0" />
                   <span className="text-xs text-muted-foreground">{quiz.subject}</span>
                 </div>
                 <h3 className="font-heading font-semibold text-sm mb-1 line-clamp-2">{quiz.title}</h3>

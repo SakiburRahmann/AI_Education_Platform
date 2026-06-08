@@ -94,15 +94,15 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ulualalbab.vercel.app"),
+  metadataBase: new URL("https://ululalbab.vercel.app"),
   title: {
-    default: "Ulu Al Albab — Learn with Lubb AI",
-    template: "%s | Ulu Al Albab",
+    default: "Ulul Albab — Learn with Lubb AI",
+    template: "%s | Ulul Albab",
   },
   description:
-    "Ulu Al Albab is an AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+    "Ulul Albab is an AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
   keywords: [
-    "Ulu Al Albab",
+    "Ulul Albab",
     "Lubb AI",
     "AI learning platform",
     "AI education",
@@ -113,19 +113,19 @@ export const metadata: Metadata = {
     "online education",
     "AI tutor",
   ],
-  authors: [{ name: "Ulu Al Albab" }],
+  authors: [{ name: "Ulul Albab" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Ulu Al Albab",
-    title: "Ulu Al Albab — Learn with Lubb AI",
+    siteName: "Ulul Albab",
+    title: "Ulul Albab — Learn with Lubb AI",
     description:
       "Upload your materials, chat with Lubb AI, generate interactive lessons and quizzes, and compete with others in a gamified learning platform.",
-    url: "https://ulualalbab.vercel.app",
+    url: "https://ululalbab.vercel.app",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ulu Al Albab — Learn with Lubb AI",
+    title: "Ulul Albab — Learn with Lubb AI",
     description:
       "AI-powered learning platform. Chat with Lubb AI, generate lessons & quizzes, earn XP.",
   },
@@ -161,13 +161,13 @@ export default function RootLayout({
               __html: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "WebApplication",
-                name: "Ulu Al Albab",
+                name: "Ulul Albab",
                 applicationCategory: "EducationalApplication",
                 operatingSystem: "Web",
                 description:
                   "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
-                url: "https://ulualalbab.vercel.app",
-                author: { "@type": "Organization", name: "Ulu Al Albab" },
+                url: "https://ululalbab.vercel.app",
+                author: { "@type": "Organization", name: "Ulul Albab" },
                 offers: {
                   "@type": "Offer",
                   price: "0",

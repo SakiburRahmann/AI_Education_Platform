@@ -10,7 +10,7 @@ export function LevelBadge({ level, xp, nextXp, progress }: {
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border bg-card p-3">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ulu-al-albab-primary/10 text-ulu-al-albab-primary">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ulul-albab-primary/10 text-ulul-albab-primary">
         <Zap className="h-6 w-6" />
       </div>
       <div className="min-w-0 flex-1">

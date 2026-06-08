@@ -43,9 +43,9 @@ function formatSize(bytes: number): string {
 }
 
 const FILE_ICONS: Record<string, string> = {
-  pdf: "text-ulu-al-albab-error",
-  docx: "text-ulu-al-albab-secondary",
-  pptx: "text-ulu-al-albab-accent",
+  pdf: "text-ulul-albab-error",
+  docx: "text-ulul-albab-secondary",
+  pptx: "text-ulul-albab-accent",
   txt: "text-muted-foreground",
 };
 
@@ -489,7 +489,7 @@ export default function ChatPage() {
                               awardAchievement("first_save");
                               toast.success("Saved as lesson");
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-ulu-al-albab-primary hover:border-ulu-al-albab-primary/30 transition-colors"
+                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-ulul-albab-primary hover:border-ulul-albab-primary/30 transition-colors"
                           >
                             <BookOpen className="h-3 w-3" />
                             Save as Lesson
@@ -501,7 +501,7 @@ export default function ChatPage() {
                               awardAchievement("first_save");
                               toast.success("Saved as quiz");
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-ulu-al-albab-accent hover:border-ulu-al-albab-accent/30 transition-colors"
+                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-ulul-albab-accent hover:border-ulul-albab-accent/30 transition-colors"
                           >
                             <HelpCircle className="h-3 w-3" />
                             Save as Quiz

@@ -53,7 +53,7 @@ export function ThemeSwitcher() {
   const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
-    const saved = localStorage.getItem("ulu-al-albab-theme") || "neutral";
+    const saved = localStorage.getItem("ulul-albab-theme") || "neutral";
     setColorTheme(saved);
     document.documentElement.setAttribute("data-theme", saved);
   }, []);
@@ -62,7 +62,7 @@ export function ThemeSwitcher() {
     setColorTheme(id);
     setOpen(false);
     document.documentElement.setAttribute("data-theme", id);
-    localStorage.setItem("ulu-al-albab-theme", id);
+    localStorage.setItem("ulul-albab-theme", id);
   }, []);
 
   const toggleDark = useCallback(() => {
