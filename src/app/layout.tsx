@@ -94,9 +94,45 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "Ulu Al Albab — Learn with Lubb AI",
+  metadataBase: new URL("https://ulualalbab.vercel.app"),
+  title: {
+    default: "Ulu Al Albab — Learn with Lubb AI",
+    template: "%s | Ulu Al Albab",
+  },
   description:
-    "Upload your materials, chat with AI, generate interactive lessons and quizzes, and compete with others in a gamified learning platform.",
+    "Ulu Al Albab is an AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+  keywords: [
+    "Ulu Al Albab",
+    "Lubb AI",
+    "AI learning platform",
+    "AI education",
+    "study with AI",
+    "interactive lessons",
+    "AI quiz generator",
+    "gamified learning",
+    "online education",
+    "AI tutor",
+  ],
+  authors: [{ name: "Ulu Al Albab" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Ulu Al Albab",
+    title: "Ulu Al Albab — Learn with Lubb AI",
+    description:
+      "Upload your materials, chat with Lubb AI, generate interactive lessons and quizzes, and compete with others in a gamified learning platform.",
+    url: "https://ulualalbab.vercel.app",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ulu Al Albab — Learn with Lubb AI",
+    description:
+      "AI-powered learning platform. Chat with Lubb AI, generate lessons & quizzes, earn XP.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -116,6 +152,27 @@ export default function RootLayout({
           defaultTheme="light"
           disableTransitionOnChange
         >
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                name: "Ulu Al Albab",
+                applicationCategory: "EducationalApplication",
+                operatingSystem: "Web",
+                description:
+                  "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                url: "https://ulualalbab.vercel.app",
+                author: { "@type": "Organization", name: "Ulu Al Albab" },
+                offers: {
+                  "@type": "Offer",
+                  price: "0",
+                  priceCurrency: "USD",
+                },
+              }),
+            }}
+          />
           {children}
           <Toaster />
         </ThemeProvider>
