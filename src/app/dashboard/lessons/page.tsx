@@ -27,7 +27,7 @@ export default function LessonsPage() {
           <BookOpen className="mb-4 h-10 w-10 text-muted-foreground/40" />
           <h2 className="font-heading text-lg font-semibold mb-1">No lessons yet</h2>
           <p className="max-w-sm text-sm text-muted-foreground mb-4">
-            Ask Nexo to create a lesson in the chat, then save it here.
+            Ask Lubb to create a lesson in the chat, then save it here.
           </p>
           <Link
             href="/dashboard/chat"
@@ -43,7 +43,7 @@ export default function LessonsPage() {
             <div key={lesson.id} className="group relative rounded-xl border bg-card hover:shadow-md transition-shadow">
               <Link href={`/dashboard/lessons/${lesson.id}`} className="block p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <BookOpen className="h-4 w-4 text-eduai-primary shrink-0" />
+                  <BookOpen className="h-4 w-4 text-ulu-al-albab-primary shrink-0" />
                   <span className="text-xs text-muted-foreground">{lesson.subject}</span>
                 </div>
                 <h3 className="font-heading font-semibold text-sm mb-1 line-clamp-2">{lesson.title}</h3>

@@ -33,7 +33,7 @@ export default function LessonDetailPage({ params }: { params: Promise<{ id: str
         <p className="text-sm text-muted-foreground">This lesson may have been deleted.</p>
         <Link
           href="/dashboard/lessons"
-          className="mt-4 text-sm text-eduai-primary hover:underline"
+          className="mt-4 text-sm text-ulu-al-albab-primary hover:underline"
         >
           Back to lessons
         </Link>
@@ -67,7 +67,7 @@ export default function LessonDetailPage({ params }: { params: Promise<{ id: str
 
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <BookOpen className="h-4 w-4 text-eduai-primary" />
+          <BookOpen className="h-4 w-4 text-ulu-al-albab-primary" />
           <span className="text-xs text-muted-foreground">{lesson.subject}</span>
         </div>
         <h1 className="font-heading text-2xl font-bold">{lesson.title}</h1>

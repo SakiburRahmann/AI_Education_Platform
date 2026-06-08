@@ -38,7 +38,7 @@ export default function QuizDetailPage({ params }: { params: Promise<{ id: strin
         <p className="text-sm text-muted-foreground">This quiz may have been deleted.</p>
         <Link
           href="/dashboard/quizzes"
-          className="mt-4 text-sm text-eduai-primary hover:underline"
+          className="mt-4 text-sm text-ulu-al-albab-primary hover:underline"
         >
           Back to quizzes
         </Link>
@@ -68,7 +68,7 @@ export default function QuizDetailPage({ params }: { params: Promise<{ id: strin
           Back to quizzes
         </Link>
         <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-20 text-center">
-          <HelpCircle className="mb-4 h-12 w-12 text-eduai-accent" />
+          <HelpCircle className="mb-4 h-12 w-12 text-ulu-al-albab-accent" />
           <h1 className="font-heading text-2xl font-bold mb-1">{quiz.title}</h1>
           <p className="text-sm text-muted-foreground mb-1">{quiz.subject}</p>
           <p className="text-xs text-muted-foreground mb-6">

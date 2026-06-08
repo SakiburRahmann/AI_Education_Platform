@@ -62,7 +62,7 @@ export function FreeResponse({ prompt, minWords, placeholder, rubric }: Props) {
         className="w-full resize-none rounded-lg border bg-background p-3 text-sm outline-none focus:ring-2 focus:ring-ring/30 placeholder:text-muted-foreground"
       />
       <div className="mt-2 flex items-center justify-between">
-        <span className={`text-[10px] ${meetsMin ? "text-muted-foreground" : "text-eduai-error"}`}>
+        <span className={`text-[10px] ${meetsMin ? "text-muted-foreground" : "text-ulu-al-albab-error"}`}>
           {wordCount} words{minWords ? ` (min ${minWords})` : ""}
         </span>
         <button

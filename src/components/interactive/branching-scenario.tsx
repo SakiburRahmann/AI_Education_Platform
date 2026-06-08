@@ -18,7 +18,7 @@ export function BranchingScenario({ title, scenario, choices, onComplete }: Prop
   return (
     <div className="my-3 rounded-xl border bg-card p-4">
       {title && (
-        <p className="mb-2 text-xs font-semibold text-eduai-primary uppercase tracking-wider">{title}</p>
+        <p className="mb-2 text-xs font-semibold text-ulu-al-albab-primary uppercase tracking-wider">{title}</p>
       )}
       <p className="mb-4 text-sm leading-relaxed">{scenario}</p>
 
@@ -39,8 +39,8 @@ export function BranchingScenario({ title, scenario, choices, onComplete }: Prop
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border-l-4 border-eduai-primary bg-muted/20 px-4 py-3">
-          <p className="text-xs font-medium text-eduai-primary mb-1">Outcome</p>
+        <div className="rounded-lg border-l-4 border-ulu-al-albab-primary bg-muted/20 px-4 py-3">
+          <p className="text-xs font-medium text-ulu-al-albab-primary mb-1">Outcome</p>
           <p className="text-sm">{choices.find((c) => c.id === selectedId)?.outcome}</p>
         </div>
       )}

@@ -29,7 +29,7 @@ export type Conversation = {
   updatedAt: string;
 };
 
-const STORAGE_KEY = "eduai-conversations";
+const STORAGE_KEY = "ulu-al-albab-conversations";
 
 function loadConversations(): Conversation[] {
   if (typeof window === "undefined") return [];

@@ -114,7 +114,7 @@ export default function CommunityPage() {
                     <button
                       onClick={() => toggleVote(post.id, "up")}
                       className={`flex items-center justify-center rounded p-2 transition-colors min-h-[44px] min-w-[44px] ${
-                        userVote === "up" ? "text-eduai-primary" : "text-muted-foreground hover:text-eduai-primary"
+                        userVote === "up" ? "text-ulu-al-albab-primary" : "text-muted-foreground hover:text-ulu-al-albab-primary"
                       }`}
                     >
                       <ThumbsUp className="h-4 w-4" />

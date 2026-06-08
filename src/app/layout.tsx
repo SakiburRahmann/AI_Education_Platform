@@ -94,7 +94,7 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "EduAI — Learn Smarter with AI",
+  title: "Ulu Al Albab — Learn with Lubb AI",
   description:
     "Upload your materials, chat with AI, generate interactive lessons and quizzes, and compete with others in a gamified learning platform.",
 };

@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { NexoLogo } from "@/components/ui/nexo-logo";
+import { LubbLogo } from "@/components/ui/lubb-logo";
 import Link from "next/link";
 
 export default function AuthPage() {
@@ -37,10 +37,10 @@ export default function AuthPage() {
       >
         <CardHeader className="text-center pt-8">
           <div className="mb-4 flex justify-center">
-            <NexoLogo className="h-12 w-12" />
+            <LubbLogo className="h-12 w-12" />
           </div>
           <CardTitle className="font-heading text-2xl">
-            Welcome to EduAI
+            Welcome to Ulu Al Albab
           </CardTitle>
           <CardDescription>
             Sign in to start learning with AI

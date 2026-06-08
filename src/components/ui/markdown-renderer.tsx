@@ -92,7 +92,7 @@ const components: Components = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-eduai-secondary underline hover:no-underline"
+      className="text-ulu-al-albab-secondary underline hover:no-underline"
       {...props}
     >
       {children}

@@ -25,9 +25,9 @@ export type Comment = {
 
 type VoteMap = Record<string, "up" | "down">;
 
-const POSTS_KEY = "eduai-community-posts";
-const COMMENTS_KEY = "eduai-community-comments";
-const VOTES_KEY = "eduai-community-votes";
+const POSTS_KEY = "ulu-al-albab-community-posts";
+const COMMENTS_KEY = "ulu-al-albab-community-comments";
+const VOTES_KEY = "ulu-al-albab-community-votes";
 
 function loadPosts(): CommunityPost[] {
   if (typeof window === "undefined") return [];

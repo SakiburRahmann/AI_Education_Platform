@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NexoLogo } from "@/components/ui/nexo-logo";
+import { LubbLogo } from "@/components/ui/lubb-logo";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export default function LandingPage() {
@@ -8,7 +8,7 @@ export default function LandingPage() {
         <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
           <div className="container mx-auto flex min-h-16 flex-wrap items-center justify-between gap-2 px-4 py-2 sm:py-0">
             <Link href="/">
-              <NexoLogo showText />
+              <LubbLogo showText />
             </Link>
             <div className="flex items-center gap-1 sm:gap-3 flex-wrap justify-end">
               <ThemeSwitcher />
@@ -30,7 +30,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.07]" />
           <div className="container mx-auto px-4 text-center relative">
             <div className="mb-8 flex justify-center">
-              <NexoLogo className="h-16 w-16 md:h-20 md:w-20" />
+              <LubbLogo className="h-16 w-16 md:h-20 md:w-20" />
             </div>
             <h1 className="font-heading text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl text-foreground">
               Learn Smarter
@@ -108,7 +108,7 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 text-center">
             <div className="mx-auto max-w-2xl">
               <div className="mb-6 flex justify-center">
-                <NexoLogo className="h-14 w-14" />
+                <LubbLogo className="h-14 w-14" />
               </div>
               <h2 className="font-heading text-3xl font-bold mb-4">
                 Ready to learn smarter?
@@ -127,7 +127,7 @@ export default function LandingPage() {
 
         <footer className="border-t py-8 bg-muted">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} EduAI. Built with Next.js & Supabase.
+            &copy; {new Date().getFullYear()} Ulu Al Albab. Built with Next.js & Supabase.
           </div>
         </footer>
       </main>

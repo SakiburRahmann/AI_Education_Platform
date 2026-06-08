@@ -45,7 +45,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
         <MessageSquare className="mb-4 h-10 w-10 text-muted-foreground/40" />
         <h2 className="font-heading text-lg font-semibold mb-1">Post not found</h2>
         <p className="text-sm text-muted-foreground">This post may have been deleted.</p>
-        <Link href="/dashboard/community" className="mt-4 text-sm text-eduai-primary hover:underline">
+        <Link href="/dashboard/community" className="mt-4 text-sm text-ulu-al-albab-primary hover:underline">
           Back to community
         </Link>
       </div>
@@ -77,7 +77,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
             <button
               onClick={() => toggleVote(post.id, "up")}
               className={`flex items-center justify-center rounded p-2 transition-colors min-h-[44px] min-w-[44px] ${
-                userVote === "up" ? "text-eduai-primary" : "text-muted-foreground hover:text-eduai-primary"
+                userVote === "up" ? "text-ulu-al-albab-primary" : "text-muted-foreground hover:text-ulu-al-albab-primary"
               }`}
             >
               <ThumbsUp className="h-5 w-5" />

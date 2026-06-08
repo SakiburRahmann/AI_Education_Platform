@@ -43,9 +43,9 @@ function formatSize(bytes: number): string {
 }
 
 const FILE_ICONS: Record<string, string> = {
-  pdf: "text-eduai-error",
-  docx: "text-eduai-secondary",
-  pptx: "text-eduai-accent",
+  pdf: "text-ulu-al-albab-error",
+  docx: "text-ulu-al-albab-secondary",
+  pptx: "text-ulu-al-albab-accent",
   txt: "text-muted-foreground",
 };
 
@@ -453,7 +453,7 @@ export default function ChatPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       <span className="text-xs font-medium">
-                        {msg.role === "assistant" ? "Assistant" : "You"}
+                        {msg.role === "assistant" ? "Lubb" : "You"}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatTime(msg.createdAt)}
@@ -489,7 +489,7 @@ export default function ChatPage() {
                               awardAchievement("first_save");
                               toast.success("Saved as lesson");
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-eduai-primary hover:border-eduai-primary/30 transition-colors"
+                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-ulu-al-albab-primary hover:border-ulu-al-albab-primary/30 transition-colors"
                           >
                             <BookOpen className="h-3 w-3" />
                             Save as Lesson
@@ -501,7 +501,7 @@ export default function ChatPage() {
                               awardAchievement("first_save");
                               toast.success("Saved as quiz");
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-eduai-accent hover:border-eduai-accent/30 transition-colors"
+                            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] text-muted-foreground hover:text-ulu-al-albab-accent hover:border-ulu-al-albab-accent/30 transition-colors"
                           >
                             <HelpCircle className="h-3 w-3" />
                             Save as Quiz
@@ -521,7 +521,7 @@ export default function ChatPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs font-medium">Assistant</span>
+                      <span className="text-xs font-medium">Lubb</span>
                     </div>
                     <div className="mt-1 text-sm leading-relaxed">
                       {streamReasoning && (

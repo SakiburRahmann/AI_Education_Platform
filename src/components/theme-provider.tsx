@@ -9,7 +9,7 @@ export function ThemeProvider({
   ...props
 }: ComponentProps<typeof NextThemesProvider>) {
   useEffect(() => {
-    const saved = localStorage.getItem("eduai-theme") || "neutral";
+    const saved = localStorage.getItem("ulu-al-albab-theme") || "neutral";
     document.documentElement.setAttribute("data-theme", saved);
   }, []);
 

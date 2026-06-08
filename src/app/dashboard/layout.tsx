@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { NexoLogo } from "@/components/ui/nexo-logo";
+import { LubbLogo } from "@/components/ui/lubb-logo";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import {
   LayoutDashboard,
@@ -59,7 +59,7 @@ export default function DashboardLayout({
     <div className="flex h-full flex-col py-4">
       <div className="flex items-center justify-between px-4 mb-6">
         <Link href="/dashboard">
-          <NexoLogo showText textSize="sm" />
+          <LubbLogo showText textSize="sm" />
         </Link>
       </div>
       <nav className="flex-1 space-y-1 px-3">

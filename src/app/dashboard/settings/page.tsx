@@ -28,7 +28,7 @@ export default function SettingsPage() {
       const data: Record<string, any> = {};
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key?.startsWith("eduai-")) {
+        if (key?.startsWith("ulu-al-albab-")) {
           try {
             data[key] = JSON.parse(localStorage.getItem(key) || "null");
           } catch {
@@ -40,7 +40,7 @@ export default function SettingsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `eduai-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `ulu-al-albab-data-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
       toast.success("Data exported");
@@ -54,10 +54,10 @@ export default function SettingsPage() {
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key?.startsWith("eduai-")) keysToRemove.push(key);
+        if (key?.startsWith("ulu-al-albab-")) keysToRemove.push(key);
       }
       keysToRemove.forEach((k) => localStorage.removeItem(k));
-      toast.success("All EduAI data cleared. Page will reload.");
+      toast.success("All Ulu Al Albab data cleared. Page will reload.");
       setTimeout(() => window.location.reload(), 1000);
     } catch {
       toast.error("Failed to clear data");
@@ -82,37 +82,37 @@ export default function SettingsPage() {
       items: [
         {
           label: "Export Data",
-          description: "Download all your EduAI data as JSON",
+          description: "Download all your Ulu Al Albab data as JSON",
           action: { label: "Export", onClick: exportData },
         },
         {
           label: "Clear Conversations",
           description: "Remove all chat conversations",
-          action: { label: clearing === "eduai-conversations" ? "Clearing..." : "Clear", onClick: () => clearStorage("eduai-conversations", "Conversations"), danger: true },
+          action: { label: clearing === "ulu-al-albab-conversations" ? "Clearing..." : "Clear", onClick: () => clearStorage("ulu-al-albab-conversations", "Conversations"), danger: true },
         },
         {
           label: "Clear Lessons",
           description: "Remove all saved lessons",
-          action: { label: clearing === "eduai-lessons" ? "Clearing..." : "Clear", onClick: () => clearStorage("eduai-lessons", "Lessons"), danger: true },
+          action: { label: clearing === "ulu-al-albab-lessons" ? "Clearing..." : "Clear", onClick: () => clearStorage("ulu-al-albab-lessons", "Lessons"), danger: true },
         },
         {
           label: "Clear Quizzes",
           description: "Remove all saved quizzes",
-          action: { label: clearing === "eduai-quizzes" ? "Clearing..." : "Clear", onClick: () => clearStorage("eduai-quizzes", "Quizzes"), danger: true },
+          action: { label: clearing === "ulu-al-albab-quizzes" ? "Clearing..." : "Clear", onClick: () => clearStorage("ulu-al-albab-quizzes", "Quizzes"), danger: true },
         },
         {
           label: "Clear Community Posts",
           description: "Remove all community posts and comments",
-          action: { label: clearing === "eduai-community-posts" ? "Clearing..." : "Clear", onClick: () => { clearStorage("eduai-community-posts", "Posts"); clearStorage("eduai-community-comments", "Comments"); clearStorage("eduai-community-votes", "Votes"); }, danger: true },
+          action: { label: clearing === "ulu-al-albab-community-posts" ? "Clearing..." : "Clear", onClick: () => { clearStorage("ulu-al-albab-community-posts", "Posts"); clearStorage("ulu-al-albab-community-comments", "Comments"); clearStorage("ulu-al-albab-community-votes", "Votes"); }, danger: true },
         },
         {
           label: "Clear Gamification",
           description: "Reset XP, streak, and achievements",
-          action: { label: clearing === "eduai-gamification" ? "Clearing..." : "Reset", onClick: () => clearStorage("eduai-gamification", "Gamification"), danger: true },
+          action: { label: clearing === "ulu-al-albab-gamification" ? "Clearing..." : "Reset", onClick: () => clearStorage("ulu-al-albab-gamification", "Gamification"), danger: true },
         },
         {
           label: "Clear All Data",
-          description: "Remove ALL EduAI data from this browser",
+          description: "Remove ALL Ulu Al Albab data from this browser",
           action: { label: "Clear All", onClick: clearAll, danger: true },
         },
       ],
@@ -123,7 +123,7 @@ export default function SettingsPage() {
       items: [
         {
           label: "Version",
-          description: "EduAI v1.0.0 — Neural Bloom",
+          description: "Ulu Al Albab v1.0.0 — Powered by Lubb AI",
         },
         {
           label: "Data Storage",
@@ -189,7 +189,7 @@ export default function SettingsPage() {
           <div>
             <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">Data Privacy Notice</p>
             <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
-              All your data is stored in your browser's localStorage. Clearing your browser data will remove all EduAI content. 
+              All your data is stored in your browser's localStorage. Clearing your browser data will remove all Ulu Al Albab content. 
               Export your data before clearing if you want to keep it.
             </p>
           </div>

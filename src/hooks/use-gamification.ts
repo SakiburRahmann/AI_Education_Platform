@@ -16,7 +16,7 @@ export type GamificationState = {
   transactions: XPTransaction[];
 };
 
-const STORAGE_KEY = "eduai-gamification";
+const STORAGE_KEY = "ulu-al-albab-gamification";
 
 export const ACHIEVEMENT_DEFS: Record<string, { name: string; desc: string; icon: string }> = {
   first_message: { name: "First Steps", desc: "Send your first message", icon: "💬" },

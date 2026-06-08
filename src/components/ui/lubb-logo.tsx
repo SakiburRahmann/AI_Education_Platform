@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 
-type NexoLogoProps = ComponentProps<"svg"> & {
+type LubbLogoProps = ComponentProps<"svg"> & {
   showText?: boolean;
   textSize?: "sm" | "md" | "lg";
   variant?: "neutral" | "cozy";
@@ -12,20 +12,20 @@ const textSizes = {
   lg: "text-2xl",
 };
 
-export function NexoLogo({
+export function LubbLogo({
   showText = false,
   textSize = "md",
   variant,
   className,
   ...props
-}: NexoLogoProps) {
+}: LubbLogoProps) {
   return (
     <div className={`inline-flex items-center gap-2 ${className ?? ""}`}>
       <svg
         viewBox="0 0 40 40"
         fill="none"
         className="h-8 w-8 shrink-0"
-        aria-label="EduAI logo"
+        aria-label="Ulu Al Albab logo"
         {...props}
       >
         <circle cx="20" cy="20" r="18" className="fill-current" opacity="0.08" />
@@ -46,7 +46,7 @@ export function NexoLogo({
         <span
           className={`font-heading font-bold tracking-tight ${textSizes[textSize]}`}
         >
-          Edu<span className="text-current opacity-80">AI</span>
+          Lubb <span className="text-current opacity-80">AI</span>
         </span>
       )}
     </div>

@@ -12,7 +12,7 @@ export type LocalLesson = {
   createdAt: string;
 };
 
-const STORAGE_KEY = "eduai-lessons";
+const STORAGE_KEY = "ulu-al-albab-lessons";
 
 function load(): LocalLesson[] {
   if (typeof window === "undefined") return [];

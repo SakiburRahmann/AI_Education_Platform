@@ -42,16 +42,16 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  --color-eduai-primary: #6C3CE1;
-  --color-eduai-primary-light: #8B65F0;
-  --color-eduai-primary-dark: #4A28A8;
-  --color-eduai-secondary: #0099FF;
-  --color-eduai-accent: #FFB800;
-  --color-eduai-gold: #FFB800;
-  --color-eduai-success: #00C853;
-  --color-eduai-error: #FF3B5C;
-  --color-eduai-xp: #8B65F0;
-  --color-eduai-streak: #FF6B35;
+  --color-ulu-al-albab-primary: #6C3CE1;
+  --color-ulu-al-albab-primary-light: #8B65F0;
+  --color-ulu-al-albab-primary-dark: #4A28A8;
+  --color-ulu-al-albab-secondary: #0099FF;
+  --color-ulu-al-albab-accent: #FFB800;
+  --color-ulu-al-albab-gold: #FFB800;
+  --color-ulu-al-albab-success: #00C853;
+  --color-ulu-al-albab-error: #FF3B5C;
+  --color-ulu-al-albab-xp: #8B65F0;
+  --color-ulu-al-albab-streak: #FF6B35;
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
