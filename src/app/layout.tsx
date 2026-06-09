@@ -95,6 +95,7 @@ const fredoka = Fredoka({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ululalbab.vercel.app"),
+  applicationName: "Ulul Albab",
   title: {
     default: "Ulul Albab — Learn with Lubb AI",
     template: "%s | Ulul Albab",
@@ -165,19 +166,31 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{
               __html: JSON.stringify({
                 "@context": "https://schema.org",
-                "@type": "WebApplication",
-                name: "Ulul Albab",
-                applicationCategory: "EducationalApplication",
-                operatingSystem: "Web",
-                description:
-                  "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
-                url: "https://ululalbab.vercel.app",
-                author: { "@type": "Organization", name: "Ulul Albab" },
-                offers: {
-                  "@type": "Offer",
-                  price: "0",
-                  priceCurrency: "USD",
-                },
+                "@graph": [
+                  {
+                    "@type": "WebSite",
+                    name: "Ulul Albab",
+                    alternateName: "Ulul Albab — Learn with Lubb AI",
+                    url: "https://ululalbab.vercel.app",
+                    description:
+                      "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                  },
+                  {
+                    "@type": "WebApplication",
+                    name: "Ulul Albab",
+                    applicationCategory: "EducationalApplication",
+                    operatingSystem: "Web",
+                    description:
+                      "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                    url: "https://ululalbab.vercel.app",
+                    author: { "@type": "Organization", name: "Ulul Albab" },
+                    offers: {
+                      "@type": "Offer",
+                      price: "0",
+                      priceCurrency: "USD",
+                    },
+                  },
+                ],
               }),
             }}
           />
