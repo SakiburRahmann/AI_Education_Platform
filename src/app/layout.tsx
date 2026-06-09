@@ -122,16 +122,21 @@ export const metadata: Metadata = {
     description:
       "Upload your materials, chat with Lubb AI, generate interactive lessons and quizzes, and compete with others in a gamified learning platform.",
     url: "https://ululalbab.vercel.app",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ulul Albab — Learn with Lubb AI",
     description:
       "AI-powered learning platform. Chat with Lubb AI, generate lessons & quizzes, earn XP.",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: "https://ululalbab.vercel.app",
   },
   verification: {
     google: "LDxHDWNF7ouKXdXc2MUgxgmeBKkH9lMHz_HuOVTuAtE",

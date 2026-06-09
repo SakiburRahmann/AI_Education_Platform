@@ -13,6 +13,12 @@ export default function LandingPage() {
             <div className="flex items-center gap-1 sm:gap-3 flex-wrap justify-end">
               <ThemeSwitcher />
               <Link
+                href="/blog"
+                className="rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+              >
+                Blog
+              </Link>
+              <Link
                 href="/auth"
                 className="rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-foreground transition-colors hover:bg-muted"
               >
