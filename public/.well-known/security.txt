@@ -1,0 +1,15 @@
+# Security Contact
+# If you discover a security vulnerability in Ulul Albab,
+# please report it privately so we can fix it before disclosure.
+
+Contact: mailto:security@ululalbab.com
+Encryption: https://ululalbab.vercel.app/.well-known/pgp-key.txt
+
+# Policy
+Policy: https://ululalbab.vercel.app/security-policy
+
+# Preferred-Languages: en
+# Canonical: https://ululalbab.vercel.app/.well-known/security.txt
+
+# Expiry
+Expires: 2027-06-15T00:00:00.000Z
