@@ -1,7 +1,18 @@
+import { createClient } from "@/lib/supabase/server";
 import { streamWithFallback } from "@/lib/ai/models";
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const { messages, context, files } = await request.json();
 
     if (!messages || !Array.isArray(messages)) {
@@ -14,7 +25,6 @@ export async function POST(request: Request) {
     const hasImages = !!files?.length;
     const hasTextFiles = !!context;
 
-    // No system prompt — AI behaves as Google trained it
     const systemPrompt: string | undefined = hasTextFiles ? `The user uploaded study material:\n\n${context}` : undefined;
 
     const buildMessages = () =>

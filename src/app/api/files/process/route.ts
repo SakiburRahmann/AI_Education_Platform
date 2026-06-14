@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { extractTextFromFile, isTextExtractable } from "@/lib/files/extract";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
@@ -6,6 +7,13 @@ const IMAGE_TYPES = new Set(["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", 
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
@@ -18,6 +26,10 @@ export async function POST(request: NextRequest) {
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json({ error: "File too large (max 50MB)" }, { status: 400 });
+    }
+
+    if (!isTextExtractable(ext) && !IMAGE_TYPES.has(ext)) {
+      return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
     }
 
     let text: string | null = null;
