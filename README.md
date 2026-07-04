@@ -10,7 +10,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Google AI](https://img.shields.io/badge/Google_AI(Gemini/Gemma)-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
-[![MIT License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 
 <a href="https://ululalbab.vercel.app" target="_blank">**🌐 Visit Ulul Albab**</a>
@@ -515,7 +515,7 @@ Found a bug? [Open an issue](https://github.com/your-username/ai-education-platf
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+Copyright © 2026 Sakibur Rahman. All rights reserved. This project is proprietary and not open-source. See the [LICENSE](LICENSE) file for details.
 
 ---
 
