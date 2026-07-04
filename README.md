@@ -515,7 +515,7 @@ Found a bug? [Open an issue](https://github.com/your-username/ai-education-platf
 
 ## 📄 License
 
-Proprietary — All Rights Reserved.
+Copyright © 2026 Sakibur Rahman. All rights reserved.
 
 ---
 
