@@ -69,13 +69,15 @@ export async function checkRateLimit(
 
     if (table === "rate_limits") {
       // Cleanup old entries first (best-effort)
-      await supabase
-        .from("rate_limits")
-        .delete()
-        .lt("created_at", new Date(now - windowMs * 2).toISOString())
-        .limit(1000)
-        .then(() => {})
-        .catch(() => {});
+      try {
+        await supabase
+          .from("rate_limits")
+          .delete()
+          .lt("created_at", new Date(now - windowMs * 2).toISOString())
+          .limit(1000);
+      } catch {
+        // Cleanup failures are non-critical
+      }
 
       // Count existing requests in this window
       const { count } = await supabase
@@ -121,13 +123,15 @@ export async function checkRateLimit(
       };
     } else {
       // Auth attempts table
-      await supabase
-        .from("auth_attempts")
-        .delete()
-        .lt("created_at", new Date(now - windowMs * 2).toISOString())
-        .limit(1000)
-        .then(() => {})
-        .catch(() => {});
+      try {
+        await supabase
+          .from("auth_attempts")
+          .delete()
+          .lt("created_at", new Date(now - windowMs * 2).toISOString())
+          .limit(1000);
+      } catch {
+        // Cleanup failures are non-critical
+      }
 
       const { count } = await supabase
         .from("auth_attempts")
