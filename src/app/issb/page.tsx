@@ -9,7 +9,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 const GOLD = "#D4A84B";
@@ -159,14 +158,8 @@ export default function CrucibleBoardLanding() {
             {/* Mobile menu trigger */}
             <div className="md:hidden">
               <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-[#8899B4] hover:text-[#F0F4F8] hover:bg-[#1E2A45]/50"
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
+                <SheetTrigger className="text-[#8899B4] hover:text-[#F0F4F8] hover:bg-[#1E2A45]/50 rounded-lg p-2 transition-colors">
+                  <Menu className="h-5 w-5" />
                 </SheetTrigger>
                 <SheetContent
                   side="right"
