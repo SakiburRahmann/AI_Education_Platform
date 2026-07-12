@@ -2,15 +2,7 @@
  * HTML sanitizer using DOMPurify to safely render HTML content.
  * Used by the blog to prevent XSS from dangerouslySetInnerHTML.
  */
-
-let dompurify: typeof import("isomorphic-dompurify") | null = null;
-
-async function getDOMPurify() {
-  if (!dompurify) {
-    dompurify = (await import("isomorphic-dompurify")).default;
-  }
-  return dompurify;
-}
+import DOMPurify from "isomorphic-dompurify";
 
 /**
  * Sanitize HTML string, allowing only safe tags and attributes.
@@ -18,8 +10,7 @@ async function getDOMPurify() {
  */
 export async function sanitizeHtml(html: string): Promise<string> {
   try {
-    const purify = await getDOMPurify();
-    return purify.sanitize(html, {
+    return DOMPurify.sanitize(html, {
       ALLOWED_TAGS: [
         "p", "h1", "h2", "h3", "h4", "h5", "h6",
         "ul", "ol", "li",
