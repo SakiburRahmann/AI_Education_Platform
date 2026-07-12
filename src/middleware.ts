@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_MAX = 20;
+const RATE_LIMIT_MAX = 100;
 const RATE_LIMIT_WINDOW = 60_000;
 
 function isRateLimited(ip: string): boolean {
@@ -17,9 +17,12 @@ function isRateLimited(ip: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (isRateLimited(ip)) {
-    return new NextResponse("Too Many Requests", { status: 429 });
+  // Only rate-limit API routes, not static pages
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    if (isRateLimited(ip)) {
+      return new NextResponse("Too Many Requests", { status: 429 });
+    }
   }
 
   let supabaseResponse = NextResponse.next({ request });

@@ -13,23 +13,23 @@ export type LocalLesson = {
   createdAt: string;
 };
 
-const STORAGE_KEY = "ulul-albab-lessons";
+const STORAGE_KEY = "ulul-albab-lessons-cache";
 
-function load(): LocalLesson[] {
+function loadCache(): LocalLesson[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") ?? [];
   } catch {
     return [];
   }
 }
 
-function save(lessons: LocalLesson[]) {
+function saveCache(lessons: LocalLesson[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(lessons));
   } catch (e) {
-    console.warn("Failed to save lessons:", e);
+    console.warn("Failed to cache lessons:", e);
   }
 }
 
@@ -37,29 +37,22 @@ export function useLessonsStorage() {
   const [lessons, setLessons] = useState<LocalLesson[]>([]);
   const [loaded, setLoaded] = useState(false);
 
+  // On mount: fetch from Supabase as PRIMARY, fall back to local cache
   useEffect(() => {
-    const local = load();
-    setLessons(local);
-    setLoaded(true);
-
-    // Fetch from Supabase and merge (if authenticated)
     fetchLessonsFromSupabase().then((remote) => {
       if (remote.length > 0) {
-        // Merge: prefer local for conflicts, add remote ones not in local
-        const localIds = new Set(local.map((l) => l.id));
-        const merged = [...local];
-        for (const r of remote) {
-          if (!localIds.has(r.id)) {
-            merged.push(r);
-          }
-        }
-        setLessons(merged);
+        setLessons(remote);
+        saveCache(remote);
+      } else {
+        const cached = loadCache();
+        if (cached.length > 0) setLessons(cached);
       }
+      setLoaded(true);
     });
   }, []);
 
   useEffect(() => {
-    if (loaded) save(lessons);
+    if (loaded && lessons.length > 0) saveCache(lessons);
   }, [lessons, loaded]);
 
   const addLesson = useCallback((title: string, subject: string, content: string) => {
@@ -71,17 +64,12 @@ export function useLessonsStorage() {
       createdAt: new Date().toISOString(),
     };
     setLessons((prev) => [lesson, ...prev]);
-
-    // Sync to Supabase in background
     syncLessonToSupabase(lesson);
-
     return lesson.id;
   }, []);
 
   const deleteLesson = useCallback((id: string) => {
     setLessons((prev) => prev.filter((l) => l.id !== id));
-
-    // Delete from Supabase in background
     deleteLessonFromSupabase(id);
   }, []);
 

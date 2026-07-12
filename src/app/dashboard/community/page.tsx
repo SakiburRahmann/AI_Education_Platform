@@ -37,6 +37,7 @@ export default function CommunityPage() {
     createClient().auth.getUser().then(({ data }) => setUser(data.user));
   }, []);
 
+  const userId = user?.id || "";
   const username = user?.email?.split("@")[0] || "Anonymous";
 
   const handleSubmit = () => {
@@ -148,7 +149,7 @@ export default function CommunityPage() {
                         <MessageSquare className="h-3 w-3" />
                         {post.commentCount}
                       </span>
-                      {post.author === username && (
+                      {(post as any).authorId === userId && (
                         <button
                           onClick={() => deletePost(post.id)}
                           className="text-muted-foreground hover:text-destructive transition-colors"

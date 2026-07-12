@@ -20,8 +20,8 @@ export type GamificationState = {
 const STORAGE_KEY = "ulul-albab-gamification";
 
 export const ACHIEVEMENT_DEFS: Record<string, { name: string; desc: string; icon: string }> = {
-  first_message: { name: "First Steps", desc: "Earn your first XP", icon: "💬" },
-  five_messages: { name: "XP Collector", desc: "Earn XP 25 times", icon: "🗣️" },
+  first_message: { name: "First Steps", desc: "Earn 15 XP", icon: "💬" },
+  five_messages: { name: "XP Collector", desc: "Earn 375 XP", icon: "🗣️" },
   first_lesson: { name: "Knowledge Seeker", desc: "View your first lesson", icon: "📖" },
   five_lessons: { name: "Quick Learner", desc: "Complete 5 lessons", icon: "📚" },
   first_quiz: { name: "Quiz Rookie", desc: "Complete your first quiz", icon: "❓" },
@@ -48,35 +48,16 @@ function defaultState(): GamificationState {
   };
 }
 
-function load(): GamificationState {
+function loadFromLocal(): GamificationState {
   if (typeof window === "undefined") return defaultState();
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultState();
-    const parsed = JSON.parse(raw) as GamificationState;
-    const today = new Date().toISOString().slice(0, 10);
-    if (parsed.lastActiveDate && parsed.lastActiveDate !== today) {
-      const lastDate = new Date(parsed.lastActiveDate);
-      const diffDays = Math.floor(
-        (Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
-      if (diffDays === 1) {
-        parsed.streakCount += 1;
-        if (parsed.streakCount > parsed.longestStreak) {
-          parsed.longestStreak = parsed.streakCount;
-        }
-      } else if (diffDays > 1) {
-        parsed.streakCount = 0;
-      }
-      parsed.lastActiveDate = today;
-    }
-    return parsed;
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") ?? defaultState();
   } catch {
     return defaultState();
   }
 }
 
-function save(state: GamificationState) {
+function saveToLocal(state: GamificationState) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -102,10 +83,34 @@ function levelProgress(xp: number): { current: number; next: number; progress: n
   return { current: xp - prev, next: next - prev, progress: (xp - prev) / (next - prev) };
 }
 
+function applyStreakCheck(state: GamificationState): GamificationState {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!state.lastActiveDate || state.lastActiveDate === today) return state;
+
+  const lastDate = new Date(state.lastActiveDate);
+  const diffDays = Math.floor(
+    (Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays === 1) {
+    const newStreak = state.streakCount + 1;
+    return {
+      ...state,
+      streakCount: newStreak,
+      longestStreak: Math.max(state.longestStreak, newStreak),
+      lastActiveDate: today,
+    };
+  } else if (diffDays > 1) {
+    return { ...state, streakCount: 0, lastActiveDate: today };
+  }
+  return state;
+}
+
+/** Check achievements based on XP (not transaction count) for cross-device consistency */
 function checkAchievements(state: GamificationState): string[] {
   const unlocked: string[] = [];
-  if (state.transactions.length >= 1 && !state.achievements.includes("first_message")) unlocked.push("first_message");
-  if (state.transactions.length >= 25 && !state.achievements.includes("five_messages")) unlocked.push("five_messages");
+  if (state.xp >= 15 && !state.achievements.includes("first_message")) unlocked.push("first_message");
+  if (state.xp >= 375 && !state.achievements.includes("five_messages")) unlocked.push("five_messages");
   if (state.xp >= 100 && !state.achievements.includes("xp_100")) unlocked.push("xp_100");
   if (state.xp >= 500 && !state.achievements.includes("xp_500")) unlocked.push("xp_500");
   if (state.xp >= 1000 && !state.achievements.includes("xp_1000")) unlocked.push("xp_1000");
@@ -122,27 +127,36 @@ export function useGamification() {
   const xpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // On mount: fetch from Supabase as PRIMARY, fall back to localStorage cache
   useEffect(() => {
-    const s = load();
-    const newAchievements = checkAchievements(s);
-    if (newAchievements.length > 0) {
-      s.achievements = [...new Set([...s.achievements, ...newAchievements])];
-    }
-    setState(s);
-    setLoaded(true);
-
-    // Try to merge with Supabase data (if authenticated)
     fetchGamificationFromSupabase().then((supabaseData) => {
       if (supabaseData) {
-        setState((prev) => ({
-          ...prev,
-          xp: Math.max(prev.xp, supabaseData.xp),
-          level: Math.max(prev.level, supabaseData.level),
-          streakCount: Math.max(prev.streakCount, supabaseData.streakCount),
-          longestStreak: Math.max(prev.longestStreak, supabaseData.longestStreak),
-          achievements: [...new Set([...prev.achievements, ...supabaseData.achievements])],
-        }));
+        let s: GamificationState = {
+          xp: supabaseData.xp,
+          level: supabaseData.level,
+          streakCount: supabaseData.streakCount,
+          longestStreak: supabaseData.longestStreak,
+          lastActiveDate: new Date().toISOString().slice(0, 10),
+          achievements: supabaseData.achievements,
+          transactions: supabaseData.transactions || [],
+        };
+        s = applyStreakCheck(s);
+        const newAchievements = checkAchievements(s);
+        if (newAchievements.length > 0) {
+          s.achievements = [...new Set([...s.achievements, ...newAchievements])];
+        }
+        setState(s);
+        saveToLocal(s);
+      } else {
+        // Fall back to localStorage
+        const local = loadFromLocal();
+        const withStreak = applyStreakCheck(local);
+        const newAchievements = checkAchievements(withStreak);
+        withStreak.achievements = [...new Set([...withStreak.achievements, ...newAchievements])];
+        setState(withStreak);
+        saveToLocal(withStreak);
       }
+      setLoaded(true);
     });
   }, []);
 
@@ -154,12 +168,11 @@ export function useGamification() {
     };
   }, []);
 
-  // Save to localStorage on state change
+  // Save to localStorage + sync to Supabase on state change
   useEffect(() => {
     if (loaded) {
-      save(state);
+      saveToLocal(state);
 
-      // Debounce Supabase sync
       if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
       syncTimeoutRef.current = setTimeout(() => {
         const syncData: SyncGamificationData = {
@@ -169,7 +182,7 @@ export function useGamification() {
           longestStreak: state.longestStreak,
           lastActiveDate: state.lastActiveDate,
           achievements: state.achievements,
-          recentTransactions: state.transactions.slice(-10), // Only sync last 10 to avoid unbounded writes
+          recentTransactions: state.transactions.slice(-10),
         };
         syncGamificationToSupabase(syncData);
       }, 2000);
@@ -178,8 +191,6 @@ export function useGamification() {
 
   const awardXP = useCallback((amount: number, reason: string) => {
     setLastXpEarned({ amount, reason });
-
-    // Clear any existing timer
     if (xpTimerRef.current) clearTimeout(xpTimerRef.current);
     xpTimerRef.current = setTimeout(() => setLastXpEarned(null), 2000);
 

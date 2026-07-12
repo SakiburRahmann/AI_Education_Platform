@@ -13,23 +13,23 @@ export type LocalQuiz = {
   createdAt: string;
 };
 
-const STORAGE_KEY = "ulul-albab-quizzes";
+const STORAGE_KEY = "ulul-albab-quizzes-cache";
 
-function load(): LocalQuiz[] {
+function loadCache(): LocalQuiz[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") ?? [];
   } catch {
     return [];
   }
 }
 
-function save(quizzes: LocalQuiz[]) {
+function saveCache(quizzes: LocalQuiz[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(quizzes));
   } catch (e) {
-    console.warn("Failed to save quizzes:", e);
+    console.warn("Failed to cache quizzes:", e);
   }
 }
 
@@ -37,28 +37,22 @@ export function useQuizzesStorage() {
   const [quizzes, setQuizzes] = useState<LocalQuiz[]>([]);
   const [loaded, setLoaded] = useState(false);
 
+  // On mount: fetch from Supabase as PRIMARY, fall back to local cache
   useEffect(() => {
-    const local = load();
-    setQuizzes(local);
-    setLoaded(true);
-
-    // Fetch from Supabase and merge
     fetchQuizzesFromSupabase().then((remote) => {
       if (remote.length > 0) {
-        const localIds = new Set(local.map((q) => q.id));
-        const merged = [...local];
-        for (const r of remote) {
-          if (!localIds.has(r.id)) {
-            merged.push(r);
-          }
-        }
-        setQuizzes(merged);
+        setQuizzes(remote);
+        saveCache(remote);
+      } else {
+        const cached = loadCache();
+        if (cached.length > 0) setQuizzes(cached);
       }
+      setLoaded(true);
     });
   }, []);
 
   useEffect(() => {
-    if (loaded) save(quizzes);
+    if (loaded && quizzes.length > 0) saveCache(quizzes);
   }, [quizzes, loaded]);
 
   const addQuiz = useCallback((title: string, subject: string, content: string) => {
@@ -70,17 +64,12 @@ export function useQuizzesStorage() {
       createdAt: new Date().toISOString(),
     };
     setQuizzes((prev) => [quiz, ...prev]);
-
-    // Sync to Supabase in background
     syncQuizToSupabase(quiz);
-
     return quiz.id;
   }, []);
 
   const deleteQuiz = useCallback((id: string) => {
     setQuizzes((prev) => prev.filter((q) => q.id !== id));
-
-    // Delete from Supabase in background
     deleteQuizFromSupabase(id);
   }, []);
 

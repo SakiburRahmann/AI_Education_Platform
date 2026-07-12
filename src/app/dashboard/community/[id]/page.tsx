@@ -37,6 +37,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
   const post = posts.find((p) => p.id === id);
   const comments = getPostComments(id);
+  const userId = user?.id || "";
   const username = user?.email?.split("@")[0] || "Anonymous";
 
   if (!post) {
@@ -104,7 +105,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
                 {post.author}
               </span>
               <span>{formatDate(post.createdAt)}</span>
-              {post.author === username && (
+              {(post as any).authorId === userId && (
                 <button
                   onClick={() => { deletePost(post.id); window.location.href = "/dashboard/community"; }}
                   className="text-muted-foreground hover:text-destructive transition-colors"

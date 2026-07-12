@@ -1,11 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useGamification } from "@/hooks/use-gamification";
 import { LevelBadge } from "@/components/gamification/level-badge";
-import { Trophy, Zap, Flame, TrendingUp, Medal, Crown } from "lucide-react";
+import { Trophy, Zap, Flame, TrendingUp, Medal, Crown, Loader2 } from "lucide-react";
+
+type LeaderboardEntry = {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  xp: number;
+  level: number;
+  streak_count: number;
+  league_id: string | null;
+};
 
 export default function LeaderboardPage() {
   const { xp, level, streakCount, longestStreak, achievements, progress, xpToNextLevel } = useGamification();
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [currentUserRank, setCurrentUserRank] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/leaderboard")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.entries) {
+          setEntries(data.entries);
+          setCurrentUserRank(data.currentUserRank);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   const stats = [
     { label: "Total XP", value: xp.toLocaleString(), icon: Zap, color: "text-ulul-albab-xp" },
@@ -43,22 +70,63 @@ export default function LeaderboardPage() {
       <div className="rounded-xl border bg-card">
         <div className="flex items-center gap-2 border-b px-4 py-3">
           <Crown className="h-4 w-4 text-ulul-albab-accent" />
-          <h2 className="font-heading text-sm font-semibold">Rankings</h2>
+          <h2 className="font-heading text-sm font-semibold">Global Rankings</h2>
         </div>
         <div className="p-4">
-          <div className="flex items-center gap-4 rounded-lg border bg-muted/30 p-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ulul-albab-accent/10 text-ulul-albab-accent">
-              <Trophy className="h-5 w-5" />
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">You</p>
-              <p className="text-xs text-muted-foreground">Level {level} · {xp} XP</p>
+          ) : entries.length === 0 ? (
+            <div className="text-center py-8">
+              <Trophy className="mx-auto h-8 w-8 text-muted-foreground/40 mb-2" />
+              <p className="text-xs text-muted-foreground">
+                No rankings available yet. Start learning to appear on the leaderboard!
+              </p>
             </div>
-            <span className="shrink-0 text-xs font-bold text-ulul-albab-accent">#1</span>
-          </div>
-          <p className="mt-4 text-center text-[10px] text-muted-foreground">
-            Multi-user leaderboard coming soon with Supabase sync
-          </p>
+          ) : (
+            <div className="space-y-2">
+              {entries.slice(0, 50).map((entry, i) => {
+                const isYou = currentUserRank === i + 1;
+                const rank = i + 1;
+                const displayName = entry.display_name || entry.id.slice(0, 8);
+                return (
+                  <div
+                    key={entry.id}
+                    className={`flex items-center gap-3 rounded-lg border px-4 py-2.5 ${
+                      isYou ? "bg-primary/5 border-primary/20" : "bg-card"
+                    }`}
+                  >
+                    <span className={`w-6 text-center text-xs font-bold ${
+                      rank <= 3 ? "text-ulul-albab-accent" : "text-muted-foreground"
+                    }`}>
+                      {rank <= 3 ? ["🥇", "🥈", "🥉"][rank - 1] : `#${rank}`}
+                    </span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-bold">
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium truncate">
+                        {displayName}
+                        {isYou && <span className="ml-1.5 text-[10px] text-primary">(you)</span>}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        Level {entry.level} · Streak: {entry.streak_count}d
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-xs font-bold text-ulul-albab-xp">
+                      {entry.xp.toLocaleString()} XP
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {currentUserRank && currentUserRank > 50 && (
+            <p className="mt-3 text-center text-[10px] text-muted-foreground">
+              You are ranked #{currentUserRank} overall
+            </p>
+          )}
         </div>
       </div>
 

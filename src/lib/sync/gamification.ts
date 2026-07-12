@@ -76,13 +76,16 @@ export async function syncGamificationToSupabase(data: SyncGamificationData) {
   }
 }
 
-export async function fetchGamificationFromSupabase(): Promise<{
+export type GamificationDTO = {
   xp: number;
   level: number;
   streakCount: number;
   longestStreak: number;
   achievements: string[];
-} | null> {
+  transactions: { amount: number; reason: string; timestamp: string }[];
+};
+
+export async function fetchGamificationFromSupabase(): Promise<GamificationDTO | null> {
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -96,17 +99,22 @@ export async function fetchGamificationFromSupabase(): Promise<{
 
     if (!profile) return null;
 
-    const { data: achievements } = await supabase
-      .from("achievements")
-      .select("achievement_type")
-      .eq("user_id", user.id);
+    const [achievementsResult, transactionsResult] = await Promise.all([
+      supabase.from("achievements").select("achievement_type").eq("user_id", user.id),
+      supabase.from("xp_transactions").select("amount, reason, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
+    ]);
 
     return {
       xp: profile.xp ?? 0,
       level: profile.level ?? 1,
       streakCount: profile.streak_count ?? 0,
-      longestStreak: profile.streak_count ?? 0,
-      achievements: (achievements || []).map((a: any) => a.achievement_type),
+      longestStreak: profile.longest_streak ?? profile.streak_count ?? 0,
+      achievements: (achievementsResult.data || []).map((a: any) => a.achievement_type),
+      transactions: (transactionsResult.data || []).reverse().map((t: any) => ({
+        amount: t.amount,
+        reason: t.reason,
+        timestamp: t.created_at,
+      })),
     };
   } catch {
     return null;
