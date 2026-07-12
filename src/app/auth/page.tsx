@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, use } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,9 +12,26 @@ import {
 } from "@/components/ui/card";
 import { LubbLogo } from "@/components/ui/lubb-logo";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
+const ERROR_MESSAGES: Record<string, { title: string; message: string; action?: string }> = {
+  auth_failed: {
+    title: "Sign in failed",
+    message: "We couldn't complete the sign-in process.",
+    action: "Please try signing in again. Make sure you allow pop-ups and cookies.",
+  },
+  too_many_attempts: {
+    title: "Too many attempts",
+    message: "You've made too many sign-in attempts.",
+    action: "Please wait a minute before trying again.",
+  },
+};
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get("error");
+  const errorInfo = errorParam ? ERROR_MESSAGES[errorParam] : null;
 
   const handleGoogleLogin = useCallback(async () => {
     setLoading(true);
@@ -47,6 +64,23 @@ export default function AuthPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pb-8">
+          {/* Error banner */}
+          {errorInfo && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-center">
+              <p className="text-xs font-semibold text-red-600 dark:text-red-400">
+                {errorInfo.title}
+              </p>
+              <p className="mt-1 text-[11px] text-red-500/70">
+                {errorInfo.message}
+              </p>
+              {errorInfo.action && (
+                <p className="mt-1 text-[10px] text-red-500/50">
+                  {errorInfo.action}
+                </p>
+              )}
+            </div>
+          )}
+
           <button
             className="btn-primary w-full gap-2 text-base"
             onClick={handleGoogleLogin}
