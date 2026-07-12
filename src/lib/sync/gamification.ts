@@ -1,10 +1,6 @@
 import { createClient } from "@/lib/supabase/client";
 
-/**
- * Sync gamification state to Supabase profiles, xp_transactions, and achievements tables.
- * Falls back silently — if the user is unauthenticated or the request fails, only localStorage is used.
- */
-export type SyncGamificationData = {
+export interface SyncGamificationData {
   xp: number;
   level: number;
   streakCount: number;
@@ -12,15 +8,45 @@ export type SyncGamificationData = {
   lastActiveDate: string;
   achievements: string[];
   recentTransactions: { amount: number; reason: string; timestamp: string }[];
-};
+}
 
-export async function syncGamificationToSupabase(data: SyncGamificationData) {
+export interface GamificationDTO {
+  xp: number;
+  level: number;
+  streakCount: number;
+  longestStreak: number;
+  achievements: string[];
+  transactions: { amount: number; reason: string; timestamp: string }[];
+}
+
+interface ProfileRow {
+  xp: number | null;
+  level: number | null;
+  streak_count: number | null;
+}
+
+interface AchievementRow {
+  achievement_type: string;
+}
+
+interface TransactionRow {
+  amount: number;
+  reason: string;
+  created_at: string;
+}
+
+export async function syncGamificationToSupabase(data: SyncGamificationData): Promise<void> {
   try {
     const supabase = createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) return; // Not authenticated — skip
 
-    // Update profile XP, level, streak
+    if (authError) {
+      console.error("Auth error syncing gamification:", authError.message);
+      return;
+    }
+    if (!user) return;
+
+    // Update profile
     const { error: profileError } = await supabase
       .from("profiles")
       .update({
@@ -32,58 +58,68 @@ export async function syncGamificationToSupabase(data: SyncGamificationData) {
       .eq("id", user.id);
 
     if (profileError) {
-      // If profile doesn't exist yet (shouldn't happen but handle gracefully)
+      // Profile doesn't exist — create it
       if (profileError.code === "PGRST116") {
-        await supabase.from("profiles").insert({
+        const { error: insertError } = await supabase.from("profiles").insert({
           id: user.id,
           xp: data.xp,
           level: data.level,
           streak_count: data.streakCount,
           last_active_date: data.lastActiveDate,
         });
+        if (insertError) {
+          console.error("Failed to create profile:", insertError.message);
+        }
       } else {
-        console.warn("Failed to sync profile:", profileError);
+        console.error("Failed to sync profile:", profileError.message);
       }
     }
 
-    // Sync XP transactions (only recent ones to avoid unbounded writes)
+    // Sync XP transactions (recent only to avoid unbounded writes)
     for (const tx of data.recentTransactions) {
-      await supabase.from("xp_transactions").insert({
+      const { error: txError } = await supabase.from("xp_transactions").insert({
         user_id: user.id,
         amount: tx.amount,
         reason: tx.reason,
         created_at: tx.timestamp,
       });
+      if (txError) {
+        console.error("Failed to sync transaction:", txError.message);
+      }
     }
 
-    // Sync achievements
-    const { data: existingAchievements } = await supabase
+    // Sync new achievements
+    const { data: existingAchievements, error: achError } = await supabase
       .from("achievements")
       .select("achievement_type")
       .eq("user_id", user.id);
 
-    const existingTypes = new Set((existingAchievements || []).map((a: any) => a.achievement_type));
+    if (achError) {
+      console.error("Failed to fetch existing achievements:", achError.message);
+      return;
+    }
+
+    const existingTypes = new Set(
+      (existingAchievements || []).map((a: AchievementRow) => a.achievement_type)
+    );
     const newAchievements = data.achievements.filter((a) => !existingTypes.has(a));
 
     for (const achievementType of newAchievements) {
-      await supabase.from("achievements").insert({
+      const { error: insError } = await supabase.from("achievements").insert({
         user_id: user.id,
         achievement_type: achievementType,
       });
+      if (insError) {
+        console.error("Failed to sync achievement:", insError.message);
+      }
     }
   } catch (e) {
-    console.warn("Failed to sync gamification to Supabase:", e);
+    console.error(
+      "Failed to sync gamification to Supabase:",
+      e instanceof Error ? e.message : String(e)
+    );
   }
 }
-
-export type GamificationDTO = {
-  xp: number;
-  level: number;
-  streakCount: number;
-  longestStreak: number;
-  achievements: string[];
-  transactions: { amount: number; reason: string; timestamp: string }[];
-};
 
 export async function fetchGamificationFromSupabase(): Promise<GamificationDTO | null> {
   try {
@@ -91,32 +127,59 @@ export async function fetchGamificationFromSupabase(): Promise<GamificationDTO |
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("xp, level, streak_count")
       .eq("id", user.id)
       .single();
 
-    if (!profile) return null;
+    if (profileError || !profile) {
+      if (profileError && profileError.code !== "PGRST116") {
+        console.error("Failed to fetch profile:", profileError.message);
+      }
+      return null;
+    }
 
     const [achievementsResult, transactionsResult] = await Promise.all([
-      supabase.from("achievements").select("achievement_type").eq("user_id", user.id),
-      supabase.from("xp_transactions").select("amount, reason, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50),
+      supabase
+        .from("achievements")
+        .select("achievement_type")
+        .eq("user_id", user.id),
+      supabase
+        .from("xp_transactions")
+        .select("amount, reason, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(50),
     ]);
 
+    if (achievementsResult.error) {
+      console.error("Failed to fetch achievements:", achievementsResult.error.message);
+    }
+    if (transactionsResult.error) {
+      console.error("Failed to fetch transactions:", transactionsResult.error.message);
+    }
+
+    const p = profile as ProfileRow;
     return {
-      xp: profile.xp ?? 0,
-      level: profile.level ?? 1,
-      streakCount: profile.streak_count ?? 0,
-      longestStreak: profile.streak_count ?? 0,
-      achievements: (achievementsResult.data || []).map((a: any) => a.achievement_type),
-      transactions: (transactionsResult.data || []).reverse().map((t: any) => ({
-        amount: t.amount,
-        reason: t.reason,
-        timestamp: t.created_at,
-      })),
+      xp: p.xp ?? 0,
+      level: p.level ?? 1,
+      streakCount: p.streak_count ?? 0,
+      longestStreak: p.streak_count ?? 0,
+      achievements: (achievementsResult.data || []).map((a: AchievementRow) => a.achievement_type),
+      transactions: (transactionsResult.data || [])
+        .reverse()
+        .map((t: TransactionRow) => ({
+          amount: t.amount,
+          reason: t.reason,
+          timestamp: t.created_at,
+        })),
     };
-  } catch {
+  } catch (e) {
+    console.error(
+      "Failed to fetch gamification from Supabase:",
+      e instanceof Error ? e.message : String(e)
+    );
     return null;
   }
 }

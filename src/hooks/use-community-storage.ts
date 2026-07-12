@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   syncPostToSupabase,
   syncCommentToSupabase,
@@ -8,6 +8,8 @@ import {
   deletePostFromSupabase,
   fetchPostsFromSupabase,
   fetchCommentsFromSupabase,
+  type FetchedPost,
+  type FetchedComment,
 } from "@/lib/sync/community";
 
 function uid(): string {
@@ -40,56 +42,112 @@ const POSTS_CACHE_KEY = "ulul-albab-community-posts-cache";
 const COMMENTS_CACHE_KEY = "ulul-albab-community-comments-cache";
 const VOTES_KEY = "ulul-albab-community-votes";
 
-function loadCache<T>(key: string): T {
-  if (typeof window === "undefined") return [] as any;
-  try { return JSON.parse(localStorage.getItem(key) || "null") ?? [] as any; } catch { return [] as any; }
+function loadCache<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    console.error("Failed to load cache:", e);
+    return fallback;
+  }
 }
 
-function saveCache(key: string, data: any) {
+function saveCache(key: string, data: unknown): void {
   if (typeof window === "undefined") return;
-  try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    console.error("Failed to save cache:", e);
+  }
 }
 
 function loadVotes(): VoteMap {
   if (typeof window === "undefined") return {};
-  try { return JSON.parse(localStorage.getItem(VOTES_KEY) || "{}"); } catch { return {}; }
+  try {
+    return JSON.parse(localStorage.getItem(VOTES_KEY) || "{}");
+  } catch (e) {
+    console.error("Failed to load votes:", e);
+    return {};
+  }
 }
 
-function saveVotes(votes: VoteMap) {
+function saveVotes(votes: VoteMap): void {
   if (typeof window === "undefined") return;
-  try { localStorage.setItem(VOTES_KEY, JSON.stringify(votes)); } catch {}
+  try {
+    localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
+  } catch (e) {
+    console.error("Failed to save votes:", e);
+  }
+}
+
+function mergePosts(existing: CommunityPost[], incoming: CommunityPost[]): CommunityPost[] {
+  const map = new Map<string, CommunityPost>();
+  for (const p of existing) map.set(p.id, p);
+  for (const p of incoming) {
+    // Only merge — don't overwrite local votes or comment counts that may be pending sync
+    const existing = map.get(p.id);
+    if (existing) {
+      map.set(p.id, {
+        ...p,
+        upvotes: Math.max(p.upvotes, existing.upvotes),
+        downvotes: Math.max(p.downvotes, existing.downvotes),
+        commentCount: Math.max(p.commentCount, existing.commentCount),
+      });
+    } else {
+      map.set(p.id, p);
+    }
+  }
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 }
 
 export function useCommunityStorage() {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [votes, setVotes] = useState<VoteMap>({});
+  const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
+  const mountedRef = useRef(true);
 
   // On mount: fetch from Supabase as PRIMARY source, fall back to local cache
   useEffect(() => {
+    mountedRef.current = true;
+
     fetchPostsFromSupabase().then((remotePosts) => {
+      if (!mountedRef.current) return;
       if (remotePosts.length > 0) {
         setPosts(remotePosts);
         saveCache(POSTS_CACHE_KEY, remotePosts);
       } else {
-        // Fall back to local cache
-        const cached = loadCache<CommunityPost[]>(POSTS_CACHE_KEY);
+        const cached = loadCache<CommunityPost[]>(POSTS_CACHE_KEY, []);
         if (cached.length > 0) setPosts(cached);
       }
     });
 
-    // Load cached comments and votes for instant display
-    const cachedComments = loadCache<Comment[]>(COMMENTS_CACHE_KEY);
+    const cachedComments = loadCache<Comment[]>(COMMENTS_CACHE_KEY, []);
     if (cachedComments.length > 0) setComments(cachedComments);
     setVotes(loadVotes());
     setLoaded(true);
+    setLoading(false);
+
+    return () => { mountedRef.current = false; };
   }, []);
 
-  // Cache to localStorage whenever data changes
+  // Cache to localStorage whenever data changes (debounced)
   useEffect(() => { if (loaded && posts.length > 0) saveCache(POSTS_CACHE_KEY, posts); }, [posts, loaded]);
   useEffect(() => { if (loaded && comments.length > 0) saveCache(COMMENTS_CACHE_KEY, comments); }, [comments, loaded]);
   useEffect(() => { if (loaded) saveVotes(votes); }, [votes, loaded]);
+
+  const refreshPosts = useCallback(() => {
+    fetchPostsFromSupabase().then((remote) => {
+      if (!mountedRef.current) return;
+      if (remote.length > 0) {
+        setPosts((prev) => mergePosts(prev, remote));
+      }
+    });
+  }, []);
 
   const addPost = useCallback(async (title: string, content: string, author: string) => {
     const newPost: CommunityPost = {
@@ -103,28 +161,21 @@ export function useCommunityStorage() {
     // Optimistically add to UI
     setPosts((prev) => [newPost, ...prev]);
 
-    // Sync to Supabase (await it)
+    // Sync to Supabase
     const success = await syncPostToSupabase(newPost);
     if (success) {
-      // Refresh from Supabase to get the correct authorId and any server-side data
-      fetchPostsFromSupabase().then((remote) => {
-        if (remote.length > 0) setPosts(remote);
-      });
+      // Merge fresh server data instead of replacing
+      refreshPosts();
     }
 
     return newPost.id;
-  }, []);
+  }, [refreshPosts]);
 
   const deletePost = useCallback((id: string) => {
     setPosts((prev) => prev.filter((p) => p.id !== id));
     setComments((prev) => prev.filter((c) => c.postId !== id));
-    deletePostFromSupabase(id);
-
-    // Refresh from Supabase
-    fetchPostsFromSupabase().then((remote) => {
-      if (remote.length > 0) setPosts(remote);
-    });
-  }, []);
+    deletePostFromSupabase(id).then(() => refreshPosts());
+  }, [refreshPosts]);
 
   const addComment = useCallback(async (postId: string, content: string, author: string) => {
     const comment: Comment = {
@@ -140,6 +191,7 @@ export function useCommunityStorage() {
 
     // Fetch fresh comments from Supabase to get real author names
     fetchCommentsFromSupabase(postId).then((remote) => {
+      if (!mountedRef.current) return;
       if (remote.length > 0) {
         setComments((prev) => {
           const others = prev.filter((c) => c.postId !== postId);
@@ -184,5 +236,5 @@ export function useCommunityStorage() {
     ),
   [comments]);
 
-  return { posts, votes, addPost, deletePost, addComment, getPostComments, toggleVote, loaded };
+  return { posts, votes, addPost, deletePost, addComment, getPostComments, toggleVote, loaded, loading };
 }

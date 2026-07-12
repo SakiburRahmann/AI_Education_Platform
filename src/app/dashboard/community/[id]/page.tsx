@@ -105,7 +105,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
                 {post.author}
               </span>
               <span>{formatDate(post.createdAt)}</span>
-              {(post as any).authorId === userId && (
+              {post.authorId === userId && (
                 <button
                   onClick={() => { deletePost(post.id); window.location.href = "/dashboard/community"; }}
                   className="text-muted-foreground hover:text-destructive transition-colors"

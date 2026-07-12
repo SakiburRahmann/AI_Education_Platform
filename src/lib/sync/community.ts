@@ -1,11 +1,64 @@
 import { createClient } from "@/lib/supabase/client";
 
-export async function syncPostToSupabase(post: {
+export interface SyncPost {
   id: string;
   title: string;
   content: string;
   createdAt: string;
-}) {
+}
+
+export interface SyncComment {
+  id: string;
+  postId: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface FetchedPost {
+  id: string;
+  title: string;
+  content: string;
+  author: string;
+  authorId: string;
+  upvotes: number;
+  downvotes: number;
+  commentCount: number;
+  createdAt: string;
+}
+
+export interface FetchedComment {
+  id: string;
+  postId: string;
+  content: string;
+  author: string;
+  createdAt: string;
+}
+
+interface PostRow {
+  id: string;
+  title: string;
+  content: string;
+  upvotes: number | null;
+  downvotes: number | null;
+  comment_count: number | null;
+  created_at: string;
+  user_id: string;
+}
+
+interface CommentRow {
+  id: string;
+  post_id: string;
+  content: string;
+  created_at: string;
+  user_id: string;
+}
+
+interface ProfileRow {
+  id: string;
+  display_name: string | null;
+}
+
+export async function syncPostToSupabase(post: SyncPost): Promise<boolean> {
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -19,25 +72,24 @@ export async function syncPostToSupabase(post: {
       created_at: post.createdAt,
     }, { onConflict: "id" });
 
-    return !error;
+    if (error) {
+      console.error("Failed to sync post:", error.message);
+      return false;
+    }
+    return true;
   } catch (e) {
-    console.warn("Failed to sync post to Supabase:", e);
+    console.error("Failed to sync post:", e instanceof Error ? e.message : String(e));
     return false;
   }
 }
 
-export async function syncCommentToSupabase(comment: {
-  id: string;
-  postId: string;
-  content: string;
-  createdAt: string;
-}) {
+export async function syncCommentToSupabase(comment: SyncComment): Promise<boolean> {
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    await supabase.from("post_comments").insert({
+    const { error } = await supabase.from("post_comments").insert({
       id: comment.id,
       post_id: comment.postId,
       user_id: user.id,
@@ -45,9 +97,13 @@ export async function syncCommentToSupabase(comment: {
       created_at: comment.createdAt,
     });
 
+    if (error) {
+      console.error("Failed to sync comment:", error.message);
+      return false;
+    }
     return true;
   } catch (e) {
-    console.warn("Failed to sync comment to Supabase:", e);
+    console.error("Failed to sync comment:", e instanceof Error ? e.message : String(e));
     return false;
   }
 }
@@ -56,85 +112,95 @@ export async function syncVoteToSupabase(
   postId: string,
   voteType: "up" | "down",
   previousVote: "up" | "down" | null,
-) {
+): Promise<boolean> {
   try {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    await supabase.from("post_votes").delete().eq("post_id", postId).eq("user_id", user.id);
+    const { error: deleteError } = await supabase
+      .from("post_votes")
+      .delete()
+      .eq("post_id", postId)
+      .eq("user_id", user.id);
+
+    if (deleteError) {
+      console.error("Failed to clear previous vote:", deleteError.message);
+      return false;
+    }
 
     if (previousVote !== voteType) {
-      await supabase.from("post_votes").insert({
+      const { error: insertError } = await supabase.from("post_votes").insert({
         post_id: postId,
         user_id: user.id,
         vote_type: voteType,
       });
+
+      if (insertError) {
+        console.error("Failed to record vote:", insertError.message);
+        return false;
+      }
     }
 
     return true;
   } catch (e) {
-    console.warn("Failed to sync vote to Supabase:", e);
+    console.error("Failed to sync vote:", e instanceof Error ? e.message : String(e));
     return false;
   }
 }
 
-export async function deletePostFromSupabase(id: string) {
+export async function deletePostFromSupabase(id: string): Promise<boolean> {
   try {
     const supabase = createClient();
-    await supabase.from("community_posts").delete().eq("id", id);
+    const { error } = await supabase.from("community_posts").delete().eq("id", id);
+
+    if (error) {
+      console.error("Failed to delete post:", error.message);
+      return false;
+    }
+    return true;
   } catch (e) {
-    console.warn("Failed to delete post from Supabase:", e);
+    console.error("Failed to delete post:", e instanceof Error ? e.message : String(e));
+    return false;
   }
 }
 
-/** Fetch all community posts with real author display names from profiles table */
-export async function fetchPostsFromSupabase(): Promise<{
-  id: string;
-  title: string;
-  content: string;
-  author: string;
-  authorId: string;
-  upvotes: number;
-  downvotes: number;
-  commentCount: number;
-  createdAt: string;
-}[]> {
+async function buildProfilesMap(userIds: string[]): Promise<Map<string, string>> {
+  if (userIds.length === 0) return new Map();
   try {
     const supabase = createClient();
-    const { data } = await supabase
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, display_name")
+      .in("id", userIds);
+
+    const map = new Map<string, string>();
+    (profiles || []).forEach((p: ProfileRow) => {
+      map.set(p.id, p.display_name || p.id.slice(0, 8));
+    });
+    return map;
+  } catch {
+    return new Map();
+  }
+}
+
+export async function fetchPostsFromSupabase(): Promise<FetchedPost[]> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
       .from("community_posts")
-      .select(`
-        id,
-        title,
-        content,
-        upvotes,
-        downvotes,
-        comment_count,
-        created_at,
-        user_id
-      `)
+      .select("id, title, content, upvotes, downvotes, comment_count, created_at, user_id")
       .order("created_at", { ascending: false });
 
-    if (!data) return [];
-
-    // Get all unique user IDs to fetch profiles
-    const userIds = [...new Set(data.map((p: any) => p.user_id).filter(Boolean))];
-    
-    // Fetch display names from profiles
-    const profilesMap = new Map<string, string>();
-    if (userIds.length > 0) {
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, display_name")
-        .in("id", userIds);
-
-      (profiles || []).forEach((p: any) => {
-        profilesMap.set(p.id, p.display_name || p.id.slice(0, 8));
-      });
+    if (error || !data) {
+      if (error) console.error("Failed to fetch posts:", error.message);
+      return [];
     }
 
-    return data.map((p: any) => ({
+    const userIds = [...new Set(data.map((p: PostRow) => p.user_id).filter(Boolean))];
+    const profilesMap = await buildProfilesMap(userIds);
+
+    return data.map((p: PostRow): FetchedPost => ({
       id: p.id,
       title: p.title,
       content: p.content,
@@ -145,57 +211,38 @@ export async function fetchPostsFromSupabase(): Promise<{
       commentCount: p.comment_count ?? 0,
       createdAt: p.created_at,
     }));
-  } catch {
+  } catch (e) {
+    console.error("Failed to fetch posts:", e instanceof Error ? e.message : String(e));
     return [];
   }
 }
 
-/** Fetch comments for a post with author names */
-export async function fetchCommentsFromSupabase(postId: string): Promise<{
-  id: string;
-  postId: string;
-  content: string;
-  author: string;
-  createdAt: string;
-}[]> {
+export async function fetchCommentsFromSupabase(postId: string): Promise<FetchedComment[]> {
   try {
     const supabase = createClient();
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("post_comments")
-      .select(`
-        id,
-        post_id,
-        content,
-        created_at,
-        user_id
-      `)
+      .select("id, post_id, content, created_at, user_id")
       .eq("post_id", postId)
       .order("created_at", { ascending: true });
 
-    if (!data) return [];
-
-    // Get author names from profiles
-    const userIds = [...new Set(data.map((c: any) => c.user_id).filter(Boolean))];
-    const profilesMap = new Map<string, string>();
-    if (userIds.length > 0) {
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, display_name")
-        .in("id", userIds);
-
-      (profiles || []).forEach((p: any) => {
-        profilesMap.set(p.id, p.display_name || p.id.slice(0, 8));
-      });
+    if (error || !data) {
+      if (error) console.error("Failed to fetch comments:", error.message);
+      return [];
     }
 
-    return data.map((c: any) => ({
+    const userIds = [...new Set(data.map((c: CommentRow) => c.user_id).filter(Boolean))];
+    const profilesMap = await buildProfilesMap(userIds);
+
+    return data.map((c: CommentRow): FetchedComment => ({
       id: c.id,
       postId: c.post_id,
       content: c.content,
       author: profilesMap.get(c.user_id) || c.user_id?.slice(0, 8) || "Anonymous",
       createdAt: c.created_at,
     }));
-  } catch {
+  } catch (e) {
+    console.error("Failed to fetch comments:", e instanceof Error ? e.message : String(e));
     return [];
   }
 }

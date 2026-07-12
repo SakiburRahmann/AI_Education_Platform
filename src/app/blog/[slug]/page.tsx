@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { blogPosts } from "@/content/blog";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -30,6 +31,8 @@ export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const post = blogPosts.find((p) => p.slug === slug);
   if (!post) notFound();
+
+  const sanitizedContent = await sanitizeHtml(post.content);
 
   return (
     <article className="container mx-auto max-w-3xl px-4 py-16">
@@ -63,7 +66,7 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
       <div
         className="prose prose-neutral dark:prose-invert max-w-none"
-        dangerouslySetInnerHTML={{ __html: post.content }}
+        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
       />
     </article>
   );

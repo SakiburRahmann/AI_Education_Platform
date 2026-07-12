@@ -5,15 +5,9 @@ import Link from "next/link";
 import { useCommunityStorage } from "@/hooks/use-community-storage";
 import { createClient } from "@/lib/supabase/client";
 import {
-  MessageSquare, ThumbsUp, ThumbsDown, Plus, X, User,
+  MessageSquare, ThumbsUp, ThumbsDown, Plus, X, User, Loader2,
 } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short", day: "numeric", year: "numeric",
-  });
-}
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -27,7 +21,7 @@ function timeAgo(iso: string) {
 }
 
 export default function CommunityPage() {
-  const { posts, votes, addPost, deletePost, toggleVote } = useCommunityStorage();
+  const { posts, votes, addPost, deletePost, toggleVote, loading } = useCommunityStorage();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
@@ -97,7 +91,11 @@ export default function CommunityPage() {
         </div>
       )}
 
-      {sortedPosts.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center rounded-xl border bg-card py-20">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : sortedPosts.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-20 text-center">
           <MessageSquare className="mb-4 h-10 w-10 text-muted-foreground/40" />
           <h2 className="font-heading text-lg font-semibold mb-1">No posts yet</h2>
@@ -149,7 +147,7 @@ export default function CommunityPage() {
                         <MessageSquare className="h-3 w-3" />
                         {post.commentCount}
                       </span>
-                      {(post as any).authorId === userId && (
+                      {post.authorId === userId && (
                         <button
                           onClick={() => deletePost(post.id)}
                           className="text-muted-foreground hover:text-destructive transition-colors"

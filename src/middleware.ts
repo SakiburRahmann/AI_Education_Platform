@@ -1,28 +1,43 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// In-memory rate limiter — best-effort for serverless.
+// For production at scale, replace with a Supabase-based token bucket or Vercel WAF.
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 100;
 const RATE_LIMIT_WINDOW = 60_000;
 
-function isRateLimited(ip: string): boolean {
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
   const entry = rateLimit.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
-    return false;
+    return { allowed: true, remaining: RATE_LIMIT_MAX - 1, resetAt: now + RATE_LIMIT_WINDOW };
   }
   entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
+  return {
+    allowed: entry.count <= RATE_LIMIT_MAX,
+    remaining: Math.max(0, RATE_LIMIT_MAX - entry.count),
+    resetAt: entry.resetAt,
+  };
 }
 
 export async function middleware(request: NextRequest) {
   // Only rate-limit API routes, not static pages
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    if (isRateLimited(ip)) {
-      return new NextResponse("Too Many Requests", { status: 429 });
-    }
+    const result = checkRateLimit(ip);
+
+    // Set rate-limit headers on every API response
+    const response = result.allowed
+      ? NextResponse.next()
+      : new NextResponse("Too Many Requests", { status: 429 });
+
+    response.headers.set("X-RateLimit-Limit", String(RATE_LIMIT_MAX));
+    response.headers.set("X-RateLimit-Remaining", String(result.remaining));
+    response.headers.set("X-RateLimit-Reset", String(Math.ceil(result.resetAt / 1000)));
+
+    if (!result.allowed) return response;
   }
 
   let supabaseResponse = NextResponse.next({ request });
