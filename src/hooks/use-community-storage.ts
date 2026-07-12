@@ -55,8 +55,9 @@ async function loadCache<T>(key: string, fallback: T): Promise<T> {
 
 function saveCache(key: string, data: unknown): void {
   if (typeof window === "undefined") return;
-  setSecurely(key, data).catch((e) =>
-    console.error("Failed to save cache:", e instanceof Error ? e.message : String(e))
+  setSecurely(key, data).then(
+    () => {},
+    (e) => console.error("Failed to save cache:", e instanceof Error ? e.message : String(e))
   );
 }
 
@@ -72,8 +73,9 @@ async function loadVotes(): Promise<VoteMap> {
 
 function saveVotes(votes: VoteMap): void {
   if (typeof window === "undefined") return;
-  setSecurely(VOTES_KEY, votes).catch((e) =>
-    console.error("Failed to save votes:", e instanceof Error ? e.message : String(e))
+  setSecurely(VOTES_KEY, votes).then(
+    () => {},
+    (e) => console.error("Failed to save votes:", e instanceof Error ? e.message : String(e))
   );
 }
 
