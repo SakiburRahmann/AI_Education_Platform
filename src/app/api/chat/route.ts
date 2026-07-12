@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     // ── CSRF validation ──────────────────────────────────────────
     const csrfToken = extractCsrfToken(request);
-    if (!csrfToken || !validateCsrfToken(csrfToken, user.id, user.id)) {
+    if (!csrfToken || !(await validateCsrfToken(csrfToken, user.id, user.id))) {
       return new Response(JSON.stringify({ error: "Invalid CSRF token" }), {
         status: 403,
         headers: { "Content-Type": "application/json" },

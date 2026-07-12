@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     // ── CSRF validation ──────────────────────────────────────────
     const csrfToken = extractCsrfToken(request);
-    if (!csrfToken || !validateCsrfToken(csrfToken, user.id, user.id)) {
+    if (!csrfToken || !(await validateCsrfToken(csrfToken, user.id, user.id))) {
       return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
     }
 

@@ -64,7 +64,7 @@ export async function middleware(request: NextRequest) {
 
   // ── Set CSRF token for authenticated users ───────────────────────
   if (user) {
-    const token = generateCsrfToken(user.id, user.id);
+    const token = await generateCsrfToken(user.id, user.id);
     supabaseResponse.cookies.set(CSRF_TOKEN_COOKIE, token, {
       httpOnly: false, // Must be readable by client JS
       sameSite: "strict",
