@@ -113,9 +113,9 @@ export function getModelForTask(
   keyManager: AIKeyManager,
 ) {
   const modelId = router.getNextAvailableModel(task);
-  if (!modelId) throw new Error(`No available model for task: ${task}`);
+  if (!modelId) throw new Error("No available model for task");
   const apiKey = keyManager.getNextKey();
-  if (!apiKey) throw new Error("No Google AI API key available");
+  if (!apiKey) throw new Error("No API key available");
   return createGoogleGenerativeAI({ apiKey })(modelId);
 }
 
@@ -155,7 +155,7 @@ export async function generateWithRetry<T>(
     }
   }
 
-  throw lastError || new Error(`All models exhausted for task: ${task}`);
+  throw lastError || new Error("All models exhausted for task");
 }
 
 type StreamOptions = {
@@ -291,7 +291,7 @@ export async function streamWithFallback(
         });
       } catch (error: any) {
         lastError = error;
-        console.error(`Model ${modelId} failed:`, error?.message || error);
+        console.error(`Model failed:`, error?.message || error);
         if (error?.status === 429) {
           keyManager.markRateLimited(apiKey, 60);
           router.markModelRateLimited(modelId, 30);
@@ -302,11 +302,10 @@ export async function streamWithFallback(
     }
   }
 
+  // Return a safe error message — no internal model names or stack traces
   return new Response(
     JSON.stringify({
-      error: "All models exhausted",
-      lastError: lastError?.message || "Unknown",
-      retryAfter: 30,
+      error: "The AI service is temporarily unavailable. Please try again in a few minutes.",
     }),
     { status: 503, headers: { "Content-Type": "application/json" } }
   );

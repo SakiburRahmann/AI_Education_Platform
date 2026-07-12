@@ -11,6 +11,7 @@ import {
   type FetchedPost,
   type FetchedComment,
 } from "@/lib/sync/community";
+import { setSecurely, getSecurely } from "@/lib/crypto";
 
 function uid(): string {
   try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
@@ -42,50 +43,44 @@ const POSTS_CACHE_KEY = "ulul-albab-community-posts-cache";
 const COMMENTS_CACHE_KEY = "ulul-albab-community-comments-cache";
 const VOTES_KEY = "ulul-albab-community-votes";
 
-function loadCache<T>(key: string, fallback: T): T {
+async function loadCache<T>(key: string, fallback: T): Promise<T> {
   if (typeof window === "undefined") return fallback;
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    return await getSecurely<T>(key, fallback);
   } catch (e) {
-    console.error("Failed to load cache:", e);
+    console.error("Failed to load cache:", e instanceof Error ? e.message : String(e));
     return fallback;
   }
 }
 
 function saveCache(key: string, data: unknown): void {
   if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (e) {
-    console.error("Failed to save cache:", e);
-  }
+  setSecurely(key, data).catch((e) =>
+    console.error("Failed to save cache:", e instanceof Error ? e.message : String(e))
+  );
 }
 
-function loadVotes(): VoteMap {
+async function loadVotes(): Promise<VoteMap> {
   if (typeof window === "undefined") return {};
   try {
-    return JSON.parse(localStorage.getItem(VOTES_KEY) || "{}");
+    return await getSecurely<VoteMap>(VOTES_KEY, {});
   } catch (e) {
-    console.error("Failed to load votes:", e);
+    console.error("Failed to load votes:", e instanceof Error ? e.message : String(e));
     return {};
   }
 }
 
 function saveVotes(votes: VoteMap): void {
   if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
-  } catch (e) {
-    console.error("Failed to save votes:", e);
-  }
+  setSecurely(VOTES_KEY, votes).catch((e) =>
+    console.error("Failed to save votes:", e instanceof Error ? e.message : String(e))
+  );
 }
 
 function mergePosts(existing: CommunityPost[], incoming: CommunityPost[]): CommunityPost[] {
   const map = new Map<string, CommunityPost>();
   for (const p of existing) map.set(p.id, p);
   for (const p of incoming) {
-    // Only merge — don't overwrite local votes or comment counts that may be pending sync
     const existing = map.get(p.id);
     if (existing) {
       map.set(p.id, {
@@ -115,20 +110,30 @@ export function useCommunityStorage() {
   useEffect(() => {
     mountedRef.current = true;
 
-    fetchPostsFromSupabase().then((remotePosts) => {
+    (async () => {
+      const remotePosts = await fetchPostsFromSupabase();
       if (!mountedRef.current) return;
       if (remotePosts.length > 0) {
         setPosts(remotePosts);
         saveCache(POSTS_CACHE_KEY, remotePosts);
       } else {
-        const cached = loadCache<CommunityPost[]>(POSTS_CACHE_KEY, []);
+        const cached = await loadCache<CommunityPost[]>(POSTS_CACHE_KEY, []);
         if (cached.length > 0) setPosts(cached);
       }
-    });
+    })();
 
-    const cachedComments = loadCache<Comment[]>(COMMENTS_CACHE_KEY, []);
-    if (cachedComments.length > 0) setComments(cachedComments);
-    setVotes(loadVotes());
+    (async () => {
+      const cachedComments = await loadCache<Comment[]>(COMMENTS_CACHE_KEY, []);
+      if (!mountedRef.current) return;
+      if (cachedComments.length > 0) setComments(cachedComments);
+    })();
+
+    (async () => {
+      const loadedVotes = await loadVotes();
+      if (!mountedRef.current) return;
+      setVotes(loadedVotes);
+    })();
+
     setLoaded(true);
     setLoading(false);
 
@@ -164,7 +169,6 @@ export function useCommunityStorage() {
     // Sync to Supabase
     const success = await syncPostToSupabase(newPost);
     if (success) {
-      // Merge fresh server data instead of replacing
       refreshPosts();
     }
 
@@ -189,7 +193,6 @@ export function useCommunityStorage() {
 
     await syncCommentToSupabase(comment);
 
-    // Fetch fresh comments from Supabase to get real author names
     fetchCommentsFromSupabase(postId).then((remote) => {
       if (!mountedRef.current) return;
       if (remote.length > 0) {
@@ -221,7 +224,8 @@ export function useCommunityStorage() {
     }));
     setVotes((prev) => {
       if (prev[postId] === type) {
-        const { [postId]: _, ...rest } = prev;
+        const rest = { ...prev };
+        delete rest[postId];
         return rest;
       }
       return { ...prev, [postId]: type };

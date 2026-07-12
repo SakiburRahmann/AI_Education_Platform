@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { syncLessonToSupabase, deleteLessonFromSupabase, fetchLessonsFromSupabase } from "@/lib/sync/lessons";
+import { setSecurely, getSecurely } from "@/lib/crypto";
 
 function uid(): string {
   try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
@@ -15,10 +16,10 @@ export type LocalLesson = {
 
 const STORAGE_KEY = "ulul-albab-lessons-cache";
 
-function loadCache(): LocalLesson[] {
+async function loadCache(): Promise<LocalLesson[]> {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") ?? [];
+    return await getSecurely<LocalLesson[]>(STORAGE_KEY, []);
   } catch {
     return [];
   }
@@ -27,9 +28,9 @@ function loadCache(): LocalLesson[] {
 function saveCache(lessons: LocalLesson[]) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lessons));
+    setSecurely(STORAGE_KEY, lessons);
   } catch (e) {
-    console.warn("Failed to cache lessons:", e);
+    console.error("Failed to cache lessons:", e instanceof Error ? e.message : String(e));
   }
 }
 
@@ -44,8 +45,9 @@ export function useLessonsStorage() {
         setLessons(remote);
         saveCache(remote);
       } else {
-        const cached = loadCache();
-        if (cached.length > 0) setLessons(cached);
+        loadCache().then((cached) => {
+          if (cached.length > 0) setLessons(cached);
+        });
       }
       setLoaded(true);
     });

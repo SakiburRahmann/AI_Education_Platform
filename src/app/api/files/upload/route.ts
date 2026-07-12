@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { validateCsrfToken, extractCsrfToken } from "@/lib/csrf";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-const DOCUMENT_TYPES = new Set(["pdf", "docx", "pptx", "txt", "csv", "json", "xml", "md", "html", "rtf"]);
+const DOCUMENT_TYPES = new Set(["pdf", "docx", "pptx", "txt", "csv", "json", "xml", "md", "rtf"]);
+// HTML removed from DOCUMENT_TYPES — HTML files pose a Stored XSS risk in Supabase Storage
 const IMAGE_TYPES = new Set(["png", "jpg", "jpeg", "gif", "webp"]);
 
 export async function POST(request: NextRequest) {
@@ -12,6 +14,12 @@ export async function POST(request: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // ── CSRF validation ──────────────────────────────────────────
+    const csrfToken = extractCsrfToken(request);
+    if (!csrfToken || !validateCsrfToken(csrfToken, user.id, user.id)) {
+      return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
     }
 
     const formData = await request.formData();
@@ -28,16 +36,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "File too large (max 50MB)" }, { status: 400 });
     }
 
-    // Only store documents in Supabase Storage, not photos
-    const shouldStoreInSupabase = DOCUMENT_TYPES.has(ext);
-    const isImage = IMAGE_TYPES.has(ext);
-
-    if (!shouldStoreInSupabase && !isImage) {
+    // Validate file extension against allowed types
+    if (!DOCUMENT_TYPES.has(ext) && !IMAGE_TYPES.has(ext)) {
       return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+
+    // Verify magic bytes for common types
+    const isValidContent = validateFileContent(buffer, ext);
+    if (!isValidContent) {
+      return NextResponse.json({
+        error: "File content does not match its extension",
+      }, { status: 400 });
+    }
+
     let storagePath: string | null = null;
+
+    // Only store documents in Supabase Storage, not photos
+    const shouldStoreInSupabase = DOCUMENT_TYPES.has(ext);
 
     // Store documents in Supabase Storage
     if (shouldStoreInSupabase) {
@@ -50,8 +67,7 @@ export async function POST(request: NextRequest) {
         });
 
       if (uploadError) {
-        console.warn("Supabase storage upload failed:", uploadError.message);
-        // Fall back to returning the data URL only (no persistent storage)
+        console.error("Supabase storage upload failed:", uploadError.message);
       } else {
         storagePath = uploadData.path;
       }
@@ -71,7 +87,7 @@ export async function POST(request: NextRequest) {
     let text: string | null = null;
     let dataUrl: string | undefined;
 
-    if (isImage) {
+    if (IMAGE_TYPES.has(ext)) {
       const mimeType = file.type || `image/${ext === "jpg" ? "jpeg" : ext}`;
       dataUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
     }
@@ -86,10 +102,40 @@ export async function POST(request: NextRequest) {
       stored: !!storagePath,
     });
   } catch (error: any) {
-    console.error("File upload error:", error);
+    console.error("File upload error:", error instanceof Error ? error.message : String(error));
     return NextResponse.json(
-      { error: error.message || "Failed to upload file" },
+      { error: "Failed to upload file" },
       { status: 500 }
     );
+  }
+}
+
+/**
+ * Validate file content magic bytes against the declared extension.
+ * Prevents MIME type spoofing attacks.
+ */
+function validateFileContent(buffer: Buffer, ext: string): boolean {
+  if (buffer.length < 4) return true; // Too small to validate
+
+  const header = buffer.toString("hex", 0, Math.min(8, buffer.length)).toUpperCase();
+
+  switch (ext) {
+    case "pdf":
+      return header.startsWith("25504446"); // %PDF
+    case "png":
+      return header.startsWith("89504E47"); // PNG
+    case "jpg":
+    case "jpeg":
+      return header.startsWith("FFD8"); // JPEG
+    case "gif":
+      return header.startsWith("47494638"); // GIF
+    case "webp":
+      return header.startsWith("52494646"); // RIFF (WEBP)
+    case "zip":
+    case "docx":
+    case "pptx":
+      return header.startsWith("504B0304"); // ZIP
+    default:
+      return true; // Text types skip magic byte validation
   }
 }

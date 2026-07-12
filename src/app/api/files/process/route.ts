@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { extractTextFromFile, isTextExtractable } from "@/lib/files/extract";
+import { validateCsrfToken, extractCsrfToken } from "@/lib/csrf";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const IMAGE_TYPES = new Set(["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico", "avif"]);
@@ -12,6 +13,12 @@ export async function POST(request: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // ── CSRF validation ──────────────────────────────────────────
+    const csrfToken = extractCsrfToken(request);
+    if (!csrfToken || !validateCsrfToken(csrfToken, user.id, user.id)) {
+      return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
     }
 
     const formData = await request.formData();
@@ -43,7 +50,7 @@ export async function POST(request: NextRequest) {
         text = await extractTextFromFile(buffer, ext);
         pages = text ? Math.ceil(text.length / 3000) : 0;
       } catch (e) {
-        console.warn(`Text extraction failed for ${name}:`, e);
+        console.error(`Text extraction failed for ${name}:`, e instanceof Error ? e.message : String(e));
         text = null;
         pages = 0;
       }
@@ -64,9 +71,9 @@ export async function POST(request: NextRequest) {
       unprocessable: text === null,
     });
   } catch (error: any) {
-    console.error("File processing error:", error);
+    console.error("File processing error:", error instanceof Error ? error.message : String(error));
     return NextResponse.json(
-      { error: error.message || "Failed to process file" },
+      { error: "Failed to process file" },
       { status: 500 }
     );
   }

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { syncQuizToSupabase, deleteQuizFromSupabase, fetchQuizzesFromSupabase } from "@/lib/sync/quizzes";
+import { setSecurely, getSecurely } from "@/lib/crypto";
 
 function uid(): string {
   try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
@@ -15,10 +16,10 @@ export type LocalQuiz = {
 
 const STORAGE_KEY = "ulul-albab-quizzes-cache";
 
-function loadCache(): LocalQuiz[] {
+async function loadCache(): Promise<LocalQuiz[]> {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") ?? [];
+    return await getSecurely<LocalQuiz[]>(STORAGE_KEY, []);
   } catch {
     return [];
   }
@@ -27,9 +28,9 @@ function loadCache(): LocalQuiz[] {
 function saveCache(quizzes: LocalQuiz[]) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(quizzes));
+    setSecurely(STORAGE_KEY, quizzes);
   } catch (e) {
-    console.warn("Failed to cache quizzes:", e);
+    console.error("Failed to cache quizzes:", e instanceof Error ? e.message : String(e));
   }
 }
 
@@ -44,8 +45,9 @@ export function useQuizzesStorage() {
         setQuizzes(remote);
         saveCache(remote);
       } else {
-        const cached = loadCache();
-        if (cached.length > 0) setQuizzes(cached);
+        loadCache().then((cached) => {
+          if (cached.length > 0) setQuizzes(cached);
+        });
       }
       setLoaded(true);
     });

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { syncGamificationToSupabase, fetchGamificationFromSupabase, type SyncGamificationData } from "@/lib/sync/gamification";
+import { setSecurely, getSecurely, wipeLocalData } from "@/lib/crypto";
 
 type XPTransaction = {
   amount: number;
@@ -48,10 +49,10 @@ function defaultState(): GamificationState {
   };
 }
 
-function loadFromLocal(): GamificationState {
+async function loadFromLocal(): Promise<GamificationState> {
   if (typeof window === "undefined") return defaultState();
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") ?? defaultState();
+    return await getSecurely<GamificationState>(STORAGE_KEY, defaultState());
   } catch {
     return defaultState();
   }
@@ -60,9 +61,9 @@ function loadFromLocal(): GamificationState {
 function saveToLocal(state: GamificationState) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    setSecurely(STORAGE_KEY, state);
   } catch (e) {
-    console.warn("Failed to save gamification:", e);
+    console.error("Failed to save gamification:", e instanceof Error ? e.message : String(e));
   }
 }
 
@@ -149,12 +150,13 @@ export function useGamification() {
         saveToLocal(s);
       } else {
         // Fall back to localStorage
-        const local = loadFromLocal();
-        const withStreak = applyStreakCheck(local);
-        const newAchievements = checkAchievements(withStreak);
-        withStreak.achievements = [...new Set([...withStreak.achievements, ...newAchievements])];
-        setState(withStreak);
-        saveToLocal(withStreak);
+        loadFromLocal().then((local) => {
+          const withStreak = applyStreakCheck(local);
+          const newAchievements = checkAchievements(withStreak);
+          withStreak.achievements = [...new Set([...withStreak.achievements, ...newAchievements])];
+          setState(withStreak);
+          saveToLocal(withStreak);
+        });
       }
       setLoaded(true);
     });

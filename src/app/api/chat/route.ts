@@ -1,11 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { streamWithFallback } from "@/lib/ai/models";
 import { z } from "zod";
+import { validateCsrfToken, extractCsrfToken } from "@/lib/csrf";
 
 const ChatRequestSchema = z.object({
   messages: z.array(z.object({
     role: z.enum(["user", "assistant"]),
-    content: z.string(),
+    content: z.string().max(100000), // Limit message size to 100KB
   })).min(1),
   context: z.string().optional(),
   files: z.array(z.object({
@@ -23,6 +24,15 @@ export async function POST(request: Request) {
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // ── CSRF validation ──────────────────────────────────────────
+    const csrfToken = extractCsrfToken(request);
+    if (!csrfToken || !validateCsrfToken(csrfToken, user.id, user.id)) {
+      return new Response(JSON.stringify({ error: "Invalid CSRF token" }), {
+        status: 403,
         headers: { "Content-Type": "application/json" },
       });
     }

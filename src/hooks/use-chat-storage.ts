@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { setSecurely, getSecurely } from "@/lib/crypto";
 
 export type FileInfo = {
   id: string;
@@ -31,19 +32,19 @@ export type Conversation = {
 
 const STORAGE_KEY = "ulul-albab-conversations";
 
-function loadConversations(): Conversation[] {
+async function loadConversations(): Promise<Conversation[]> {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    return await getSecurely<Conversation[]>(STORAGE_KEY, []);
   } catch {
     return [];
   }
 }
 
-function saveConversations(conversations: Conversation[]) {
+async function saveConversations(conversations: Conversation[]) {
   if (typeof window === "undefined") return;
   try {
+    // Strip potentially large binary data (dataUrl, text) before saving
     const sanitized = conversations.map((c) => ({
       ...c,
       messages: c.messages.map((m) => ({
@@ -52,14 +53,9 @@ function saveConversations(conversations: Conversation[]) {
       })),
       files: c.files.map(({ dataUrl, text, ...rest }) => rest),
     }));
-    const json = JSON.stringify(sanitized);
-    const estimatedSize = new Blob([json]).size;
-    if (estimatedSize > 4_000_000) {
-      console.warn("Conversation storage approaching limit:", estimatedSize, "bytes");
-    }
-    localStorage.setItem(STORAGE_KEY, json);
+    await setSecurely(STORAGE_KEY, sanitized);
   } catch (e) {
-    console.error("Failed to save conversations:", e);
+    console.error("Failed to save conversations:", e instanceof Error ? e.message : String(e));
   }
 }
 
@@ -77,12 +73,13 @@ export function useChatStorage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const saved = loadConversations();
-    setConversations(saved);
-    if (saved.length > 0) {
-      setActiveId(saved[0].id);
-    }
-    setLoaded(true);
+    loadConversations().then((saved) => {
+      setConversations(saved);
+      if (saved.length > 0) {
+        setActiveId(saved[0].id);
+      }
+      setLoaded(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -161,6 +158,9 @@ export function useChatStorage() {
   const clearConversations = useCallback(() => {
     setConversations([]);
     setActiveId(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STORAGE_KEY);
+    }
   }, []);
 
   return {

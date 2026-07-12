@@ -32,7 +32,7 @@ export class AIKeyManager {
     }
 
     if (keys.length === 0) {
-      console.warn("No Google AI API keys configured. Set GOOGLE_API_KEY_1.");
+      console.error("No Google AI API keys configured. Set GOOGLE_API_KEY_1.");
     }
 
     this.keys = keys.map((key) => ({
@@ -42,11 +42,16 @@ export class AIKeyManager {
     }));
   }
 
+  /**
+   * Returns the next available API key, or null if ALL keys are on cooldown.
+   * Callers should handle null by queuing or returning a clear error.
+   */
   getNextKey(): string | null {
     if (this.keys.length === 0) return null;
 
     const now = Date.now();
 
+    // Find an available key (not on cooldown)
     for (let attempt = 0; attempt < this.keys.length; attempt++) {
       this.currentIndex = (this.currentIndex + 1) % this.keys.length;
       const status = this.keys[this.currentIndex];
@@ -56,14 +61,13 @@ export class AIKeyManager {
       }
     }
 
+    // All keys are on cooldown — return null so the caller can handle it gracefully
     const earliestCooldown = Math.min(
       ...this.keys.map((k) => k.cooldownUntil)
     );
     const waitMs = earliestCooldown - now;
-    console.warn(`All API keys on cooldown. Next available in ${waitMs}ms`);
-    return this.keys.reduce((earliest, k) =>
-      k.cooldownUntil < earliest.cooldownUntil ? k : earliest
-    ).key;
+    console.error(`All API keys on cooldown. Next available in ${waitMs}ms`);
+    return null;
   }
 
   markRateLimited(key: string, cooldownSeconds = 60) {

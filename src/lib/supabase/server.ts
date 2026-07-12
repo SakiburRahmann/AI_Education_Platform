@@ -15,7 +15,13 @@ export async function createClient() {
         },
         setAll(cookiesToSet) {
           for (const { name, value, options } of cookiesToSet) {
-            cookieStore.set(name, value, options);
+            try {
+              cookieStore.set(name, value, options);
+            } catch {
+              // The `setAll` method can be called during response phase and may throw
+              // in some Next.js versions when the cookie store is sealed.
+              // This is a no-op in that case as cookies are set through the response.
+            }
           }
         },
       },
