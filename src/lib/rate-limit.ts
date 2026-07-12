@@ -40,7 +40,7 @@ export function getClientIp(request: Request): string {
 /**
  * Extract the clean endpoint path (strip query params, normalize).
  */
-function normalizePath(pathname: string): string {
+export function normalizePath(pathname: string): string {
   // Strip trailing slash
   let path = pathname.replace(/\/$/, "");
   // Strip IDs from path segments (UUIDs, numbers)
