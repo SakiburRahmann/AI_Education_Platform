@@ -117,7 +117,7 @@ export default function LandingPage() {
                   ),
                 },
               ].map((item, i) => (
-                <ScrollReveal key={item.title} direction="up" delay={i * 150}>
+                <ScrollReveal key={item.title} direction="up" delay={i * 250}>
                   <div className="card-hover p-8 group transition-all duration-500 hover:-translate-y-2">
                     <div className="mb-4 text-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                       {item.icon}
@@ -148,7 +148,7 @@ export default function LandingPage() {
                 { step: "3", title: "Practice", desc: "Take AI-generated quizzes from Lubb" },
                 { step: "4", title: "Compete", desc: "Earn XP & climb leagues" },
               ].map((item, i) => (
-                <ScrollReveal key={item.step} direction="up" delay={i * 150}>
+                <ScrollReveal key={item.step} direction="up" delay={i * 250}>
                   <div className="card-hover p-5 sm:p-6 group transition-all duration-500 hover:-translate-y-2">
                     <div className="mx-auto mb-3 sm:mb-4 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-lg sm:text-xl font-bold transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/30">
                       {item.step}

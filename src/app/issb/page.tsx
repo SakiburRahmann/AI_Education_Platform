@@ -336,10 +336,10 @@ export default function CrucibleBoardLanding() {
               { to: 4.9, decimals: 1, suffix: "★", label: "Rating" },
               { to: 247, suffix: "", label: "AI Feedback" },
             ].map((stat, i) => (
-              <ScrollReveal key={stat.label} direction="up" delay={i * 100}>
+              <ScrollReveal key={stat.label} direction="up" delay={i * 200}>
                 <div className="text-center group py-2">
                   <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#D4A84B] transition-all duration-300 group-hover:scale-110">
-                    <AnimatedCounter to={stat.to} suffix={stat.suffix} decimals={stat.decimals} duration={2000 + i * 200} />
+                    <AnimatedCounter to={stat.to} suffix={stat.suffix} decimals={stat.decimals} duration={3500 + i * 400} />
                   </p>
                   <p className="mt-1 text-[10px] sm:text-xs text-[#8899B4] transition-colors duration-300 group-hover:text-[#F0F4F8]/70">
                     {stat.label}
@@ -442,7 +442,7 @@ export default function CrucibleBoardLanding() {
 
           <div className="mt-10 sm:mt-16 grid gap-4 sm:gap-6 sm:grid-cols-2">
             {features.map((feature, i) => (
-              <ScrollReveal key={feature.title} direction="up" delay={i * 150}>
+              <ScrollReveal key={feature.title} direction="up" delay={i * 250}>
                 <div className="group relative overflow-hidden rounded-xl border border-[#1E2A45] bg-[#131B2E]/80 p-4 sm:p-6 transition-all duration-500 hover:border-[#D4A84B]/30 hover:shadow-xl hover:shadow-[#D4A84B]/5 crucible-card">
                   <div className="absolute left-0 top-0 h-full w-0.5 bg-[#D4A84B]/0 transition-all duration-500 group-hover:bg-[#D4A84B]/60" />
                   <div className="relative flex items-start gap-3 sm:gap-4">
@@ -481,7 +481,7 @@ export default function CrucibleBoardLanding() {
 
           <div className="mt-10 sm:mt-16 grid gap-6 sm:gap-8 grid-cols-2 md:grid-cols-4">
             {steps.map((step, i) => (
-              <ScrollReveal key={step.num} direction="up" delay={i * 150}>
+              <ScrollReveal key={step.num} direction="up" delay={i * 250}>
                 <div className="group relative text-center">
                   {i < steps.length - 1 && (
                     <div className="absolute left-[60%] top-8 hidden h-px overflow-hidden md:block">
@@ -527,7 +527,7 @@ export default function CrucibleBoardLanding() {
 
           <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3">
             {benefits.map((item, i) => (
-              <ScrollReveal key={item.title} direction="up" delay={i * 150}>
+              <ScrollReveal key={item.title} direction="up" delay={i * 250}>
                 <div className="group rounded-xl border border-[#1E2A45] bg-[#0A0F1A]/50 p-5 sm:p-6 transition-all duration-500 hover:border-[#D4A84B]/20 hover:shadow-xl hover:shadow-[#D4A84B]/5 crucible-card">
                   <div className="mb-3 sm:mb-4 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-[#1E2A45] text-[#D4A84B] transition-all duration-300 group-hover:scale-110 group-hover:border-[#D4A84B]/30 group-hover:bg-[#D4A84B]/5">
                     {item.icon}

@@ -18,7 +18,7 @@ export function ScrollReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = 700,
+  duration = 1000,
   className = "",
   once = true,
   distance = 40,
