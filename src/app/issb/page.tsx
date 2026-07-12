@@ -339,7 +339,7 @@ export default function CrucibleBoardLanding() {
               <ScrollReveal key={stat.label} direction="up" delay={i * 200}>
                 <div className="text-center group py-2">
                   <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#D4A84B] transition-all duration-300 group-hover:scale-110">
-                    <AnimatedCounter to={stat.to} suffix={stat.suffix} decimals={stat.decimals} duration={3500 + i * 400} />
+                    <AnimatedCounter to={stat.to} suffix={stat.suffix} decimals={stat.decimals} duration={2500 + i * 300} />
                   </p>
                   <p className="mt-1 text-[10px] sm:text-xs text-[#8899B4] transition-colors duration-300 group-hover:text-[#F0F4F8]/70">
                     {stat.label}
