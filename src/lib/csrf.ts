@@ -102,14 +102,29 @@ export async function validateCsrfToken(
 
 /**
  * Extract CSRF token from request header or cookie.
- * Checks X-CSRF-Token header first, then falls back to csrf-token cookie.
+ * Checks in order:
+ * 1. X-CSRF-Token header (set by client-side JS via double-submit pattern)
+ * 2. Request cookies API (set by middleware via request.cookies.set())
+ * 3. Raw Cookie header (submitted by browser from previous Set-Cookie)
  */
 export function extractCsrfToken(request: Request): string | null {
   // Prefer X-CSRF-Token header (set by client-side JS)
   const headerToken = request.headers.get("x-csrf-token");
   if (headerToken) return headerToken;
 
-  // Fall back to cookie (set by middleware for authenticated users)
+  // Check request.cookies API (set by middleware via request.cookies.set())
+  // This is the path that works for the SAME request where middleware ran
+  if ("cookies" in request) {
+    const reqCookies = (request as any).cookies;
+    if (reqCookies && typeof reqCookies.get === "function") {
+      const cookieVal = reqCookies.get(CSRF_TOKEN_COOKIE);
+      if (cookieVal && cookieVal.value) {
+        return decodeURIComponent(cookieVal.value);
+      }
+    }
+  }
+
+  // Fall back to raw Cookie header (set by browser from previous response)
   const cookieHeader = request.headers.get("cookie");
   if (!cookieHeader) return null;
 
