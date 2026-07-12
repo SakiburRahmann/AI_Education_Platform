@@ -14,6 +14,8 @@ import {
   Exo_2,
   Space_Mono,
   Fredoka,
+  Playfair_Display,
+  Inter,
 } from "next/font/google";
 import "./globals.css";
 import "katex/dist/katex.min.css";
@@ -93,6 +95,16 @@ const fredoka = Fredoka({
   subsets: ["latin"],
 });
 
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://ululalbab.vercel.app"),
   applicationName: "Ulul Albab",
@@ -152,7 +164,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${plusJakartaSans.variable} ${dmSans.variable} ${nunito.variable} ${nunitoSans.variable} ${oxanium.variable} ${rajdhani.variable} ${shareTechMono.variable} ${orbitron.variable} ${exo2.variable} ${spaceMono.variable} ${fredoka.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${quicksand.variable} ${plusJakartaSans.variable} ${dmSans.variable} ${nunito.variable} ${nunitoSans.variable} ${oxanium.variable} ${rajdhani.variable} ${shareTechMono.variable} ${orbitron.variable} ${exo2.variable} ${spaceMono.variable} ${fredoka.variable} ${playfairDisplay.variable} ${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col overflow-x-hidden">
