@@ -5,6 +5,7 @@ import { useChatStorage, type Message, type FileInfo } from "@/hooks/use-chat-st
 import { InteractiveContent } from "@/components/interactive/renderer";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { ThinkingBlock } from "@/components/ui/thinking-block";
+import { ConversationSidebar } from "@/components/ui/conversation-sidebar";
 import { useLessonsStorage } from "@/hooks/use-lessons-storage";
 import { useQuizzesStorage } from "@/hooks/use-quizzes-storage";
 import { useGamification } from "@/hooks/use-gamification";
@@ -15,8 +16,6 @@ import {
   Paperclip,
   X,
   Loader2,
-  Plus,
-  Trash2,
   MessageSquare,
   FileText,
   Bot,
@@ -302,43 +301,13 @@ export default function ChatPage() {
             sideOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="flex h-full w-64 flex-col">
-            <div className="flex items-center justify-between border-b p-3">
-              <span className="text-sm font-medium">Conversations</span>
-              <button
-                onClick={() => createConversation()}
-                className="rounded-full p-1.5 hover:bg-muted transition-colors"
-                title="New chat"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-2 space-y-1">
-              {conversations.map((c) => (
-                <div
-                  key={c.id}
-                  onClick={() => { setActiveId(c.id); setSideOpen(false); }}
-                  className={`group flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer transition-colors ${
-                    c.id === activeId
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  <MessageSquare className="h-4 w-4 shrink-0" />
-                  <span className="truncate flex-1">{c.title}</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteConversation(c.id);
-                    }}
-                    className="hidden group-hover:block rounded p-0.5 hover:text-destructive"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ConversationSidebar
+            conversations={conversations}
+            activeId={activeId}
+            onSelect={(id) => { setActiveId(id); setSideOpen(false); }}
+            onCreate={createConversation}
+            onDelete={deleteConversation}
+          />
         </div>
       </div>
 
@@ -348,43 +317,13 @@ export default function ChatPage() {
           sideOpen ? "w-64" : "w-0"
         }`}
       >
-        <div className="flex h-full w-64 flex-col">
-          <div className="flex items-center justify-between border-b p-3">
-            <span className="text-sm font-medium">Conversations</span>
-            <button
-              onClick={() => createConversation()}
-              className="rounded-full p-1.5 hover:bg-muted transition-colors"
-              title="New chat"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {conversations.map((c) => (
-              <div
-                key={c.id}
-                onClick={() => setActiveId(c.id)}
-                className={`group flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer transition-colors ${
-                  c.id === activeId
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                <MessageSquare className="h-4 w-4 shrink-0" />
-                <span className="truncate flex-1">{c.title}</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteConversation(c.id);
-                  }}
-                  className="hidden group-hover:block rounded p-0.5 hover:text-destructive"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ConversationSidebar
+          conversations={conversations}
+          activeId={activeId}
+          onSelect={setActiveId}
+          onCreate={createConversation}
+          onDelete={deleteConversation}
+        />
       </div>
 
       {/* Main chat area */}

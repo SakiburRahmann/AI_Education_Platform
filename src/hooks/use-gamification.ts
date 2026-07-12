@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { syncGamificationToSupabase, fetchGamificationFromSupabase, type SyncGamificationData } from "@/lib/sync/gamification";
 
 type XPTransaction = {
   amount: number;
@@ -19,9 +20,9 @@ export type GamificationState = {
 const STORAGE_KEY = "ulul-albab-gamification";
 
 export const ACHIEVEMENT_DEFS: Record<string, { name: string; desc: string; icon: string }> = {
-  first_message: { name: "First Steps", desc: "Send your first message", icon: "💬" },
-  five_messages: { name: "Chatter", desc: "Send 25 messages", icon: "🗣️" },
-  first_lesson: { name: "Knowledge Seeker", desc: "Complete your first lesson", icon: "📖" },
+  first_message: { name: "First Steps", desc: "Earn your first XP", icon: "💬" },
+  five_messages: { name: "XP Collector", desc: "Earn XP 25 times", icon: "🗣️" },
+  first_lesson: { name: "Knowledge Seeker", desc: "View your first lesson", icon: "📖" },
   five_lessons: { name: "Quick Learner", desc: "Complete 5 lessons", icon: "📚" },
   first_quiz: { name: "Quiz Rookie", desc: "Complete your first quiz", icon: "❓" },
   five_quizzes: { name: "Quiz Master", desc: "Complete 5 quizzes", icon: "🏆" },
@@ -118,6 +119,8 @@ export function useGamification() {
   const [state, setState] = useState<GamificationState>(defaultState);
   const [loaded, setLoaded] = useState(false);
   const [lastXpEarned, setLastXpEarned] = useState<{ amount: number; reason: string } | null>(null);
+  const xpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const s = load();
@@ -127,15 +130,59 @@ export function useGamification() {
     }
     setState(s);
     setLoaded(true);
+
+    // Try to merge with Supabase data (if authenticated)
+    fetchGamificationFromSupabase().then((supabaseData) => {
+      if (supabaseData) {
+        setState((prev) => ({
+          ...prev,
+          xp: Math.max(prev.xp, supabaseData.xp),
+          level: Math.max(prev.level, supabaseData.level),
+          streakCount: Math.max(prev.streakCount, supabaseData.streakCount),
+          longestStreak: Math.max(prev.longestStreak, supabaseData.longestStreak),
+          achievements: [...new Set([...prev.achievements, ...supabaseData.achievements])],
+        }));
+      }
+    });
   }, []);
 
+  // Cleanup timers on unmount
   useEffect(() => {
-    if (loaded) save(state);
+    return () => {
+      if (xpTimerRef.current) clearTimeout(xpTimerRef.current);
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    };
+  }, []);
+
+  // Save to localStorage on state change
+  useEffect(() => {
+    if (loaded) {
+      save(state);
+
+      // Debounce Supabase sync
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+      syncTimeoutRef.current = setTimeout(() => {
+        const syncData: SyncGamificationData = {
+          xp: state.xp,
+          level: state.level,
+          streakCount: state.streakCount,
+          longestStreak: state.longestStreak,
+          lastActiveDate: state.lastActiveDate,
+          achievements: state.achievements,
+          recentTransactions: state.transactions.slice(-10), // Only sync last 10 to avoid unbounded writes
+        };
+        syncGamificationToSupabase(syncData);
+      }, 2000);
+    }
   }, [state, loaded]);
 
   const awardXP = useCallback((amount: number, reason: string) => {
     setLastXpEarned({ amount, reason });
-    const timer = setTimeout(() => setLastXpEarned(null), 2000);
+
+    // Clear any existing timer
+    if (xpTimerRef.current) clearTimeout(xpTimerRef.current);
+    xpTimerRef.current = setTimeout(() => setLastXpEarned(null), 2000);
+
     setState((prev) => {
       const today = new Date().toISOString().slice(0, 10);
       const next: GamificationState = {
@@ -151,7 +198,6 @@ export function useGamification() {
       }
       return next;
     });
-    return () => clearTimeout(timer);
   }, []);
 
   const awardAchievement = useCallback((id: string) => {

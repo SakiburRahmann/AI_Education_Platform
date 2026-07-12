@@ -2,14 +2,18 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { streamText, stepCountIs } from "ai";
 import type { Tool } from "ai";
 import { z } from "zod";
-import { aiKeyManager } from "./key-manager";
+import { AIKeyManager } from "./key-manager";
 import type { AITaskType } from "@/types";
 
 type ModelStatus = {
   cooldownUntil: number;
 };
 
-class ModelRouter {
+/**
+ * Per-request model router. Create one per serverless invocation so that
+ * rate-limit cooldowns don't leak between users.
+ */
+export class ModelRouter {
   private modelStatuses = new Map<string, ModelStatus>();
 
   private chains: Record<AITaskType | "vision", string[]> = {
@@ -87,44 +91,63 @@ class ModelRouter {
   }
 }
 
+// ─── Factory helpers ─────────────────────────────────────────────
+
+/** Create a request-scoped router + key-manager pair. */
+export function createAIServices() {
+  return {
+    router: new ModelRouter(),
+    keyManager: new AIKeyManager(),
+  };
+}
+
+// ─── Higher-level helpers (accept instances) ─────────────────────
+
+/** @deprecated Use a request-scoped instance with createAIServices() instead. */
 export const modelRouter = new ModelRouter();
 
-export function getModelForTask(task: AITaskType | "vision") {
-  const modelId = modelRouter.getNextAvailableModel(task);
+/** @deprecated Use a request-scoped instance with createAIServices() instead. */
+export function getModelForTask(
+  task: AITaskType | "vision",
+  router: ModelRouter,
+  keyManager: AIKeyManager,
+) {
+  const modelId = router.getNextAvailableModel(task);
   if (!modelId) throw new Error(`No available model for task: ${task}`);
-  const apiKey = aiKeyManager.getNextKey();
+  const apiKey = keyManager.getNextKey();
   if (!apiKey) throw new Error("No Google AI API key available");
   return createGoogleGenerativeAI({ apiKey })(modelId);
 }
 
 export async function generateWithRetry<T>(
   task: AITaskType | "vision",
-  generator: (model: ReturnType<typeof getModelForTask>) => Promise<T>
+  generator: (model: ReturnType<typeof getModelForTask>) => Promise<T>,
 ): Promise<T> {
-  const chain = modelRouter.getModelChain(task);
+  const { router, keyManager } = createAIServices();
+  const chain = router.getModelChain(task);
   let lastError: Error | null = null;
 
   for (const modelId of chain) {
-    if (!modelRouter.isModelAvailable(modelId)) continue;
+    if (!router.isModelAvailable(modelId)) continue;
 
-    const keyCount = aiKeyManager.getTotalKeyCount() || 1;
+    const keyCount = keyManager.getTotalKeyCount() || 1;
 
     for (let ki = 0; ki < keyCount; ki++) {
-      const apiKey = aiKeyManager.getNextKey();
+      const apiKey = keyManager.getNextKey();
       if (!apiKey) break;
 
       try {
         const google = createGoogleGenerativeAI({ apiKey });
         const model = google(modelId);
         const result = await generator(model);
-        aiKeyManager.markSuccess(apiKey);
-        modelRouter.clearModelCooldown(modelId);
+        keyManager.markSuccess(apiKey);
+        router.clearModelCooldown(modelId);
         return result;
       } catch (error: any) {
         lastError = error;
         if (error?.status === 429) {
-          aiKeyManager.markRateLimited(apiKey, 60);
-          modelRouter.markModelRateLimited(modelId, 30);
+          keyManager.markRateLimited(apiKey, 60);
+          router.markModelRateLimited(modelId, 30);
           continue;
         }
         break;
@@ -187,17 +210,18 @@ export async function streamWithFallback(
   systemPrompt: string | undefined,
   options?: StreamOptions
 ): Promise<Response> {
+  const { router, keyManager } = createAIServices();
   const effectiveTask = options?.hasImages ? "vision" : task;
-  const chain = modelRouter.getModelChain(effectiveTask);
+  const chain = router.getModelChain(effectiveTask);
   let lastError: Error | null = null;
 
   for (const modelId of chain) {
-    if (!modelRouter.isModelAvailable(modelId)) continue;
+    if (!router.isModelAvailable(modelId)) continue;
 
-    const keyCount = aiKeyManager.getTotalKeyCount() || 1;
+    const keyCount = keyManager.getTotalKeyCount() || 1;
 
     for (let ki = 0; ki < keyCount; ki++) {
-      const apiKey = aiKeyManager.getNextKey();
+      const apiKey = keyManager.getNextKey();
       if (!apiKey) break;
 
       try {
@@ -227,8 +251,8 @@ export async function streamWithFallback(
           throw Object.assign(new Error(errMsg), { status: 429 });
         }
 
-        aiKeyManager.markSuccess(apiKey);
-        modelRouter.clearModelCooldown(modelId);
+        keyManager.markSuccess(apiKey);
+        router.clearModelCooldown(modelId);
 
         const stream = new ReadableStream({
           async start(controller) {
@@ -269,8 +293,8 @@ export async function streamWithFallback(
         lastError = error;
         console.error(`Model ${modelId} failed:`, error?.message || error);
         if (error?.status === 429) {
-          aiKeyManager.markRateLimited(apiKey, 60);
-          modelRouter.markModelRateLimited(modelId, 30);
+          keyManager.markRateLimited(apiKey, 60);
+          router.markModelRateLimited(modelId, 30);
           continue;
         }
         break;

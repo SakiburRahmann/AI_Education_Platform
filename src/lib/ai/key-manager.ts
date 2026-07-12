@@ -4,7 +4,16 @@ type KeyStatus = {
   failureCount: number;
 };
 
-class AIKeyManager {
+/**
+ * Manages Google AI API key rotation and rate-limit tracking.
+ *
+ * Designed to be created per-request (not a module-level singleton) so that
+ * cooldown state does not leak between serverless function invocations.
+ * In serverless environments (Vercel), each request creates a fresh instance,
+ * avoiding cross-user state bleed while still cycling through keys within
+ * a single request.
+ */
+export class AIKeyManager {
   private keys: KeyStatus[] = [];
   private currentIndex = 0;
 
@@ -82,4 +91,5 @@ class AIKeyManager {
   }
 }
 
+/** @deprecated Use `new AIKeyManager()` instead — serverless-safe, request-scoped instances. */
 export const aiKeyManager = new AIKeyManager();

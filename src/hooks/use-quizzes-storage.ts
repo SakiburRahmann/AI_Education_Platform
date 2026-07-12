@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { syncQuizToSupabase, deleteQuizFromSupabase, fetchQuizzesFromSupabase } from "@/lib/sync/quizzes";
 
 function uid(): string {
   try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
@@ -37,8 +38,23 @@ export function useQuizzesStorage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setQuizzes(load());
+    const local = load();
+    setQuizzes(local);
     setLoaded(true);
+
+    // Fetch from Supabase and merge
+    fetchQuizzesFromSupabase().then((remote) => {
+      if (remote.length > 0) {
+        const localIds = new Set(local.map((q) => q.id));
+        const merged = [...local];
+        for (const r of remote) {
+          if (!localIds.has(r.id)) {
+            merged.push(r);
+          }
+        }
+        setQuizzes(merged);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -54,11 +70,18 @@ export function useQuizzesStorage() {
       createdAt: new Date().toISOString(),
     };
     setQuizzes((prev) => [quiz, ...prev]);
+
+    // Sync to Supabase in background
+    syncQuizToSupabase(quiz);
+
     return quiz.id;
   }, []);
 
   const deleteQuiz = useCallback((id: string) => {
     setQuizzes((prev) => prev.filter((q) => q.id !== id));
+
+    // Delete from Supabase in background
+    deleteQuizFromSupabase(id);
   }, []);
 
   return { quizzes, addQuiz, deleteQuiz, loaded };

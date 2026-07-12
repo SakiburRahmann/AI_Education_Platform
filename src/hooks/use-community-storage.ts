@@ -1,4 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
+import {
+  syncPostToSupabase,
+  syncCommentToSupabase,
+  syncVoteToSupabase,
+  deletePostFromSupabase,
+  fetchPostsFromSupabase,
+  fetchCommentsFromSupabase,
+} from "@/lib/sync/community";
 
 function uid(): string {
   try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; }
@@ -66,10 +74,31 @@ export function useCommunityStorage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setPosts(loadPosts());
+    const localPosts = loadPosts();
+    setPosts(localPosts);
     setComments(loadComments());
     setVotes(loadVotes());
     setLoaded(true);
+
+    // Fetch posts from Supabase and merge
+    fetchPostsFromSupabase().then((remotePosts) => {
+      if (remotePosts.length > 0) {
+        const localIds = new Set(localPosts.map((p) => p.id));
+        const merged = [...localPosts];
+        for (const rp of remotePosts) {
+          if (!localIds.has(rp.id)) {
+            merged.push(rp);
+          } else {
+            // Update existing post with remote data (upvotes/downvotes)
+            const idx = merged.findIndex((m) => m.id === rp.id);
+            if (idx >= 0) {
+              merged[idx] = { ...merged[idx], upvotes: rp.upvotes, downvotes: rp.downvotes, commentCount: rp.commentCount };
+            }
+          }
+        }
+        setPosts(merged);
+      }
+    });
   }, []);
 
   useEffect(() => { if (loaded) savePosts(posts); }, [posts, loaded]);
@@ -84,12 +113,19 @@ export function useCommunityStorage() {
       createdAt: new Date().toISOString(),
     };
     setPosts((prev) => [post, ...prev]);
+
+    // Sync to Supabase in background
+    syncPostToSupabase(post);
+
     return post.id;
   }, []);
 
   const deletePost = useCallback((id: string) => {
     setPosts((prev) => prev.filter((p) => p.id !== id));
     setComments((prev) => prev.filter((c) => c.postId !== id));
+
+    // Delete from Supabase in background
+    deletePostFromSupabase(id);
   }, []);
 
   const addComment = useCallback((postId: string, content: string, author: string) => {
@@ -101,6 +137,10 @@ export function useCommunityStorage() {
     setPosts((prev) => prev.map((p) =>
       p.id === postId ? { ...p, commentCount: p.commentCount + 1 } : p
     ));
+
+    // Sync to Supabase in background
+    syncCommentToSupabase(comment);
+
     return comment.id;
   }, []);
 
@@ -110,10 +150,12 @@ export function useCommunityStorage() {
       if (p.id !== postId) return p;
       let { upvotes, downvotes } = p;
       if (current === type) {
+        // Toggle off
         if (type === "up") upvotes--;
         else downvotes--;
         return { ...p, upvotes, downvotes };
       }
+      // Toggle to new type
       if (current === "up") upvotes--;
       if (current === "down") downvotes--;
       if (type === "up") upvotes++;
@@ -127,6 +169,9 @@ export function useCommunityStorage() {
       }
       return { ...prev, [postId]: type };
     });
+
+    // Sync to Supabase in background (pass previous vote state for correct toggle-off handling)
+    syncVoteToSupabase(postId, type, current ?? null);
   }, [votes]);
 
   const getPostComments = useCallback((postId: string) =>
