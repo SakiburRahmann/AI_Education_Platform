@@ -141,7 +141,7 @@ export default function LandingPage() {
             <ScrollReveal direction="up">
               <h2 className="font-heading text-3xl font-bold mb-12">How It Works</h2>
             </ScrollReveal>
-            <div className="grid gap-8 md:grid-cols-4 text-center">
+            <div className="grid gap-6 sm:gap-8 grid-cols-2 md:grid-cols-4 text-center">
               {[
                 { step: "1", title: "Upload", desc: "Drop your study materials for Lubb AI" },
                 { step: "2", title: "Learn", desc: "Chat with Lubb AI about your content" },
@@ -149,14 +149,14 @@ export default function LandingPage() {
                 { step: "4", title: "Compete", desc: "Earn XP & climb leagues" },
               ].map((item, i) => (
                 <ScrollReveal key={item.step} direction="up" delay={i * 150}>
-                  <div className="card-hover p-6 group transition-all duration-500 hover:-translate-y-2">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-xl font-bold transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/30">
+                  <div className="card-hover p-5 sm:p-6 group transition-all duration-500 hover:-translate-y-2">
+                    <div className="mx-auto mb-3 sm:mb-4 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-lg sm:text-xl font-bold transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/30">
                       {item.step}
                     </div>
-                    <h3 className="font-heading font-bold text-lg mb-1 transition-colors duration-300 group-hover:text-primary">
+                    <h3 className="font-heading font-bold text-sm sm:text-lg mb-1 transition-colors duration-300 group-hover:text-primary">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{item.desc}</p>
                   </div>
                 </ScrollReveal>
               ))}
