@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Reusable ErrorCard component for displaying errors with consistent styling
  * and actionable next steps.
@@ -26,7 +28,7 @@ interface ErrorCardProps {
   errorCode?: string;
 }
 
-const SEVERITY_STYLES: Record<ErrorSeverity, { icon: string; gradient: string; border: string }> = {
+const SEVERITY_STYLES: Record<string, { icon: string; gradient: string; border: string }> = {
   critical: {
     icon: "❗",
     gradient: "from-red-500/10 to-orange-500/10",

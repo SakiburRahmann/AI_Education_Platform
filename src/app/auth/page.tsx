@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, use } from "react";
+import { useCallback, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,11 +27,21 @@ const ERROR_MESSAGES: Record<string, { title: string; message: string; action?: 
   },
 };
 
-export default function AuthPage() {
+const DEFAULT_ERROR = {
+  title: "Something went wrong",
+  message: "An unexpected error occurred during sign-in.",
+  action: "Please try again.",
+};
+
+/**
+ * Inner component that reads search params — wrapped in Suspense by parent.
+ * Required because useSearchParams() needs a Suspense boundary in Next.js 15+.
+ */
+function AuthPageInner() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const errorParam = searchParams.get("error");
-  const errorInfo = errorParam ? ERROR_MESSAGES[errorParam] : null;
+  const errorInfo = errorParam ? (ERROR_MESSAGES[errorParam] || DEFAULT_ERROR) : null;
 
   const handleGoogleLogin = useCallback(async () => {
     setLoading(true);
@@ -119,5 +129,21 @@ export default function AuthPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+/**
+ * AuthPage wraps AuthPageInner in a Suspense boundary.
+ * Required because useSearchParams() triggers static rendering warnings otherwise.
+ */
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    }>
+      <AuthPageInner />
+    </Suspense>
   );
 }
