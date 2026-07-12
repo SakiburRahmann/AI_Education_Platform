@@ -108,7 +108,7 @@ export async function fetchGamificationFromSupabase(): Promise<GamificationDTO |
       xp: profile.xp ?? 0,
       level: profile.level ?? 1,
       streakCount: profile.streak_count ?? 0,
-      longestStreak: profile.longest_streak ?? profile.streak_count ?? 0,
+      longestStreak: profile.streak_count ?? 0,
       achievements: (achievementsResult.data || []).map((a: any) => a.achievement_type),
       transactions: (transactionsResult.data || []).reverse().map((t: any) => ({
         amount: t.amount,
