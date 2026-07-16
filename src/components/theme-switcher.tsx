@@ -61,8 +61,10 @@ export function ThemeSwitcher() {
   const switchTheme = useCallback((id: string) => {
     setColorTheme(id);
     setOpen(false);
+    document.documentElement.classList.add("transitioning");
     document.documentElement.setAttribute("data-theme", id);
     localStorage.setItem("ulul-albab-theme", id);
+    setTimeout(() => document.documentElement.classList.remove("transitioning"), 700);
   }, []);
 
   const toggleDark = useCallback(() => {

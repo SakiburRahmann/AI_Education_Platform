@@ -91,11 +91,11 @@
   --z-modal: 1000;
   --z-toast: 2000;
 
-  /* Animation durations */
-  --duration-fast: 80ms;
-  --duration-normal: 200ms;
-  --duration-slow: 400ms;
-  --duration-xslow: 600ms;
+  /* Animation durations — slowed for premium feel */
+  --duration-fast: 150ms;
+  --duration-normal: 400ms;
+  --duration-slow: 800ms;
+  --duration-xslow: 1200ms;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1309,6 +1309,128 @@ html.dark,
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   PREMIUM ANIMATIONS — slow, elegant, purposeful
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Gentle levitation for decorative elements */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes float-gentle-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Slow background gradient drift */
+@keyframes gradient-drift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Soft glow pulse for CTAs and achievements */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 12px var(--primary); opacity: 0.6; }
+  50% { box-shadow: 0 0 32px var(--primary); opacity: 1; }
+}
+
+/* Gentle scale entrance */
+@keyframes scale-in-gentle {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Smooth slide-up entrance */
+@keyframes slide-up-gentle {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Soft fade entrance */
+@keyframes fade-in-gentle {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Slower shimmer sweep */
+@keyframes shimmer-slow {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Image zoom on hover (slow) */
+@keyframes zoom-in-slow {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* Border draw animation */
+@keyframes border-draw {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility classes */
+.animate-float-gentle {
+  animation: float-gentle 6s ease-in-out infinite;
+}
+
+.animate-float-gentle-delayed {
+  animation: float-gentle-delayed 7s ease-in-out 2s infinite;
+}
+
+.animate-gradient-drift {
+  background-size: 200% 200%;
+  animation: gradient-drift 20s ease infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-scale-in-gentle {
+  animation: scale-in-gentle 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up-gentle {
+  animation: slide-up-gentle 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-gentle {
+  animation: fade-in-gentle 0.8s ease-out forwards;
+}
+
+.animate-shimmer-slow {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer-slow 4s ease-in-out infinite;
+}
+
+.animate-zoom-in-slow {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.animate-zoom-in-slow:hover {
+  transform: scale(1.06);
+}
+
+/* Delay helpers */
+.anim-delay-1 { animation-delay: 0.2s; }
+.anim-delay-2 { animation-delay: 0.4s; }
+.anim-delay-3 { animation-delay: 0.6s; }
+.anim-delay-4 { animation-delay: 0.8s; }
+.anim-delay-5 { animation-delay: 1s; }
+.anim-delay-6 { animation-delay: 1.2s; }
+.anim-delay-7 { animation-delay: 1.4s; }
+.anim-delay-8 { animation-delay: 1.6s; }
+
+/* ═══════════════════════════════════════════════════════════════
    CRUCIBLE BOARD — CUSTOM ANIMATIONS
    ═══════════════════════════════════════════════════════════════ */
 @keyframes float {
@@ -1352,44 +1474,34 @@ html.dark,
   to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes border-draw {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes count-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .crucible-float {
-  animation: float 10s ease-in-out infinite;
+  animation: float 16s ease-in-out infinite;
 }
 
 .crucible-float-delayed {
-  animation: float-delayed 12s ease-in-out 3s infinite;
+  animation: float-delayed 18s ease-in-out 5s infinite;
 }
 
 .crucible-gradient {
   background-size: 200% 200%;
-  animation: gradient-shift 15s ease infinite;
+  animation: gradient-shift 20s ease infinite;
 }
 
 .crucible-shimmer {
   background: linear-gradient(90deg, transparent 0%, rgba(212, 168, 75, 0.1) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: shimmer 3s ease-in-out infinite;
+  animation: shimmer 4s ease-in-out infinite;
 }
 
 .crucible-reveal {
-  animation: slideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.crucible-reveal-delay-1 { animation-delay: 0.1s; }
-.crucible-reveal-delay-2 { animation-delay: 0.2s; }
-.crucible-reveal-delay-3 { animation-delay: 0.3s; }
-.crucible-reveal-delay-4 { animation-delay: 0.4s; }
-.crucible-reveal-delay-5 { animation-delay: 0.5s; }
+.crucible-reveal-delay-1 { animation-delay: 0.15s; }
+.crucible-reveal-delay-2 { animation-delay: 0.3s; }
+.crucible-reveal-delay-3 { animation-delay: 0.45s; }
+.crucible-reveal-delay-4 { animation-delay: 0.6s; }
+.crucible-reveal-delay-5 { animation-delay: 0.75s; }
 
 /* Gold accent link hover effect */
 .crucible-link {
@@ -1404,7 +1516,7 @@ html.dark,
   width: 0;
   height: 1px;
   background: #D4A84B;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .crucible-link:hover::after {
   width: 100%;
@@ -1412,11 +1524,11 @@ html.dark,
 
 /* Card lift effect */
 .crucible-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .crucible-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(212, 168, 75, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(212, 168, 75, 0.15);
 }
 
 /* Gold button shine */
@@ -1432,7 +1544,7 @@ html.dark,
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .crucible-btn-gold:hover::before {
   left: 100%;
@@ -1440,7 +1552,7 @@ html.dark,
 
 /* Stat number slide-up */
 .crucible-stat-enter {
-  animation: count-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: count-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   opacity: 0;
 }
 
@@ -1506,4 +1618,18 @@ html.dark,
     padding-left: 12px;
     padding-right: 12px;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SMOOTH THEME TRANSITIONS
+   ═══════════════════════════════════════════════════════════════ */
+html.transitioning *,
+html.transitioning *::before,
+html.transitioning *::after {
+  transition: background-color 0.6s ease,
+              color 0.6s ease,
+              border-color 0.6s ease,
+              box-shadow 0.6s ease,
+              fill 0.6s ease,
+              stroke 0.6s ease !important;
 }

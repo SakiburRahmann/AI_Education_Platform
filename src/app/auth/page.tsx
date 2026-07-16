@@ -57,19 +57,21 @@ function AuthPageInner() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.06]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.06] animate-gradient-drift" />
+      <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/5 blur-3xl animate-float-gentle" />
+      <div className="absolute bottom-20 right-10 w-56 h-56 rounded-full bg-primary/5 blur-3xl animate-float-gentle-delayed" />
       <Card
-        className="w-full max-w-sm relative border-0 shadow-lg"
+        className="w-full max-w-sm relative border-0 shadow-lg animate-scale-in-gentle"
         style={{ borderRadius: "1.5rem" }}
       >
         <CardHeader className="text-center pt-8">
           <div className="mb-4 flex justify-center">
             <LubbLogo className="h-12 w-12" />
           </div>
-          <CardTitle className="font-heading text-2xl">
+          <CardTitle className="font-heading text-2xl anim-delay-1 animate-slide-up-gentle">
             Welcome to Ulul Albab
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="anim-delay-2 animate-slide-up-gentle">
             Sign in to start learning with AI
           </CardDescription>
         </CardHeader>

@@ -18,10 +18,10 @@ export function ScrollReveal({
   children,
   direction = "up",
   delay = 0,
-  duration = 1000,
+  duration = 1200,
   className = "",
   once = true,
-  distance = 40,
+  distance = 50,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -68,7 +68,7 @@ export function ScrollReveal({
       style={{
         opacity: visible ? 1 : 0,
         transform: getTransform(),
-        transition: `opacity ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+        transition: `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1), transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1)`,
         transitionDelay: `${delay}ms`,
       }}
     >
