@@ -1,9 +1,10 @@
-import type { ComponentProps } from "react";
+import Image from "next/image";
 
-type LubbLogoProps = ComponentProps<"svg"> & {
+type LubbLogoProps = {
   showText?: boolean;
   textSize?: "sm" | "md" | "lg";
   variant?: "neutral" | "cozy";
+  className?: string;
 };
 
 const textSizes = {
@@ -17,34 +18,24 @@ export function LubbLogo({
   textSize = "md",
   variant,
   className,
-  ...props
 }: LubbLogoProps) {
+  const sizeClass = className ?? "h-8 w-8";
+
   return (
-    <div className={`inline-flex items-center gap-2 ${className ?? ""}`}>
-      <svg
-        viewBox="0 0 40 40"
-        fill="none"
-        className="h-8 w-8 shrink-0"
-        aria-label="Ulul Albab logo"
-        {...props}
-      >
-        <circle cx="20" cy="20" r="18" className="fill-current" opacity="0.08" />
-        <path
-          d="M20 2L28 12L38 20L28 28L20 38L12 28L2 20L12 12Z"
-          className="fill-current"
+    <div className={`inline-flex items-center gap-2 ${sizeClass}`}>
+      <div className="relative shrink-0 h-full w-full">
+        <Image
+          src="/logo.png"
+          alt="Ulul Albab logo"
+          fill
+          className="object-contain"
+          sizes="(max-width: 768px) 64px, 80px"
+          priority
         />
-        <circle cx="20" cy="20" r="5" fill="white" opacity={0.9} />
-        <circle cx="20" cy="20" r="3" className="fill-current" />
-        <path
-          d="M12 12L28 28M28 12L12 28"
-          stroke="white"
-          strokeWidth="0.75"
-          opacity={0.2}
-        />
-      </svg>
+      </div>
       {showText && (
         <span
-          className={`font-heading font-bold tracking-tight ${textSizes[textSize]}`}
+          className={`font-heading font-bold tracking-tight shrink-0 ${textSizes[textSize]}`}
         >
           Lubb <span className="text-current opacity-80">AI</span>
         </span>
