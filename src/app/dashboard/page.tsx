@@ -95,7 +95,7 @@ export default function DashboardPage() {
         })}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {quickActions.map((a) => {
           const Icon = a.icon;
           return (
@@ -110,7 +110,7 @@ export default function DashboardPage() {
         })}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <LevelBadge level={level} xp={xp} nextXp={xpToNextLevel} progress={progress.progress} />
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center gap-2 mb-2">

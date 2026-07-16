@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-16">
-      <h1 className="font-heading text-3xl font-bold mb-8">Terms of Service</h1>
-      <div className="prose prose-neutral dark:prose-invert max-w-none space-y-4 text-muted-foreground">
+    <div className="container mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16">
+      <h1 className="font-heading text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Terms of Service</h1>
+      <div className="prose prose-neutral dark:prose-invert max-w-none space-y-4 text-muted-foreground prose-sm sm:prose-base">
         <p>
           Welcome to Ulul Albab. By using our platform, you agree to these terms.
           Please read them carefully.

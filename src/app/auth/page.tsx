@@ -56,10 +56,10 @@ function AuthPageInner() {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center p-4">
+    <div className="relative flex min-h-screen items-center justify-center p-3 sm:p-4">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.06] animate-gradient-drift" />
-      <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/5 blur-3xl animate-float-gentle" />
-      <div className="absolute bottom-20 right-10 w-56 h-56 rounded-full bg-primary/5 blur-3xl animate-float-gentle-delayed" />
+      <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/5 blur-3xl animate-float-gentle hidden sm:block" />
+      <div className="absolute bottom-20 right-10 w-56 h-56 rounded-full bg-primary/5 blur-3xl animate-float-gentle-delayed hidden sm:block" />
       <Card
         className="w-full max-w-sm relative border-0 shadow-lg animate-scale-in-gentle"
         style={{ borderRadius: "1.5rem" }}

@@ -23,9 +23,9 @@ export default function LessonsPage() {
       </div>
 
       {lessons.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-20 text-center">
-          <BookOpen className="mb-4 h-10 w-10 text-muted-foreground/40" />
-          <h2 className="font-heading text-lg font-semibold mb-1">No lessons yet</h2>
+        <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-12 sm:py-20 text-center">
+          <BookOpen className="mb-4 h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground/40" />
+          <h2 className="font-heading text-base sm:text-lg font-semibold mb-1">No lessons yet</h2>
           <p className="max-w-sm text-sm text-muted-foreground mb-4">
             Ask Lubb to create a lesson in the chat, then save it here.
           </p>

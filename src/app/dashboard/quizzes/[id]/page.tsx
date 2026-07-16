@@ -32,8 +32,8 @@ export default function QuizDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!quiz) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <HelpCircle className="mb-4 h-10 w-10 text-muted-foreground/40" />
+      <div className="flex flex-col items-center justify-center py-12 sm:py-20 text-center">
+        <HelpCircle className="mb-4 h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground/40" />
         <h2 className="font-heading text-lg font-semibold mb-1">Quiz not found</h2>
         <p className="text-sm text-muted-foreground">This quiz may have been deleted.</p>
         <Link
@@ -67,9 +67,9 @@ export default function QuizDetailPage({ params }: { params: Promise<{ id: strin
           <ArrowLeft className="h-4 w-4" />
           Back to quizzes
         </Link>
-        <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-20 text-center">
-          <HelpCircle className="mb-4 h-12 w-12 text-ulul-albab-accent" />
-          <h1 className="font-heading text-2xl font-bold mb-1">{quiz.title}</h1>
+        <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-12 sm:py-20 text-center">
+          <HelpCircle className="mb-4 h-10 w-10 sm:h-12 sm:w-12 text-ulul-albab-accent" />
+          <h1 className="font-heading text-xl sm:text-2xl font-bold mb-1">{quiz.title}</h1>
           <p className="text-sm text-muted-foreground mb-1">{quiz.subject}</p>
           <p className="text-xs text-muted-foreground mb-6">
             {new Date(quiz.createdAt).toLocaleDateString("en-US", {

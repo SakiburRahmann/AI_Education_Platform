@@ -92,13 +92,13 @@ export default function CommunityPage() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center rounded-xl border bg-card py-20">
+        <div className="flex items-center justify-center rounded-xl border bg-card py-12 sm:py-20">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : sortedPosts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-20 text-center">
-          <MessageSquare className="mb-4 h-10 w-10 text-muted-foreground/40" />
-          <h2 className="font-heading text-lg font-semibold mb-1">No posts yet</h2>
+        <div className="flex flex-col items-center justify-center rounded-xl border bg-card py-12 sm:py-20 text-center">
+          <MessageSquare className="mb-4 h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground/40" />
+          <h2 className="font-heading text-base sm:text-lg font-semibold mb-1">No posts yet</h2>
           <p className="text-sm text-muted-foreground">Be the first to start a discussion!</p>
         </div>
       ) : (

@@ -287,7 +287,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex h-[calc(100dvh-6rem)] md:h-[calc(100dvh-5rem)] -mx-4 -mb-4 md:-mx-6 md:-mb-6">
+    <div className="flex h-[calc(100dvh-6rem)] md:h-[calc(100dvh-5rem)]">
       {/* Conversation sidebar — mobile overlay */}
       <div className="md:hidden">
         {sideOpen && (
@@ -297,7 +297,7 @@ export default function ChatPage() {
           />
         )}
         <div
-          className={`fixed inset-y-0 left-0 z-30 w-64 border-r bg-background transition-transform ${
+          className={`fixed inset-y-0 left-0 z-30 w-[80vw] max-w-xs border-r bg-background transition-transform ${
             sideOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -344,14 +344,14 @@ export default function ChatPage() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto">
           {activeConversation && activeConversation.messages.length === 0 && !streaming ? (
-            <div className="flex h-full flex-col items-center justify-center px-4 text-center">
-              <Bot className="mb-4 h-12 w-12 text-primary/40" />
-              <h2 className="font-heading text-xl font-bold mb-2">Chat</h2>
-              <p className="max-w-md text-sm text-muted-foreground mb-6">
+            <div className="flex h-full flex-col items-center justify-center px-4 sm:px-6 text-center">
+              <Bot className="mb-4 h-10 w-10 sm:h-12 sm:w-12 text-primary/40" />
+              <h2 className="font-heading text-lg sm:text-xl font-bold mb-2">Chat</h2>
+              <p className="max-w-md text-xs sm:text-sm text-muted-foreground mb-6">
                 Ask anything — I'm a plain AI, no prompts, no rules.
               </p>
 
-              <div className="flex flex-wrap gap-2 max-w-sm justify-center">
+              <div className="flex flex-wrap gap-2 justify-center max-w-xs sm:max-w-sm">
                 {[
                   "Explain quantum computing",
                   "Teach me Python",
@@ -365,7 +365,7 @@ export default function ChatPage() {
                       setInput(text);
                       inputRef.current?.focus();
                     }}
-                    className="rounded-full border px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted transition-colors"
+                    className="rounded-full border px-3 py-1.5 text-[11px] sm:text-xs text-muted-foreground hover:bg-muted transition-colors whitespace-nowrap"
                   >
                     {text}
                   </button>
@@ -516,7 +516,7 @@ export default function ChatPage() {
         {/* Input area */}
         <div className="border-t p-2 sm:p-3">
           <div className="mx-auto flex max-w-3xl items-end gap-2">
-            <div className="relative flex flex-1 items-end gap-1 sm:gap-2 rounded-xl border bg-background px-2 sm:px-3 py-2 focus-within:ring-2 focus-within:ring-ring/30">
+            <div className="relative flex flex-1 items-end gap-1 sm:gap-2 rounded-xl border bg-background px-2 sm:px-3 py-1.5 sm:py-2 focus-within:ring-2 focus-within:ring-ring/30">
               <textarea
                 ref={inputRef}
                 value={input}
@@ -525,15 +525,15 @@ export default function ChatPage() {
                 onPaste={handlePaste}
                 placeholder="Ask anything... (paste files directly)"
                 rows={1}
-                className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                style={{ maxHeight: "200px" }}
+                className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground leading-snug py-0.5"
+                style={{ maxHeight: "160px" }}
                 onInput={(e) => {
                   const el = e.currentTarget;
                   el.style.height = "auto";
-                  el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+                  el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
                 }}
               />
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1 self-end pb-0.5">
                 <div className="relative">
                   <button
                     disabled={uploading}
@@ -565,8 +565,8 @@ export default function ChatPage() {
               </div>
             </div>
           </div>
-          <p className="mt-2 text-center text-[10px] text-muted-foreground">
-            Powered by Gemini 3 Flash Live (chat) &amp; Gemma 4 31B (file processing). Conversations stored locally.
+          <p className="mt-1.5 text-center text-[10px] sm:text-[11px] text-muted-foreground leading-tight px-2">
+            Powered by Gemini 3 Flash Live &amp; Gemma 4 31B. Conversations stored locally.
           </p>
         </div>
       </div>

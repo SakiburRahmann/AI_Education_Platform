@@ -42,8 +42,8 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!post) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <MessageSquare className="mb-4 h-10 w-10 text-muted-foreground/40" />
+      <div className="flex flex-col items-center justify-center py-12 sm:py-20 text-center">
+        <MessageSquare className="mb-4 h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground/40" />
         <h2 className="font-heading text-lg font-semibold mb-1">Post not found</h2>
         <p className="text-sm text-muted-foreground">This post may have been deleted.</p>
         <Link href="/dashboard/community" className="mt-4 text-sm text-ulul-albab-primary hover:underline">
