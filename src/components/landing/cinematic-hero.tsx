@@ -92,13 +92,6 @@ export function CinematicHero() {
           and keeps you motivated with XP, streaks, and leagues.
           All <strong>100% free</strong>.
         </p>
-        <p className="hero-desc mx-auto mt-3 max-w-2xl text-sm sm:text-base text-muted-foreground px-2 sm:px-0">
-          Named from the Quranic term <strong>Ulul Albab</strong> (People of Intellect) and
-          <strong> Lubb</strong> (inner essence), the platform is built around the idea that
-          real learning comes from understanding, not memorization. Lubb adapts to your
-          pace, explains concepts with clarity, and transforms how you engage with knowledge.
-        </p>
-
         <div className="hero-cta mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0 pb-4 sm:pb-0">
           <Link href="/auth" className="w-full sm:w-auto">
             <span className="btn-primary inline-block w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 text-center">
