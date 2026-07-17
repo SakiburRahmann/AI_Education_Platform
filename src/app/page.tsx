@@ -61,9 +61,9 @@ export default function LandingPage() {
             </ScrollReveal>
             <ScrollReveal direction="up" delay={600} duration={1200}>
               <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-2 sm:px-0">
-                Ulul Albab is an AI-powered learning platform. Upload your books, lecture slides,
-                and notes. Chat with <strong>Lubb AI</strong>, generate interactive lessons and
-                quizzes, earn XP, and climb the leaderboard.
+                <strong>Ulul Albab</strong> is an AI-powered learning platform built around <strong>Lubb AI</strong> — your personal AI tutor.
+                Upload your books, lecture slides, and notes. Chat with Lubb, generate interactive
+                lessons and adaptive quizzes, earn XP, and climb the leaderboard.
               </p>
             </ScrollReveal>
             <ScrollReveal direction="up" delay={900} duration={1000}>
@@ -88,14 +88,14 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 sm:px-6">
             <ScrollReveal direction="up" duration={1200}>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center">
-                Everything You Need to Learn
+                Learn Smarter with Lubb AI
               </h2>
             </ScrollReveal>
             <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
               {[
                 {
                   title: "Upload Anything",
-                  desc: "PDFs, slides, documents — Lubb AI extracts and understands your materials instantly.",
+                  desc: "Upload your PDFs, slides, and notes to Ulul Albab. Lubb AI extracts everything and turns your materials into interactive study content instantly.",
                   icon: (
                     <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -103,8 +103,8 @@ export default function LandingPage() {
                   ),
                 },
                 {
-                  title: "AI-Powered Learning",
-                  desc: "Chat with Lubb AI about your materials. Generate interactive lessons and quizzes on demand.",
+                  title: "AI Tutor Chat",
+                  desc: "Chat with Lubb AI — your personal AI tutor — about any topic. Lubb generates interactive lessons, adaptive quizzes, and explains concepts until you understand.",
                   icon: (
                     <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -112,8 +112,8 @@ export default function LandingPage() {
                   ),
                 },
                 {
-                  title: "Gamified & Social",
-                  desc: "Earn XP, climb leagues, unlock achievements, and share knowledge with the community.",
+                  title: "Gamified Learning",
+                  desc: "Earn XP with every lesson, climb the leaderboard, unlock achievements, and compete with the Ulul Albab community. Learning with Lubb AI is fun and rewarding.",
                   icon: (
                     <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -147,10 +147,10 @@ export default function LandingPage() {
             </ScrollReveal>
             <div className="grid gap-6 sm:gap-8 grid-cols-2 md:grid-cols-4 text-center">
               {[
-                { step: "1", title: "Upload", desc: "Drop your study materials for Lubb AI" },
-                { step: "2", title: "Learn", desc: "Chat with Lubb AI about your content" },
+                { step: "1", title: "Upload", desc: "Drop your study materials into Ulul Albab" },
+                { step: "2", title: "Learn", desc: "Chat with Lubb AI, your personal AI tutor" },
                 { step: "3", title: "Practice", desc: "Take AI-generated quizzes from Lubb" },
-                { step: "4", title: "Compete", desc: "Earn XP & climb leagues" },
+                { step: "4", title: "Compete", desc: "Earn XP & climb the leaderboard" },
               ].map((item, i) => (
                 <ScrollReveal key={item.step} direction="up" delay={i * 300} duration={1000}>
                   <div className="card-hover p-5 sm:p-6 group transition-all duration-700 hover:-translate-y-3 hover:shadow-xl">
@@ -224,7 +224,7 @@ export default function LandingPage() {
               </ScrollReveal>
               <ScrollReveal direction="up" delay={300} duration={1200}>
                 <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 px-2 sm:px-0">
-                  Ready to learn with Ulul Albab?
+                  Start Learning with Ulul Albab Today
                 </h2>
               </ScrollReveal>
               <ScrollReveal direction="up" delay={600} duration={1000}>

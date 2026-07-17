@@ -45,5 +45,55 @@ export const metadata: Metadata = {
 };
 
 export default function IssbLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Ulul Albab", item: "https://ululalbab.vercel.app" },
+                  { "@type": "ListItem", position: 2, name: "Crucible Board", item: "https://ululalbab.vercel.app/issb" },
+                ],
+              },
+              {
+                "@type": "FAQPage",
+                mainEntity: [
+                  {
+                    "@type": "Question",
+                    name: "What is Crucible Board?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Crucible Board is an AI-powered ISSB practice platform by Ulul Albab. It helps Bangladesh Defense officer candidates prepare for TAT, WAT, SRT, and interview stages with realistic simulations and AI feedback.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Is Crucible Board free?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Yes, Crucible Board offers free ISSB practice. Powered by Ulul Albab and Lubb AI, you can practice TAT, WAT, SRT, and mock interview scenarios at no cost.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "How does Crucible Board help with ISSB preparation?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Crucible Board provides AI-powered simulations of all ISSB stages including TAT (Thematic Apperception Test), WAT (Word Association Test), SRT (Situation Reaction Test), and mock interviews. You receive instant AI feedback to improve your responses.",
+                    },
+                  },
+                ],
+              },
+            ],
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

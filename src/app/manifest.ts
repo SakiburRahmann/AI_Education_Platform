@@ -5,8 +5,10 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Ulul Albab — Learn with Lubb AI",
     short_name: "Ulul Albab",
     description:
-      "AI-powered learning platform. Upload materials, chat with Lubb AI, generate lessons and quizzes, earn XP.",
+      "AI-powered learning platform with Lubb AI — your personal AI tutor. Upload materials, generate interactive lessons and quizzes, earn XP.",
     start_url: "/",
+    scope: "/",
+    lang: "en",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#6C3CE1",

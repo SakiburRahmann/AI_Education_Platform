@@ -23,6 +23,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: post.title,
       description: post.description,
+      type: "article",
+      publishedTime: new Date(post.date).toISOString(),
+      authors: [post.author],
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [{ url: "/og.png", width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `https://ululalbab.vercel.app/blog/${post.slug}`,
     },
   };
 }
@@ -64,6 +77,21 @@ export default async function BlogPostPage({ params }: Props) {
         {" — "}
         {post.author}
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.description,
+            datePublished: new Date(post.date).toISOString(),
+            author: { "@type": "Organization", name: post.author },
+            publisher: { "@type": "Organization", name: "Ulul Albab", url: "https://ululalbab.vercel.app" },
+            mainEntityOfPage: { "@type": "WebPage", "@id": `https://ululalbab.vercel.app/blog/${post.slug}` },
+          }),
+        }}
+      />
       <div
         className="prose prose-neutral dark:prose-invert max-w-none prose-sm sm:prose-base"
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}

@@ -113,18 +113,22 @@ export const metadata: Metadata = {
     template: "%s | Ulul Albab",
   },
   description:
-    "Ulul Albab is an AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+    "Ulul Albab is an AI-powered learning platform with Lubb AI — your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues. The smartest way to learn with AI.",
   keywords: [
     "Ulul Albab",
     "Lubb AI",
     "AI learning platform",
     "AI education",
+    "AI tutor",
     "study with AI",
     "interactive lessons",
     "AI quiz generator",
     "gamified learning",
     "online education",
-    "AI tutor",
+    "personalized learning",
+    "AI study assistant",
+    "Lubb",
+    "Ulul Albab platform",
   ],
   authors: [{ name: "Ulul Albab" }],
   icons: {
@@ -143,7 +147,7 @@ export const metadata: Metadata = {
     siteName: "Ulul Albab",
     title: "Ulul Albab — Learn with Lubb AI",
     description:
-      "Upload your materials, chat with Lubb AI, generate interactive lessons and quizzes, and compete with others in a gamified learning platform.",
+      "Ulul Albab is an AI-powered learning platform with Lubb AI — your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
     url: "https://ululalbab.vercel.app",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
@@ -151,7 +155,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ulul Albab — Learn with Lubb AI",
     description:
-      "AI-powered learning platform. Chat with Lubb AI, generate lessons & quizzes, earn XP.",
+      "AI-powered learning platform with Lubb AI. Upload materials, generate lessons & quizzes, earn XP, and climb leagues.",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   robots: {
@@ -160,6 +164,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://ululalbab.vercel.app",
+    languages: {
+      en: "https://ululalbab.vercel.app",
+    },
   },
   verification: {
     google: "LDxHDWNF7ouKXdXc2MUgxgmeBKkH9lMHz_HuOVTuAtE",
@@ -190,20 +197,33 @@ export default function RootLayout({
                 "@context": "https://schema.org",
                 "@graph": [
                   {
-                    "@type": "WebSite",
+                    "@type": "Organization",
                     name: "Ulul Albab",
                     alternateName: "Ulul Albab — Learn with Lubb AI",
                     url: "https://ululalbab.vercel.app",
+                    logo: "https://ululalbab.vercel.app/logo.png",
                     description:
-                      "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                      "AI-powered learning platform with Lubb AI. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                    sameAs: [
+                      "https://ululalbab.vercel.app",
+                    ],
+                  },
+                  {
+                    "@type": "WebSite",
+                    name: "Ulul Albab",
+                    alternateName: "Lubb AI",
+                    url: "https://ululalbab.vercel.app",
+                    description:
+                      "AI-powered learning platform with Lubb AI — your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
                   },
                   {
                     "@type": "WebApplication",
                     name: "Ulul Albab",
                     applicationCategory: "EducationalApplication",
                     operatingSystem: "Web",
+                    browserRequirements: "Requires JavaScript",
                     description:
-                      "AI-powered learning platform. Upload PDFs, slides, and notes. Chat with Lubb AI, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                      "AI-powered learning platform with Lubb AI. Upload materials, chat with your AI tutor, generate interactive lessons and quizzes, earn XP, and climb leagues.",
                     url: "https://ululalbab.vercel.app",
                     author: { "@type": "Organization", name: "Ulul Albab" },
                     offers: {
@@ -211,6 +231,14 @@ export default function RootLayout({
                       price: "0",
                       priceCurrency: "USD",
                     },
+                  },
+                  {
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                      { "@type": "ListItem", position: 1, name: "Home", item: "https://ululalbab.vercel.app" },
+                      { "@type": "ListItem", position: 2, name: "AI Chat", item: "https://ululalbab.vercel.app/dashboard/chat" },
+                      { "@type": "ListItem", position: 3, name: "Blog", item: "https://ululalbab.vercel.app/blog" },
+                    ],
                   },
                 ],
               }),

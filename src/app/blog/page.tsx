@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     title: "Ulul Albab Blog — AI Learning Insights",
     description:
       "AI-powered education tips, study strategies, and insights from the Ulul Albab team.",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ulul Albab Blog — AI Learning Insights",
+    description:
+      "AI-powered education tips, study strategies, and insights from the Ulul Albab team.",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
+  alternates: {
+    canonical: "https://ululalbab.vercel.app/blog",
   },
 };
 

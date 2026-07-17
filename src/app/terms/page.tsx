@@ -2,7 +2,20 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of service for Ulul Albab — an AI-powered learning platform.",
+  description: "Terms of service for Ulul Albab — an AI-powered learning platform. Read the terms governing your use of Ulul Albab and Lubb AI.",
+  openGraph: {
+    title: "Terms of Service | Ulul Albab",
+    description: "Terms of service for Ulul Albab AI-powered learning platform.",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms of Service | Ulul Albab",
+    description: "Terms of service for Ulul Albab AI-powered learning platform.",
+  },
+  alternates: {
+    canonical: "https://ululalbab.vercel.app/terms",
+  },
 };
 
 export default function TermsPage() {
