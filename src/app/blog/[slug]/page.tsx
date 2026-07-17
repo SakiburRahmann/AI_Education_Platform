@@ -74,7 +74,7 @@ export default async function BlogPostPage({ params }: Props) {
           month: "long",
           day: "numeric",
         })}
-        {" — "}
+        {" | "}
         {post.author}
       </div>
       <script

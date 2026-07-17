@@ -17,7 +17,7 @@ const features = [
   {
     title: "TAT Simulator",
     subtitle: "Thematic Apperception Test",
-    desc: "View realistic scenarios with timed exposure. Write compelling stories and receive AI-powered analysis on plot structure, originality, and officer-like qualities — just like the real ISSB board.",
+    desc: "View realistic scenarios with timed exposure. Write compelling stories and receive AI-powered analysis on plot structure, originality, and officer-like qualities: just like the real ISSB board.",
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13 12H3" />
@@ -27,7 +27,7 @@ const features = [
   {
     title: "WAT Practice",
     subtitle: "Word Association Test",
-    desc: "Rapid-fire word association drills with timed responses. Build speed and accuracy under pressure — just like the real ISSB board. Train your mind to respond with precision.",
+    desc: "Rapid-fire word association drills with timed responses. Build speed and accuracy under pressure: just like the real ISSB board. Train your mind to respond with precision.",
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -47,7 +47,7 @@ const features = [
   {
     title: "AI Interview",
     subtitle: "Mock Board Interview",
-    desc: "Practice with an AI that roleplays as an ISSB selection board. Get grilled on your motivation, leadership philosophy, and situational judgment — then receive detailed, rubric-based feedback.",
+    desc: "Practice with an AI that roleplays as an ISSB selection board. Get grilled on your motivation, leadership philosophy, and situational judgment: then receive detailed, rubric-based feedback.",
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -75,7 +75,7 @@ const benefits = [
   },
   {
     title: "Realistic Simulation",
-    desc: "Every detail is designed to match the actual ISSB board — from 30-second TAT image exposure to rapid-fire WAT word associations. We replicate the pressure so you can conquer it.",
+    desc: "Every detail is designed to match the actual ISSB board: from 30-second TAT image exposure to rapid-fire WAT word associations. We replicate the pressure so you can conquer it.",
     icon: (
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -241,7 +241,7 @@ export default function CrucibleBoardLanding() {
       <section id="hero" className="relative flex min-h-screen items-center overflow-hidden pt-16">
         <div className="absolute inset-0 crucible-gradient bg-[radial-gradient(ellipse_at_center,rgba(212,168,75,0.15)_0%,transparent_50%)]" />
 
-        {/* Floating elements — hidden on mobile */}
+        {/* Floating elements: hidden on mobile */}
         <div className="hidden md:block absolute right-[15%] top-[20%] crucible-float">
           <div className="h-24 w-24 rounded-full border border-[#D4A84B]/10 bg-[#D4A84B]/5" />
         </div>
@@ -297,7 +297,7 @@ export default function CrucibleBoardLanding() {
             <ScrollReveal direction="up" delay={600}>
               <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-sm sm:text-base leading-relaxed text-[#8899B4] px-2 sm:px-0">
                 The premier AI-powered ISSB practice platform for Bangladesh Defense officer candidates.
-                Master every stage of the selection board — from psychological tests to the final interview.
+                Master every stage of the selection board: from psychological tests to the final interview.
               </p>
             </ScrollReveal>
 
@@ -388,7 +388,7 @@ export default function CrucibleBoardLanding() {
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed text-[#8899B4]">
                   The Inter Services Selection Board (ISSB) is the gateway to becoming an officer in the
-                  Bangladesh Army, Navy, and Air Force — a grueling multi-day assessment of leadership,
+                  Bangladesh Army, Navy, and Air Force: a grueling multi-day assessment of leadership,
                   mental agility, and character under pressure.
                 </p>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed text-[#8899B4]">
@@ -569,7 +569,7 @@ export default function CrucibleBoardLanding() {
                     {" "}It's about forging what was always there.
                   </blockquote>
                   <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-[#8899B4] tracking-wider">
-                    — Preparation is the key to commission
+                   : Preparation is the key to commission
                   </p>
                 </div>
               </ScrollReveal>
@@ -699,7 +699,7 @@ export default function CrucibleBoardLanding() {
               &copy; {new Date().getFullYear()} Ulul Albab. All rights reserved.
             </p>
             <p className="mt-1 text-[9px] sm:text-[10px] text-[#556677] px-4">
-              Independent preparation tool — not affiliated with or endorsed by the Bangladesh Armed Forces, ISSB, or any government agency.
+              Independent preparation tool: not affiliated with or endorsed by the Bangladesh Armed Forces, ISSB, or any government agency.
             </p>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { ErrorCard } from "@/components/error/error-card";
 
 /**
- * Global error boundary — wraps the ENTIRE application.
+ * Global error boundary: wraps the ENTIRE application.
  * Only renders when the root layout itself crashes.
  */
 export default function GlobalError({

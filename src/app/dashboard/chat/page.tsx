@@ -266,7 +266,7 @@ export default function ChatPage() {
       }
     } catch (err: any) {
       console.error("Stream error:", err);
-      toast.error("Chat failed — retrying with a different model");
+      toast.error("Chat failed: retrying with a different model");
       const errorMsg: Message = {
         id: uid(),
         role: "assistant",
@@ -288,7 +288,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-[calc(100dvh-6rem)] md:h-[calc(100dvh-5rem)]">
-      {/* Conversation sidebar — mobile overlay */}
+      {/* Conversation sidebar: mobile overlay */}
       <div className="md:hidden">
         {sideOpen && (
           <div
@@ -311,7 +311,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Conversation sidebar — desktop inline */}
+      {/* Conversation sidebar: desktop inline */}
       <div
         className={`hidden md:block border-r bg-muted/30 transition-all overflow-hidden shrink-0 ${
           sideOpen ? "w-64" : "w-0"
@@ -348,7 +348,7 @@ export default function ChatPage() {
               <Bot className="mb-4 h-10 w-10 sm:h-12 sm:w-12 text-primary/40" />
               <h2 className="font-heading text-lg sm:text-xl font-bold mb-2">Chat</h2>
               <p className="max-w-md text-xs sm:text-sm text-muted-foreground mb-6">
-                Ask anything — I'm a plain AI, no prompts, no rules.
+                Ask anything: I'm a plain AI, no prompts, no rules.
               </p>
 
               <div className="flex flex-wrap gap-2 justify-center max-w-xs sm:max-w-sm">

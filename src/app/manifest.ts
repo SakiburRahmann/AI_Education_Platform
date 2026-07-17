@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Ulul Albab — Learn with Lubb AI",
+    name: "Ulul Albab | Learn with Lubb AI",
     short_name: "Ulul Albab",
     description:
-      "AI-powered learning platform with Lubb AI — your personal AI tutor. Upload materials, generate interactive lessons and quizzes, earn XP.",
+      "AI-powered learning platform with Lubb AI: your personal AI tutor. Upload materials, generate interactive lessons and quizzes, earn XP.",
     start_url: "/",
     scope: "/",
     lang: "en",

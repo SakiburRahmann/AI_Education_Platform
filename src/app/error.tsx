@@ -3,7 +3,7 @@
 import { ErrorCard } from "@/components/error/error-card";
 
 /**
- * General error boundary — catches render errors in page segments.
+ * General error boundary: catches render errors in page segments.
  * Renders within the layout, preserving header/footer.
  */
 export default function Error({

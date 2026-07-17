@@ -34,7 +34,7 @@ const DEFAULT_ERROR = {
 };
 
 /**
- * Inner component that reads search params — wrapped in Suspense by parent.
+ * Inner component that reads search params: wrapped in Suspense by parent.
  * Required because useSearchParams() needs a Suspense boundary in Next.js 15+.
  */
 function AuthPageInner() {

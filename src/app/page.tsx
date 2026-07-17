@@ -13,7 +13,7 @@ const stats = [
 const features = [
   {
     title: "Learn Anything, Any Way",
-    desc: "Upload your textbooks, lecture slides, and notes — or just ask Lubb about any topic from scratch. No materials needed. Lubb teaches you like a personal tutor.",
+    desc: "Upload your textbooks, lecture slides, and notes: or just ask Lubb about any topic from scratch. No materials needed. Lubb teaches you like a personal tutor.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -31,7 +31,7 @@ const features = [
   },
   {
     title: "Interactive Lessons & Quizzes",
-    desc: "Lubb transforms any topic into interactive lessons with adaptive quizzes that test your understanding. Not just memorization — real comprehension that sticks.",
+    desc: "Lubb transforms any topic into interactive lessons with adaptive quizzes that test your understanding. Not just memorization: real comprehension that sticks.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -135,7 +135,7 @@ export default function LandingPage() {
             <ScrollReveal direction="up" delay={600} duration={1200}>
               <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-2 sm:px-0">
                 <strong>Ulul Albab</strong> is an AI-powered learning platform for everyone.
-                Upload your books and notes — or learn any subject from scratch.
+                Upload your books and notes: or learn any subject from scratch.
                 <strong> Lubb AI</strong> teaches you, quizzes you, and keeps you motivated
                 with XP, streaks, and leagues. All <strong>100% free</strong>.
               </p>
@@ -214,7 +214,7 @@ export default function LandingPage() {
               <ScrollReveal direction="up" delay={400} duration={1000}>
                 <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2 sm:px-0">
                   I'm your personal AI learning companion. Think of me as the tutor who's always
-                  available — patient, knowledgeable, and adaptive. I can teach you anything from
+                  available: patient, knowledgeable, and adaptive. I can teach you anything from
                   scratch, help you master your course materials, create practice quizzes, and make
                   sure you truly understand before moving on.
                 </p>
@@ -224,7 +224,7 @@ export default function LandingPage() {
                   {[
                     { title: "Ask Me Anything", desc: "Stuck on a concept? Just ask. I'll explain it clearly, with examples you'll actually understand." },
                     { title: "I Adapt to You", desc: "If you're struggling, I slow down. If you're ready, I speed up. I track what you know and fill the gaps." },
-                    { title: "I Make It Fun", desc: "Lessons, quizzes, XP, streaks — I turn learning into a journey you'll look forward to every day." },
+                    { title: "I Make It Fun", desc: "Lessons, quizzes, XP, streaks: I turn learning into a journey you'll look forward to every day." },
                   ].map((item, i) => (
                     <div key={item.title} className="rounded-xl border bg-card p-5 sm:p-6 hover:shadow-md transition-shadow">
                       <h3 className="font-heading font-bold text-sm sm:text-base mb-2">{item.title}</h3>
@@ -308,7 +308,7 @@ export default function LandingPage() {
                 Built with Modern Technology
               </h2>
               <p className="text-sm sm:text-base text-muted-foreground text-center mb-8 sm:mb-12 max-w-xl mx-auto">
-                Ulul Albab is powered by industry-leading AI models and infrastructure — all
+                Ulul Albab is powered by industry-leading AI models and infrastructure: all
                 delivered free to every learner.
               </p>
             </ScrollReveal>
@@ -363,7 +363,7 @@ export default function LandingPage() {
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#D4A84B]" />
                   </span>
                   <span className="text-[10px] sm:text-xs font-medium tracking-wider text-[#D4A84B] uppercase">
-                    NEW — Crucible Board
+                    NEW: Crucible Board
                   </span>
                 </div>
                 <h2
@@ -413,7 +413,7 @@ export default function LandingPage() {
               </ScrollReveal>
               <ScrollReveal direction="up" delay={600} duration={1000}>
                 <p className="text-muted-foreground mb-6 sm:mb-8 text-sm sm:text-lg px-2 sm:px-0">
-                  Start learning with Lubb AI — your personal AI tutor. Master new subjects, ace your exams, and fall in love with learning.
+                  Start learning with Lubb AI: your personal AI tutor. Master new subjects, ace your exams, and fall in love with learning.
                   No credit card. No commitment. Just pure learning.
                 </p>
               </ScrollReveal>

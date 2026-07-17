@@ -123,7 +123,7 @@ export default function SettingsPage() {
       items: [
         {
           label: "Version",
-          description: "Ulul Albab v1.0.0 — Powered by Lubb AI",
+          description: "Ulul Albab v1.0.0: Powered by Lubb AI",
         },
         {
           label: "Data Storage",

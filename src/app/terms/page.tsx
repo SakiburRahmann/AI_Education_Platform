@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of service for Ulul Albab — an AI-powered learning platform. Read the terms governing your use of Ulul Albab and Lubb AI.",
+  description: "Terms of service for Ulul Albab, an AI-powered learning platform. Read the terms governing your use of Ulul Albab and Lubb AI.",
   openGraph: {
     title: "Terms of Service | Ulul Albab",
     description: "Terms of service for Ulul Albab AI-powered learning platform.",

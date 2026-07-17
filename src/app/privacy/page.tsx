@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy policy for Ulul Albab — an AI-powered learning platform. Learn how Ulul Albab with Lubb AI collects, uses, and protects your data.",
+  description: "Privacy policy for Ulul Albab, an AI-powered learning platform. Learn how Ulul Albab with Lubb AI collects, uses, and protects your data.",
   openGraph: {
     title: "Privacy Policy | Ulul Albab",
-    description: "Privacy policy for Ulul Albab — an AI-powered learning platform.",
+    description: "Privacy policy for Ulul Albab, an AI-powered learning platform.",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   twitter: {

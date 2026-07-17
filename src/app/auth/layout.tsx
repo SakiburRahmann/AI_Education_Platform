@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Sign In",
   description:
-    "Sign in to Ulul Albab and start learning with Lubb AI — your personal AI tutor. Upload materials, generate lessons and quizzes, earn XP.",
+    "Sign in to Ulul Albab and start learning with Lubb AI: your personal AI tutor. Upload materials, generate lessons and quizzes, earn XP.",
   openGraph: {
     title: "Sign In | Ulul Albab",
     description:

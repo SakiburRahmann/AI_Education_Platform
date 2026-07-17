@@ -109,11 +109,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://ululalbab.vercel.app"),
   applicationName: "Ulul Albab",
   title: {
-    default: "Ulul Albab — Learn with Lubb AI",
+    default: "Ulul Albab | Learn with Lubb AI",
     template: "%s | Ulul Albab",
   },
   description:
-    "Ulul Albab is an AI-powered learning platform with Lubb AI — your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues. The smartest way to learn with AI.",
+    "Ulul Albab is an AI-powered learning platform with Lubb AI: your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues. The smartest way to learn with AI.",
   keywords: [
     "Ulul Albab",
     "Lubb AI",
@@ -145,15 +145,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Ulul Albab",
-    title: "Ulul Albab — Learn with Lubb AI",
+    title: "Ulul Albab | Learn with Lubb AI",
     description:
-      "Ulul Albab is an AI-powered learning platform with Lubb AI — your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+      "Ulul Albab is an AI-powered learning platform with Lubb AI: your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
     url: "https://ululalbab.vercel.app",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ulul Albab — Learn with Lubb AI",
+    title: "Ulul Albab | Learn with Lubb AI",
     description:
       "AI-powered learning platform with Lubb AI. Upload materials, generate lessons & quizzes, earn XP, and climb leagues.",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
@@ -199,7 +199,7 @@ export default function RootLayout({
                   {
                     "@type": "Organization",
                     name: "Ulul Albab",
-                    alternateName: "Ulul Albab — Learn with Lubb AI",
+                    alternateName: "Ulul Albab | Learn with Lubb AI",
                     url: "https://ululalbab.vercel.app",
                     logo: "https://ululalbab.vercel.app/logo.png",
                     description:
@@ -214,7 +214,7 @@ export default function RootLayout({
                     alternateName: "Lubb AI",
                     url: "https://ululalbab.vercel.app",
                     description:
-                      "AI-powered learning platform with Lubb AI — your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
+                      "AI-powered learning platform with Lubb AI: your personal AI tutor. Upload PDFs, slides, and notes. Chat with Lubb, generate interactive lessons and quizzes, earn XP, and climb leagues.",
                   },
                   {
                     "@type": "WebApplication",
