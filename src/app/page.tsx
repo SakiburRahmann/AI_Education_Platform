@@ -2,13 +2,7 @@ import Link from "next/link";
 import { LubbLogo } from "@/components/ui/lubb-logo";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-
-const stats = [
-  { value: "100%", label: "Free to learn" },
-  { value: "Any", label: "Subject, any level" },
-  { value: "AI", label: "Powered by Lubb" },
-  { value: "XP", label: "Rewards & leagues" },
-];
+import { CinematicHero } from "@/components/landing/cinematic-hero";
 
 const features = [
   {
@@ -103,70 +97,7 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1">
-        {/* ═══ HERO ═══ */}
-        <section className="relative overflow-hidden py-16 sm:py-24 md:py-32">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.07] animate-gradient-drift" />
-          <div className="absolute top-1/4 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl animate-float-gentle hidden sm:block" />
-          <div className="absolute bottom-1/4 right-10 w-48 h-48 rounded-full bg-primary/5 blur-3xl animate-float-gentle-delayed hidden sm:block" />
-          <div className="container mx-auto px-4 sm:px-6 text-center relative">
-            <ScrollReveal direction="up" duration={1400}>
-              <div className="mb-6 sm:mb-8 flex justify-center">
-                <div className="animate-zoom-in-slow hover:rotate-3">
-                  <LubbLogo className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20" />
-                </div>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal direction="up" delay={300} duration={1400}>
-              <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-5xl md:text-7xl text-foreground px-2 sm:px-0">
-                <span className="text-gradient-primary">Ulul Albab</span>
-                <br />
-                <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-muted-foreground">
-                  Learn Anything with{" "}
-                  <span className="text-gradient-warm">Lubb AI</span>
-                </span>
-              </h1>
-            </ScrollReveal>
-            <ScrollReveal direction="up" delay={600} duration={1200}>
-              <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-2 sm:px-0">
-                <strong>Ulul Albab</strong> is an AI-powered learning platform for everyone.
-                Upload your books and notes: or learn any subject from scratch.
-                <strong> Lubb AI</strong>, your personal AI tutor, teaches you, quizzes you,
-                and keeps you motivated with XP, streaks, and leagues.
-                All <strong>100% free</strong>.
-              </p>
-              <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-muted-foreground px-2 sm:px-0">
-                Named from the Quranic term <strong>Ulul Albab</strong> (People of Intellect) and
-                <strong> Lubb</strong> (inner essence), the platform is built around the idea that
-                real learning comes from understanding, not memorization. Lubb adapts to your
-                pace, explains concepts with clarity, and transforms how you engage with knowledge.
-              </p>
-            </ScrollReveal>
-            <ScrollReveal direction="up" delay={900} duration={1000}>
-              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0 pb-4 sm:pb-0">
-                <Link href="/auth" className="w-full sm:w-auto">
-                  <span className="btn-primary inline-block w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 text-center">
-                    Start Learning Free
-                  </span>
-                </Link>
-                <Link href="/dashboard/chat" className="w-full sm:w-auto">
-                  <span className="btn-outline inline-block w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg transition-all duration-500 hover:scale-105 hover:shadow-lg text-center">
-                    Try the Chat
-                  </span>
-                </Link>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal direction="up" delay={1100} duration={1000}>
-              <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-muted-foreground">
-                {stats.map((s) => (
-                  <div key={s.label} className="flex items-center gap-1.5">
-                    <span className="font-bold text-foreground">{s.value}</span>
-                    <span>{s.label}</span>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
+        <CinematicHero />
 
         {/* ═══ SOCIAL PROOF / STATS ═══ */}
         <section className="py-12 sm:py-16 bg-muted/30 border-y">
