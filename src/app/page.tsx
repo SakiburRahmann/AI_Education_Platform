@@ -158,7 +158,7 @@ export default function LandingPage() {
                     { title: "I Adapt to You", desc: "If you're struggling, I slow down. If you're ready, I speed up. I track what you know and fill the gaps." },
                     { title: "I Make It Fun", desc: "Lessons, quizzes, XP, streaks: I turn learning into a journey you'll look forward to every day." },
                   ].map((item, i) => (
-                    <div key={item.title} className="rounded-xl border bg-card p-5 sm:p-6 hover:shadow-md transition-shadow">
+                    <div key={item.title} className="rounded-xl border bg-card p-5 sm:p-6 hover:shadow-md transition-shadow h-full">
                       <h3 className="font-heading font-bold text-sm sm:text-base mb-2">{item.title}</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                     </div>

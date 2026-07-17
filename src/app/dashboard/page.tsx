@@ -86,7 +86,7 @@ export default function DashboardPage() {
         {statCards.map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="rounded-xl border bg-card p-4">
+            <div key={s.label} className="rounded-xl border bg-card p-4 h-full">
               <div className="flex items-center gap-2">
                 <Icon className={`h-4 w-4 ${s.color}`} />
                 <span className="text-xs text-muted-foreground">{s.label}</span>
@@ -102,7 +102,7 @@ export default function DashboardPage() {
           const Icon = a.icon;
           return (
             <Link key={a.href} href={a.href}>
-              <div className="rounded-xl border bg-card p-4 hover:bg-accent transition-colors cursor-pointer">
+              <div className="rounded-xl border bg-card p-4 hover:bg-accent transition-colors cursor-pointer h-full">
                 <Icon className="h-5 w-5 text-ulul-albab-primary mb-2" />
                 <p className="font-medium text-sm">{a.label}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{a.desc}</p>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <LevelBadge level={level} xp={xp} nextXp={xpToNextLevel} progress={progress.progress} />
-        <div className="rounded-xl border bg-card p-4">
+        <div className="rounded-xl border bg-card p-4 h-full">
           <div className="flex items-center gap-2 mb-2">
             <Flame className="h-4 w-4 text-ulul-albab-streak" />
             <span className="text-xs font-medium text-muted-foreground">Streak</span>

@@ -42,7 +42,7 @@ export default function QuizzesPage() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {quizzes.map((quiz) => (
-            <div key={quiz.id} className="group relative rounded-xl border bg-card hover:shadow-md transition-shadow">
+            <div key={quiz.id} className="group relative rounded-xl border bg-card hover:shadow-md transition-shadow h-full">
               <Link href={`/dashboard/quizzes/${quiz.id}`} className="block p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <HelpCircle className="h-4 w-4 text-ulul-albab-accent shrink-0" />

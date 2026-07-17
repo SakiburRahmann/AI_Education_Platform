@@ -42,7 +42,7 @@ export default function LessonsPage() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {lessons.map((lesson) => (
-            <div key={lesson.id} className="group relative rounded-xl border bg-card hover:shadow-md transition-shadow">
+            <div key={lesson.id} className="group relative rounded-xl border bg-card hover:shadow-md transition-shadow h-full">
               <Link href={`/dashboard/lessons/${lesson.id}`} className="block p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <BookOpen className="h-4 w-4 text-ulul-albab-primary shrink-0" />
