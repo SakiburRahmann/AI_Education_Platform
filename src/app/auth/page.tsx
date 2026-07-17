@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, Suspense } from "react";
+import { useCallback, useState, Suspense, useRef, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import {
 import { LubbLogo } from "@/components/ui/lubb-logo";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { PageEntrance } from "@/components/animations/page-entrance";
 
 const ERROR_MESSAGES: Record<string, { title: string; message: string; action?: string }> = {
   auth_failed: {
@@ -55,7 +56,19 @@ function AuthPageInner() {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    import("gsap").then(({ gsap }) => {
+      const tl = gsap.timeline({ defaults: { opacity: 0, y: 30, duration: 0.6, ease: "power3.out" } });
+      tl.from(".auth-logo", {})
+        .from(".auth-title", {})
+        .from(".auth-desc", {})
+        .from(".auth-btn", {})
+        .from(".auth-links", {});
+    });
+  }, []);
+
   return (
+    <PageEntrance>
     <div className="relative flex min-h-screen items-center justify-center p-3 sm:p-4">
       <h1 className="sr-only">Ulul Albab - Sign In</h1>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_60%)] opacity-[0.06] animate-gradient-drift" />
@@ -67,12 +80,12 @@ function AuthPageInner() {
       >
         <CardHeader className="text-center pt-8">
           <div className="mb-4 flex justify-center">
-            <LubbLogo className="h-12 w-12" />
+            <LubbLogo className="auth-logo h-12 w-12" />
           </div>
-          <CardTitle className="font-heading text-2xl anim-delay-1 animate-slide-up-gentle">
+          <CardTitle className="auth-title font-heading text-2xl anim-delay-1 animate-slide-up-gentle">
             Welcome to Ulul Albab
           </CardTitle>
-          <CardDescription className="anim-delay-2 animate-slide-up-gentle">
+          <CardDescription className="auth-desc anim-delay-2 animate-slide-up-gentle">
             Sign in to start learning with AI
           </CardDescription>
         </CardHeader>
@@ -95,7 +108,7 @@ function AuthPageInner() {
           )}
 
           <button
-            className="btn-primary w-full gap-2 text-base"
+            className="auth-btn btn-primary w-full gap-2 text-base"
             onClick={handleGoogleLogin}
             disabled={loading}
           >
@@ -119,7 +132,7 @@ function AuthPageInner() {
             </svg>
             {loading ? "Redirecting..." : "Continue with Google"}
           </button>
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="auth-links text-xs text-center text-muted-foreground">
             By continuing, you agree to our{" "}
             <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">
               Terms
@@ -132,6 +145,7 @@ function AuthPageInner() {
         </CardContent>
       </Card>
     </div>
+    </PageEntrance>
   );
 }
 

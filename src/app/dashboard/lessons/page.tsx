@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLessonsStorage } from "@/hooks/use-lessons-storage";
 import { BookOpen, Trash2, MessageSquare } from "lucide-react";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -14,6 +15,7 @@ export default function LessonsPage() {
   const { lessons, deleteLesson } = useLessonsStorage();
 
   return (
+    <DashboardEntrance>
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold">Lessons</h1>
@@ -61,5 +63,6 @@ export default function LessonsPage() {
         </div>
       )}
     </div>
+    </DashboardEntrance>
   );
 }

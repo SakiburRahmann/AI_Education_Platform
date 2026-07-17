@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useQuizzesStorage } from "@/hooks/use-quizzes-storage";
 import { HelpCircle, Trash2, MessageSquare } from "lucide-react";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -14,6 +15,7 @@ export default function QuizzesPage() {
   const { quizzes, deleteQuiz } = useQuizzesStorage();
 
   return (
+    <DashboardEntrance>
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold">Quizzes</h1>
@@ -61,5 +63,6 @@ export default function QuizzesPage() {
         </div>
       )}
     </div>
+    </DashboardEntrance>
   );
 }

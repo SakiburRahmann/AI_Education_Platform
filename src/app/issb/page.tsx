@@ -10,6 +10,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const GOLD = "#D4A84B";
 
@@ -104,6 +106,10 @@ export default function CrucibleBoardLanding() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
   }, []);
 
   const closeSheet = () => setSheetOpen(false);
@@ -703,6 +709,42 @@ export default function CrucibleBoardLanding() {
             </p>
           </div>
         </div>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "What is Crucible Board?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Crucible Board is an AI-powered ISSB practice platform by Ulul Albab. It helps Bangladesh Defense officer candidates prepare for TAT, WAT, SRT, and interview stages with realistic simulations and AI feedback."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  name: "Is Crucible Board free?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, Crucible Board offers free ISSB practice. Powered by Ulul Albab and Lubb AI, you can practice TAT, WAT, SRT, and mock interview scenarios at no cost."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  name: "How does Crucible Board help with ISSB preparation?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Crucible Board provides AI-powered simulations of all ISSB stages including TAT (Thematic Apperception Test), WAT (Word Association Test), SRT (Situation Reaction Test), and mock interviews. You receive instant AI feedback to improve your responses."
+                  }
+                }
+              ]
+            })
+          }}
+        />
       </footer>
     </div>
   );

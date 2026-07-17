@@ -23,6 +23,7 @@ import {
   BookOpen,
   HelpCircle,
 } from "lucide-react";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 function formatTime(date: string) {
   return new Date(date).toLocaleTimeString("en-US", {
@@ -287,6 +288,7 @@ export default function ChatPage() {
   };
 
   return (
+    <DashboardEntrance>
     <div className="flex h-[calc(100dvh-6rem)] md:h-[calc(100dvh-5rem)]">
       {/* Conversation sidebar: mobile overlay */}
       <div className="md:hidden">
@@ -572,5 +574,6 @@ export default function ChatPage() {
       </div>
       {lastXpEarned && <XPFloat amount={lastXpEarned.amount} reason={lastXpEarned.reason} />}
     </div>
+    </DashboardEntrance>
   );
 }

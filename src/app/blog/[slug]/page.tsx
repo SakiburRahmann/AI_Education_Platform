@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageWrapper } from "@/components/animations/page-wrapper";
 import { blogPosts } from "@/content/blog";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -48,7 +49,7 @@ export default async function BlogPostPage({ params }: Props) {
   const sanitizedContent = await sanitizeHtml(post.content);
 
   return (
-    <article className="container mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16">
+    <PageWrapper><article className="container mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16">
       <Link
         href="/blog"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 sm:mb-8 inline-flex items-center gap-1"
@@ -96,6 +97,6 @@ export default async function BlogPostPage({ params }: Props) {
         className="prose prose-neutral dark:prose-invert max-w-none prose-sm sm:prose-base"
         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
       />
-    </article>
+    </article></PageWrapper>
   );
 }

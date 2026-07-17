@@ -10,6 +10,7 @@ import {
   MessageSquare, BookOpen, HelpCircle, TrendingUp, Zap, Flame,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 type LocalConv = {
   id: string;
@@ -70,6 +71,7 @@ export default function DashboardPage() {
   ];
 
   return (
+    <DashboardEntrance>
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold">
@@ -168,5 +170,6 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+    </DashboardEntrance>
   );
 }

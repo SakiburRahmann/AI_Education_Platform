@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useGamification } from "@/hooks/use-gamification";
 import { LevelBadge } from "@/components/gamification/level-badge";
 import { Trophy, Zap, Flame, TrendingUp, Medal, Crown, Loader2 } from "lucide-react";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 type LeaderboardEntry = {
   id: string;
@@ -42,6 +43,7 @@ export default function LeaderboardPage() {
   ];
 
   return (
+    <DashboardEntrance>
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold">Leaderboard</h1>
@@ -147,5 +149,6 @@ export default function LeaderboardPage() {
         </div>
       </div>
     </div>
+    </DashboardEntrance>
   );
 }

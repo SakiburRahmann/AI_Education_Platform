@@ -8,6 +8,7 @@ import { AchievementCard } from "@/components/gamification/achievement-card";
 import { ACHIEVEMENT_DEFS } from "@/hooks/use-gamification";
 import type { User } from "@supabase/supabase-js";
 import { UserCircle, Zap, Flame, BookOpen, HelpCircle } from "lucide-react";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -19,6 +20,7 @@ export default function ProfilePage() {
   }, []);
 
   return (
+    <DashboardEntrance>
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-primary text-2xl font-bold text-primary-foreground">
@@ -86,5 +88,6 @@ export default function ProfilePage() {
         )}
       </div>
     </div>
+    </DashboardEntrance>
   );
 }

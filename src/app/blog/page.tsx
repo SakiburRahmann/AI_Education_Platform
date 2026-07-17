@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageWrapper } from "@/components/animations/page-wrapper";
 import { blogPosts } from "@/content/blog";
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <div>
+    <PageWrapper><div>
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex min-h-14 sm:min-h-16 items-center justify-between gap-1 px-4">
           <Link href="/" className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors">
@@ -80,6 +81,6 @@ export default function BlogPage() {
         ))}
       </div>
     </div>
-  </div>
+  </div></PageWrapper>
   );
 }

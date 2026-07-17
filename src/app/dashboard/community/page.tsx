@@ -8,6 +8,7 @@ import {
   MessageSquare, ThumbsUp, ThumbsDown, Plus, X, User, Loader2,
 } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { DashboardEntrance } from "@/components/animations/dashboard-entrance";
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -47,6 +48,7 @@ export default function CommunityPage() {
   );
 
   return (
+    <DashboardEntrance>
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -164,5 +166,6 @@ export default function CommunityPage() {
         </div>
       )}
     </div>
+    </DashboardEntrance>
   );
 }
