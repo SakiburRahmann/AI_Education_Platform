@@ -67,12 +67,6 @@ const features = [
   },
 ];
 
-const techStack = [
-  { name: "Google AI", desc: "Powered by Gemini and Gemma models" },
-  { name: "Next.js", desc: "Built on the latest React framework" },
-  { name: "Supabase", desc: "Secure and scalable infrastructure" },
-];
-
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -300,31 +294,6 @@ export default function LandingPage() {
                       {item.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ BUILT WITH ═══ */}
-        <section className="py-16 sm:py-20 bg-muted/50">
-          <div className="container mx-auto px-4 sm:px-6">
-            <ScrollReveal direction="up" duration={1200}>
-              <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-4 text-center">
-                Built with Modern Technology
-              </h2>
-              <p className="text-sm sm:text-base text-muted-foreground text-center mb-8 sm:mb-12 max-w-xl mx-auto">
-                Ulul Albab is powered by industry-leading AI models and infrastructure: all
-                delivered free to every learner.
-              </p>
-            </ScrollReveal>
-            <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
-              {techStack.map((t, i) => (
-                <ScrollReveal key={t.name} direction="up" delay={i * 300} duration={1000}>
-                  <div className="rounded-xl border bg-card p-6 sm:p-8 text-center hover:shadow-md transition-shadow">
-                    <h3 className="font-heading font-bold text-lg sm:text-xl mb-2">{t.name}</h3>
-                    <p className="text-sm text-muted-foreground">{t.desc}</p>
                   </div>
                 </ScrollReveal>
               ))}
