@@ -67,22 +67,10 @@ const features = [
   },
 ];
 
-const testimonials = [
-  {
-    quote: "I uploaded my physics textbook and Lubb turned it into interactive lessons with practice problems. It's like having a tutor who knows exactly what I need to work on.",
-    name: "Aisha R.",
-    role: "College Student",
-  },
-  {
-    quote: "I don't have study materials — I just ask Lubb to teach me topics from scratch. The way it explains complex ideas step by step is incredible.",
-    name: "Rayan K.",
-    role: "High School Student",
-  },
-  {
-    quote: "The streaks and XP keep me coming back every day. I've learned more consistently in the last 3 months than in the last 3 years on my own.",
-    name: "Fatima Z.",
-    role: "Lifelong Learner",
-  },
+const techStack = [
+  { name: "Google AI", desc: "Powered by Gemini and Gemma models" },
+  { name: "Next.js", desc: "Built on the latest React framework" },
+  { name: "Supabase", desc: "Secure and scalable infrastructure" },
 ];
 
 export default function LandingPage() {
@@ -136,10 +124,12 @@ export default function LandingPage() {
             </ScrollReveal>
             <ScrollReveal direction="up" delay={300} duration={1400}>
               <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-5xl md:text-7xl text-foreground px-2 sm:px-0">
-                <span className="text-gradient-primary">Learn Anything</span>
+                <span className="text-gradient-primary">Ulul Albab</span>
                 <br />
-                with Your AI Tutor,{" "}
-                <span className="text-gradient-warm">Lubb</span>
+                <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-muted-foreground">
+                  Learn Anything with{" "}
+                  <span className="text-gradient-warm">Lubb AI</span>
+                </span>
               </h1>
             </ScrollReveal>
             <ScrollReveal direction="up" delay={600} duration={1200}>
@@ -310,29 +300,55 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ TESTIMONIALS ═══ */}
+        {/* ═══ BUILT WITH ═══ */}
         <section className="py-16 sm:py-20 bg-muted/50">
           <div className="container mx-auto px-4 sm:px-6">
             <ScrollReveal direction="up" duration={1200}>
-              <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center">
-                Loved by Learners
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-4 text-center">
+                Built with Modern Technology
               </h2>
+              <p className="text-sm sm:text-base text-muted-foreground text-center mb-8 sm:mb-12 max-w-xl mx-auto">
+                Ulul Albab is powered by industry-leading AI models and infrastructure — all
+                delivered free to every learner.
+              </p>
             </ScrollReveal>
             <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
-              {testimonials.map((t, i) => (
+              {techStack.map((t, i) => (
                 <ScrollReveal key={t.name} direction="up" delay={i * 300} duration={1000}>
-                  <div className="rounded-xl border bg-card p-6 sm:p-8 h-full flex flex-col justify-between">
-                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed italic">
-                      &ldquo;{t.quote}&rdquo;
-                    </p>
-                    <div className="mt-4 sm:mt-6 pt-4 border-t">
-                      <p className="font-heading font-bold text-sm">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.role}</p>
-                    </div>
+                  <div className="rounded-xl border bg-card p-6 sm:p-8 text-center hover:shadow-md transition-shadow">
+                    <h3 className="font-heading font-bold text-lg sm:text-xl mb-2">{t.name}</h3>
+                    <p className="text-sm text-muted-foreground">{t.desc}</p>
                   </div>
                 </ScrollReveal>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ═══ BETA / EARLY ACCESS ═══ */}
+        <section className="py-12 sm:py-16 border-y">
+          <div className="container mx-auto px-4 sm:px-6 text-center">
+            <ScrollReveal direction="up" duration={1000}>
+              <div className="mx-auto max-w-xl">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 sm:px-4 py-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-primary tracking-wider uppercase">
+                    Early Access
+                  </span>
+                </div>
+                <h2 className="font-heading text-xl sm:text-2xl font-bold mb-2">
+                  Be Among the First
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Ulul Albab is in active development. You can use the platform right now, and
+                  every week brings new features, better AI responses, and an improved learning
+                  experience. Your feedback shapes what comes next.
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
 
@@ -397,7 +413,7 @@ export default function LandingPage() {
               </ScrollReveal>
               <ScrollReveal direction="up" delay={600} duration={1000}>
                 <p className="text-muted-foreground mb-6 sm:mb-8 text-sm sm:text-lg px-2 sm:px-0">
-                  Join thousands of learners using Lubb AI to master new subjects, ace their exams, and fall in love with learning.
+                  Start learning with Lubb AI — your personal AI tutor. Master new subjects, ace your exams, and fall in love with learning.
                   No credit card. No commitment. Just pure learning.
                 </p>
               </ScrollReveal>
