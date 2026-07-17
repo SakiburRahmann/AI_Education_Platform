@@ -182,8 +182,8 @@ export default function LandingPage() {
             </ScrollReveal>
             <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
               {features.map((item, i) => (
-                <ScrollReveal key={item.title} direction="up" delay={i * 200} duration={1000}>
-                  <div className="card-hover p-6 sm:p-8 group transition-all duration-700 hover:-translate-y-3 hover:shadow-xl">
+                <ScrollReveal key={item.title} direction="up" delay={i * 200} duration={1000} className="h-full">
+                  <div className="card-hover p-6 sm:p-8 group transition-all duration-700 hover:-translate-y-3 hover:shadow-xl h-full">
                     <div className="mb-4 text-primary transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
                       {item.icon}
                     </div>
@@ -216,8 +216,8 @@ export default function LandingPage() {
                 { step: "3", title: "Learn with Lubb", desc: "Chat, practice, and master concepts" },
                 { step: "4", title: "Level Up", desc: "Earn XP, keep streaks, climb leagues" },
               ].map((item, i) => (
-                <ScrollReveal key={item.step} direction="up" delay={i * 300} duration={1000}>
-                  <div className="card-hover p-5 sm:p-6 group transition-all duration-700 hover:-translate-y-3 hover:shadow-xl">
+                <ScrollReveal key={item.step} direction="up" delay={i * 300} duration={1000} className="h-full">
+                  <div className="card-hover p-5 sm:p-6 group transition-all duration-700 hover:-translate-y-3 hover:shadow-xl h-full">
                     <div className="mx-auto mb-3 sm:mb-4 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-lg sm:text-xl font-bold transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/30">
                       {item.step}
                     </div>
