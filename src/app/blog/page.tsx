@@ -26,7 +26,22 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <div className="container mx-auto max-w-4xl px-4 sm:px-6 py-12 sm:py-16">
+    <div>
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+        <div className="container mx-auto flex min-h-14 sm:min-h-16 items-center justify-between gap-1 px-4">
+          <Link href="/" className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors">
+            Ulul Albab
+          </Link>
+          <nav className="flex items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
+            <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+            <Link href="/issb" className="hover:text-foreground transition-colors hidden sm:inline">ISSB Prep</Link>
+            <Link href="/auth" className="btn-primary inline-block px-3 py-1.5 text-xs whitespace-nowrap">
+              Sign In
+            </Link>
+          </nav>
+        </div>
+      </header>
+      <div className="container mx-auto max-w-4xl px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="font-heading text-3xl sm:text-4xl font-bold mb-2">Blog</h1>
       <p className="text-muted-foreground text-base sm:text-lg mb-8 sm:mb-12">
         Insights on AI-powered learning, study tips, and education technology.
@@ -65,5 +80,6 @@ export default function BlogPage() {
         ))}
       </div>
     </div>
+  </div>
   );
 }

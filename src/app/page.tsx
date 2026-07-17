@@ -136,8 +136,15 @@ export default function LandingPage() {
               <p className="mx-auto mt-4 sm:mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-2 sm:px-0">
                 <strong>Ulul Albab</strong> is an AI-powered learning platform for everyone.
                 Upload your books and notes: or learn any subject from scratch.
-                <strong> Lubb AI</strong> teaches you, quizzes you, and keeps you motivated
-                with XP, streaks, and leagues. All <strong>100% free</strong>.
+                <strong> Lubb AI</strong>, your personal AI tutor, teaches you, quizzes you,
+                and keeps you motivated with XP, streaks, and leagues.
+                All <strong>100% free</strong>.
+              </p>
+              <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-muted-foreground px-2 sm:px-0">
+                Named from the Quranic term <strong>Ulul Albab</strong> (People of Intellect) and
+                <strong> Lubb</strong> (inner essence), the platform is built around the idea that
+                real learning comes from understanding, not memorization. Lubb adapts to your
+                pace, explains concepts with clarity, and transforms how you engage with knowledge.
               </p>
             </ScrollReveal>
             <ScrollReveal direction="up" delay={900} duration={1000}>
@@ -172,8 +179,8 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
               {[
-                { value: "Free Forever", label: "No paywalls. No trials. Just learning." },
-                { value: "AI-Powered", label: "Powered by advanced AI models from Google" },
+                { value: "Free Forever", label: "No paywalls, no trials, no credit card. Just learning." },
+                { value: "AI-Powered", label: "Powered by Google AI models including Gemini" },
                 { value: "Any Subject", label: "From algebra to zoology, Lubb teaches it all" },
                 { value: "Your Pace", label: "Learn fast or take your time. You decide." },
               ].map((item, i) => (
@@ -245,7 +252,7 @@ export default function LandingPage() {
                 Everything You Need to Master Any Subject
               </h2>
               <p className="text-sm sm:text-base text-muted-foreground text-center mb-8 sm:mb-12 max-w-xl mx-auto">
-                Whether you have your own materials or want to learn something new from the ground up, Ulul Albab has you covered.
+                Whether you have your own materials or want to learn something new from the ground up, Ulul Albab has you covered. Every feature is designed to make learning deeper, faster, and more enjoyable.
               </p>
             </ScrollReveal>
             <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
@@ -352,6 +359,86 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ═══ FAQ ═══ */}
+        <section className="py-16 sm:py-20 border-t">
+          <div className="container mx-auto px-4 sm:px-6">
+            <ScrollReveal direction="up" duration={1200}>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold mb-12 text-center">
+                Frequently Asked Questions
+              </h2>
+            </ScrollReveal>
+            <div className="mx-auto max-w-2xl space-y-6">
+              {[
+                {
+                  q: "What is Ulul Albab?",
+                  a: "Ulul Albab is an AI-powered learning platform named from the Quranic term for People of Intellect. It pairs every learner with Lubb AI, a personal AI tutor that teaches, quizzes, and motivates through personalized, interactive learning experiences.",
+                },
+                {
+                  q: "Is Ulul Albab really free?",
+                  a: "Yes, 100% free. No hidden fees, no paywalls, no credit card required. Every feature including chat with Lubb AI, interactive lessons, quizzes, XP tracking, leaderboards, and community access is available at no cost.",
+                },
+                {
+                  q: "What is Lubb AI?",
+                  a: "Lubb (meaning inner essence in Arabic) is the AI tutor at the heart of Ulul Albab. Lubb understands your uploaded materials, answers your questions, creates personalized lessons and quizzes, adapts to your learning pace, and keeps you motivated with gamified progress tracking.",
+                },
+                {
+                  q: "How do I get started?",
+                  a: "Sign up with your Google account in seconds. Then upload your textbooks, slides, or notes: or just start asking Lubb about any topic. Lubb will teach you from scratch, test your understanding, and guide your learning journey.",
+                },
+                {
+                  q: "Can I upload my own study materials?",
+                  a: "Absolutely. Upload PDFs, slides, lecture notes, and other documents. Lubb AI extracts the key concepts and builds interactive lessons around your materials, turning static files into a dynamic learning experience.",
+                },
+              ].map((faq, i) => (
+                <ScrollReveal key={faq.q} direction="up" delay={i * 100} duration={800}>
+                  <details className="group rounded-xl border bg-card p-4 sm:p-5 open:shadow-md transition-shadow">
+                    <summary className="cursor-pointer font-heading font-semibold text-sm sm:text-base list-none flex items-center justify-between gap-2">
+                      {faq.q}
+                      <svg className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </summary>
+                    <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      {faq.a}
+                    </p>
+                  </details>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: [
+                  {
+                    "@type": "Question",
+                    name: "What is Ulul Albab?",
+                    acceptedAnswer: { "@type": "Answer", text: "Ulul Albab is an AI-powered learning platform named from the Quranic term for People of Intellect. It pairs every learner with Lubb AI, a personal AI tutor that teaches, quizzes, and motivates through personalized, interactive learning experiences." },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Is Ulul Albab really free?",
+                    acceptedAnswer: { "@type": "Answer", text: "Yes, 100% free. No hidden fees, no paywalls, no credit card required. Every feature including chat with Lubb AI, interactive lessons, quizzes, XP tracking, leaderboards, and community access is available at no cost." },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "What is Lubb AI?",
+                    acceptedAnswer: { "@type": "Answer", text: "Lubb (meaning inner essence in Arabic) is the AI tutor at the heart of Ulul Albab. Lubb understands your uploaded materials, answers your questions, creates personalized lessons and quizzes, adapts to your learning pace, and keeps you motivated with gamified progress tracking." },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "How do I get started?",
+                    acceptedAnswer: { "@type": "Answer", text: "Sign up with your Google account in seconds. Then upload your textbooks, slides, or notes: or just start asking Lubb about any topic. Lubb will teach you from scratch, test your understanding, and guide your learning journey." },
+                  },
+                ],
+              }),
+            }}
+          />
+        </section>
+
         {/* ═══ CRUCIBLE BOARD PROMO ═══ */}
         <section className="py-16 sm:py-20 bg-gradient-to-r from-[#0A0F1A] to-[#131B2E]">
           <div className="container mx-auto px-4 sm:px-6 text-center">
@@ -368,7 +455,7 @@ export default function LandingPage() {
                 </div>
                 <h2
                   className="text-2xl sm:text-4xl font-bold text-[#F0F4F8] px-2 sm:px-0"
-                  style={{ fontFamily: "'var(--font-playfair)', serif" }}
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
                 >
                   Preparing for the{" "}
                   <span className="text-[#D4A84B]">ISSB</span>?

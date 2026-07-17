@@ -86,7 +86,7 @@ export default async function BlogPostPage({ params }: Props) {
             headline: post.title,
             description: post.description,
             datePublished: new Date(post.date).toISOString(),
-            author: { "@type": "Organization", name: post.author },
+            author: { "@type": "Person", name: post.author },
             publisher: { "@type": "Organization", name: "Ulul Albab", url: "https://ululalbab.vercel.app" },
             mainEntityOfPage: { "@type": "WebPage", "@id": `https://ululalbab.vercel.app/blog/${post.slug}` },
           }),

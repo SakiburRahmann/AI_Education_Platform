@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -20,6 +21,22 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
+    <div>
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+        <div className="container mx-auto flex min-h-14 sm:min-h-16 items-center justify-between gap-1 px-4">
+          <Link href="/" className="font-heading text-lg font-bold text-foreground hover:text-primary transition-colors">
+            Ulul Albab
+          </Link>
+          <nav className="flex items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
+            <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+            <Link href="/blog" className="hover:text-foreground transition-colors hidden sm:inline">Blog</Link>
+            <Link href="/issb" className="hover:text-foreground transition-colors hidden sm:inline">ISSB Prep</Link>
+            <Link href="/auth" className="btn-primary inline-block px-3 py-1.5 text-xs whitespace-nowrap">
+              Sign In
+            </Link>
+          </nav>
+        </div>
+      </header>
     <div className="container mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16">
       <h1 className="font-heading text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Privacy Policy</h1>
       <div className="prose prose-neutral dark:prose-invert max-w-none space-y-4 text-muted-foreground prose-sm sm:prose-base">
@@ -55,5 +72,6 @@ export default function PrivacyPage() {
         <p className="mt-8 text-sm">Last updated: June 2026</p>
       </div>
     </div>
+  </div>
   );
 }
